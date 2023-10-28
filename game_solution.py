@@ -1,8 +1,21 @@
+# SCREEN RESOLUTION: 1280X720
 
 # built-in imports only
 
-import tkinter as tk
+from tkinter import *
 import random as ran
+
+#############
+# FUNCTIONS #
+#############
+
+def CreateWindow():
+    root = Tk()
+    root.title("Tetris")
+    root.geometry("1280x720")
+    root.configure(background="black")
+    root.mainloop()
+
 
 #############################
 # map of cw workload and plan
@@ -10,6 +23,8 @@ import random as ran
 
 # initial page open - new, load or leaderboard
 # enter name on same page
+
+CreateWindow()
 
 # open leaderboard and show top x scores/search for certain username
 # be able to show  ALL scores in a list on the page
