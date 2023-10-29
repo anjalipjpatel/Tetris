@@ -52,18 +52,18 @@ def AllFonts():
 def HomeWindow():
     root.title("Tetris")
     root.geometry("1280x720")
-    #root.configure(background="black")
+    root.configure(background="black")
     # root.columnconfigure(index=0,weight=1)
     # root.rowconfigure(index=0,weight=1)
     # output text
-    ttk.Label(root, text="T E T R I S", font=("small fonts", 40, "bold")).grid(row=0, column=5)
+    ttk.Label(root, text="T E T R I S", font=("small fonts", 40, "bold"),background="#000000", foreground="#ffe81f").grid(row=0, column=5)
 
     # 3 buttons - new, load or leaderboard
     ttk.Button(root, text="NEW GAME", command=NewGameClicked,padding=(5,10)).grid(row=1, column=5)
     ttk.Button(root, text="LOAD GAME", command=LoadGameClicked, padding=(5,10)).grid(row=2, column=5)
     ttk.Button(root, text="LEADERBOARD", command=LeaderboardClicked, padding=(5,10)).grid(row=3, column=5)
     # username input
-    ttk.Label(root, text="ENTER USERNAME: ", font=("small fonts", 16)).grid(row=5, column=1, rowspan=3)
+    ttk.Label(root, text="ENTER USERNAME: ", font=("small fonts", 16), background="#000000", foreground="#ffe81f").grid(row=5, column=1, rowspan=3)
     global textbox
     textbox = ttk.Entry(root, textvariable="Enter Username",width=30)
     textbox.grid(row=5, column=4)
@@ -98,20 +98,14 @@ def ShowLeaderboard():
         tempscores.append(scores[i].split(","))
     # bubble sort via index 1 of array
     scores = Sort(tempscores)
-    ttk.Label(root, text="L E A D E R B O A R D", font=("small fonts", 40, "bold")).grid(row=0, column=0)
+    ttk.Label(root, text="L E A D E R B O A R D", font=("small fonts", 40, "bold"),foreground="#ffe81f",background="#000000").grid(row=0, column=0)
 
-    scoreWidget = tk.Text(root, font=("small fonts", 14))
+    scoreWidget = tk.Text(root, font=("small fonts", 14), background="#000000", foreground="#ffe81f")
     scoreWidget.columnconfigure(0,weight=1)
     scoreWidget.grid(row=1,column=0)
     
-
     for index,item in enumerate(scores, start=1):
         scoreWidget.insert(tk.END, f"{index}.   {item[0]} - {item[1]}\n")
-    
-    
-
-    
-
 
 def Sort(arr):
     n = len(arr)
@@ -136,7 +130,12 @@ def LoadGameClicked():
     GetUsername()
     WipeAllWidgets()
 
+# open leaderboard and show top x scores/search for certain username
+# be able to show  ALL scores in a list on the page
 def LeaderboardClicked():
+    #######################################
+    # add vertical scroll bar functionality
+    #######################################
     GetUsername()
     WipeAllWidgets()
     ShowLeaderboard()
@@ -152,8 +151,7 @@ root = tk.Tk()
 # enter name on same page
 HomeWindow()
 
-# open leaderboard and show top x scores/search for certain username
-# be able to show  ALL scores in a list on the page
+
 
 ####################
 # load or play game#
