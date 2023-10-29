@@ -53,22 +53,24 @@ def AllFonts():
 
 def CreateWindow():    
     root = tk.Tk()
-    #buttonFont = font.Font(family="small fonts", size=14)
+    buttonFont = font.Font(family="small fonts", size=14)
 
     root.title("Tetris")
     root.geometry("1280x720")
     #root.configure(background="black")
 
     # output text
-    ttk.Label(root, text="T E T R I S", font=("small fonts", 40)).pack()
+    ttk.Label(root, text="T E T R I S", font=("small fonts", 40)).grid(row=0, column=5)
 
     # 3 buttons - new, load or leaderboard
-    ttk.Button(root, text="NEW GAME", command=NewGameClicked,padding=(5,10)).pack()
-    ttk.Button(root, text="LOAD GAME", command=LoadGameClicked, padding=(5,10)).pack()
-    ttk.Button(root, text="LEADERBOARD", command=LeaderboardClicked, padding=(5,10)).pack()
+    ttk.Button(root, text="NEW GAME", command=NewGameClicked,padding=(5,10)).grid(row=1, column=5)
+    ttk.Button(root, text="LOAD GAME", command=LoadGameClicked, padding=(5,10)).grid(row=2, column=5)
+    ttk.Button(root, text="LEADERBOARD", command=LeaderboardClicked, padding=(5,10)).grid(row=3, column=5)
     # username input
-    textbox = ttk.Entry(root, textvariable="Enter Username",width=30)
-    textbox.pack()
+    ttk.Label(root, text="ENTER USERNAME: ", font=("small fonts", 24)).grid(row=5, column=1, rowspan=3)
+    global textbox
+    textbox = ttk.Entry(root, textvariable="Enter Username",width=30, font= buttonFont)
+    textbox.grid(row=5, column=4)
     root.mainloop()
 
     return textbox
@@ -76,14 +78,17 @@ def CreateWindow():
 
 
 ##########################
-def NewGameClicked(t):
-    print("new game", t.get())
+def NewGameClicked():
+    global textbox, username
+    username = textbox.get()
 
-def LoadGameClicked(t):
-    print("load game", t.get())
+def LoadGameClicked():
+    global textbox, username
+    username = textbox.get()
 
-def LeaderboardClicked(t):
-    print("leaderboard", t.get())
+def LeaderboardClicked():
+    global textbox, username
+    username = textbox.get()
 
 ##########################
 
@@ -97,9 +102,6 @@ def LeaderboardClicked(t):
 
 
 txt = CreateWindow()
-NewGameClicked(txt)
-LoadGameClicked(txt)
-LeaderboardClicked(txt)
 
 # open leaderboard and show top x scores/search for certain username
 # be able to show  ALL scores in a list on the page
