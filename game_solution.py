@@ -4,7 +4,7 @@
 
 import tkinter as tk
 from tkinter import ttk
-import random as ran
+import random
 from tkinter import font
 import time
 ################################################
@@ -51,7 +51,8 @@ def AllFonts():
 # home page #
 #############
 
-def CreateWindow():    
+def CreateWindow():
+    global root 
     root = tk.Tk()
     buttonFont = font.Font(family="small fonts", size=14)
 
@@ -73,22 +74,38 @@ def CreateWindow():
     textbox.grid(row=5, column=4)
     root.mainloop()
 
-    return textbox
+def GetUsername():
+    global textbox, username
+    username = textbox.get()
+    # if username is empty, generate random guest name
+    if username == "":
+        username = GenerateRandomUser()
+    print(username)
+
+def GenerateRandomUser():
+    global username
+    name = "user" + str(random.randint(1,999))
+    return name
+
+def WipeAllWidgets():
+    global root
+    for widget in root.winfo_children():
+        widget.destroy()
 
 
 
 ##########################
 def NewGameClicked():
-    global textbox, username
-    username = textbox.get()
+    GetUsername()
+    WipeAllWidgets()
 
 def LoadGameClicked():
-    global textbox, username
-    username = textbox.get()
+    GetUsername()
+    WipeAllWidgets()
 
 def LeaderboardClicked():
-    global textbox, username
-    username = textbox.get()
+    GetUsername()
+    WipeAllWidgets()
 
 ##########################
 
