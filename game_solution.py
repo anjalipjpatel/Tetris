@@ -1,21 +1,91 @@
 # SCREEN RESOLUTION: 1280X720
 
-# built-in imports only
+# built-in imports only - no pip's
 
-from tkinter import *
+import tkinter as tk
+from tkinter import ttk
 import random as ran
+from tkinter import font
+import time
+################################################
+################ FUNCTIONS #####################
+################################################
 
-#############
-# FUNCTIONS #
-#############
+def AllFonts():
 
-def CreateWindow():
+
     root = Tk()
+    root.title('Font Families')
+    fonts=list(font.families())
+    fonts.sort()
+
+    def populate(frame):
+        '''Put in the fonts'''
+        listnumber = 1
+        for item in fonts:
+            label = "listlabel" + str(listnumber)
+            label = Label(frame,text=item,font=(item, 16)).pack()
+            listnumber += 1
+
+    def onFrameConfigure(canvas):
+        '''Reset the scroll region to encompass the inner frame'''
+        canvas.configure(scrollregion=canvas.bbox("all"))
+
+    canvas = Canvas(root, borderwidth=0, background="#ffffff")
+    frame = Frame(canvas, background="#ffffff")
+    vsb = Scrollbar(root, orient="vertical", command=canvas.yview)
+    canvas.configure(yscrollcommand=vsb.set)
+
+    vsb.pack(side="right", fill="y")
+    canvas.pack(side="left", fill="both", expand=True)
+    canvas.create_window((4,4), window=frame, anchor="nw")
+
+    frame.bind("<Configure>", lambda event, canvas=canvas: onFrameConfigure(canvas))
+
+    populate(frame)
+
+    root.mainloop()
+#Fonts()
+
+#############
+# home page #
+#############
+
+def CreateWindow():    
+    root = tk.Tk()
+    #buttonFont = font.Font(family="small fonts", size=14)
+
     root.title("Tetris")
     root.geometry("1280x720")
-    root.configure(background="black")
+    #root.configure(background="black")
+
+    # output text
+    ttk.Label(root, text="T E T R I S", font=("small fonts", 40)).pack()
+
+    # 3 buttons - new, load or leaderboard
+    ttk.Button(root, text="NEW GAME", command=NewGameClicked,padding=(5,10)).pack()
+    ttk.Button(root, text="LOAD GAME", command=LoadGameClicked, padding=(5,10)).pack()
+    ttk.Button(root, text="LEADERBOARD", command=LeaderboardClicked, padding=(5,10)).pack()
+    # username input
+    textbox = ttk.Entry(root, textvariable="Enter Username",width=30)
+    textbox.pack()
     root.mainloop()
 
+    return textbox
+
+
+
+##########################
+def NewGameClicked(t):
+    print("new game", t.get())
+
+def LoadGameClicked(t):
+    print("load game", t.get())
+
+def LeaderboardClicked(t):
+    print("leaderboard", t.get())
+
+##########################
 
 #############################
 # map of cw workload and plan
@@ -24,7 +94,12 @@ def CreateWindow():
 # initial page open - new, load or leaderboard
 # enter name on same page
 
-CreateWindow()
+
+
+txt = CreateWindow()
+NewGameClicked(txt)
+LoadGameClicked(txt)
+LeaderboardClicked(txt)
 
 # open leaderboard and show top x scores/search for certain username
 # be able to show  ALL scores in a list on the page
