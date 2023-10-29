@@ -12,8 +12,6 @@ import time
 ################################################
 
 def AllFonts():
-
-
     root = Tk()
     root.title('Font Families')
     fonts=list(font.families())
@@ -51,26 +49,23 @@ def AllFonts():
 # home page #
 #############
 
-def CreateWindow():
-    global root 
-    root = tk.Tk()
-    buttonFont = font.Font(family="small fonts", size=14)
-
+def HomeWindow():
     root.title("Tetris")
     root.geometry("1280x720")
     #root.configure(background="black")
-
+    # root.columnconfigure(index=0,weight=1)
+    # root.rowconfigure(index=0,weight=1)
     # output text
-    ttk.Label(root, text="T E T R I S", font=("small fonts", 40)).grid(row=0, column=5)
+    ttk.Label(root, text="T E T R I S", font=("small fonts", 40, "bold")).grid(row=0, column=5)
 
     # 3 buttons - new, load or leaderboard
     ttk.Button(root, text="NEW GAME", command=NewGameClicked,padding=(5,10)).grid(row=1, column=5)
     ttk.Button(root, text="LOAD GAME", command=LoadGameClicked, padding=(5,10)).grid(row=2, column=5)
     ttk.Button(root, text="LEADERBOARD", command=LeaderboardClicked, padding=(5,10)).grid(row=3, column=5)
     # username input
-    ttk.Label(root, text="ENTER USERNAME: ", font=("small fonts", 24)).grid(row=5, column=1, rowspan=3)
+    ttk.Label(root, text="ENTER USERNAME: ", font=("small fonts", 16)).grid(row=5, column=1, rowspan=3)
     global textbox
-    textbox = ttk.Entry(root, textvariable="Enter Username",width=30, font= buttonFont)
+    textbox = ttk.Entry(root, textvariable="Enter Username",width=30)
     textbox.grid(row=5, column=4)
     root.mainloop()
 
@@ -78,7 +73,7 @@ def GetUsername():
     global textbox, username
     username = textbox.get()
     # if username is empty, generate random guest name
-    if username == "":
+    if username == "" or ("," in username):
         username = GenerateRandomUser()
     print(username)
 
@@ -91,6 +86,44 @@ def WipeAllWidgets():
     global root
     for widget in root.winfo_children():
         widget.destroy()
+
+def ShowLeaderboard():
+    f = open("leaderboard.txt", "r")
+    scores = f.read().splitlines() # each entry seperated by commas
+    f.close()
+    
+    # seperate all scores into array of name in 0 and score in 1, append to newscores
+    tempscores = []
+    for i in range(0,len(scores)):
+        tempscores.append(scores[i].split(","))
+    # bubble sort via index 1 of array
+    scores = Sort(tempscores)
+    ttk.Label(root, text="L E A D E R B O A R D", font=("small fonts", 40, "bold")).grid(row=0, column=0)
+
+    scoreWidget = tk.Text(root, font=("small fonts", 14))
+    scoreWidget.columnconfigure(0,weight=1)
+    scoreWidget.grid(row=1,column=0)
+    
+
+    for index,item in enumerate(scores, start=1):
+        scoreWidget.insert(tk.END, f"{index}.   {item[0]} - {item[1]}\n")
+    
+    
+
+    
+
+
+def Sort(arr):
+    n = len(arr)
+    swapped = True
+    while swapped:
+        swapped = False
+        for x in range(n-1):
+            if arr[x][1] < arr[x+1][1]:
+                arr[x],arr[x+1] = arr[x+1],arr[x]
+                swapped = True
+        n -= 1
+    return arr
 
 
 
@@ -106,19 +139,18 @@ def LoadGameClicked():
 def LeaderboardClicked():
     GetUsername()
     WipeAllWidgets()
+    ShowLeaderboard()
 
 ##########################
 
 #############################
 # map of cw workload and plan
 #############################
-
+global root 
+root = tk.Tk()
 # initial page open - new, load or leaderboard
 # enter name on same page
-
-
-
-txt = CreateWindow()
+HomeWindow()
 
 # open leaderboard and show top x scores/search for certain username
 # be able to show  ALL scores in a list on the page
@@ -149,7 +181,7 @@ txt = CreateWindow()
 
 # check if row completed - if yes destroy and give points
 
-# check if block not in screen ie at top and hence game over
+# check if block not in screen ie at top and hence game over - add score and username to end of leadeboard file
 
 # pause/quit function - pause, quit or save and quit
 
