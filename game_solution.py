@@ -11,40 +11,6 @@ import time
 ################ FUNCTIONS #####################
 ################################################
 
-# def AllFonts():
-#     root = Tk()
-#     root.title('Font Families')
-#     fonts=list(font.families())
-#     fonts.sort()
-
-#     def populate(frame):
-#         '''Put in the fonts'''
-#         listnumber = 1
-#         for item in fonts:
-#             label = "listlabel" + str(listnumber)
-#             label = Label(frame,text=item,font=(item, 16)).pack()
-#             listnumber += 1
-
-#     def onFrameConfigure(canvas):
-#         '''Reset the scroll region to encompass the inner frame'''
-#         canvas.configure(scrollregion=canvas.bbox("all"))
-
-#     canvas = Canvas(root, borderwidth=0, background="#ffffff")
-#     frame = Frame(canvas, background="#ffffff")
-#     vsb = Scrollbar(root, orient="vertical", command=canvas.yview)
-#     canvas.configure(yscrollcommand=vsb.set)
-
-#     vsb.pack(side="right", fill="y")
-#     canvas.pack(side="left", fill="both", expand=True)
-#     canvas.create_window((4,4), window=frame, anchor="nw")
-
-#     frame.bind("<Configure>", lambda event, canvas=canvas: onFrameConfigure(canvas))
-
-#     populate(frame)
-
-#     root.mainloop()
-#Fonts()
-
 #############
 # home page #
 #############
@@ -87,10 +53,19 @@ def WipeAllWidgets():
     for widget in root.winfo_children():
         widget.destroy()
 
+def BackHome():
+    # function returns user back to homepage
+    WipeAllWidgets()
+    HomeWindow()
+
 def ShowLeaderboard():
     f = open("leaderboard.txt", "r")
     scores = f.read().splitlines() # each entry seperated by commas
     f.close()
+
+    # make back button to homepage
+    ttk.Button(root,text="HOME",command=BackHome,padding=(5,10)).grid(row=0, column=1) 
+
     
     # seperate all scores into array of name in 0 and score in 1, append to newscores
     tempscores = []
@@ -141,6 +116,13 @@ def LeaderboardClicked():
     ShowLeaderboard()
 
 ##########################################################################
+
+
+# can we make blocks by using tkinter canvas - store each canvas item once placed down in a 2d array, delete each row of them when row done and push rest down
+
+
+
+
 
 #############################
 # map of cw workload and plan
