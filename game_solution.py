@@ -1,7 +1,6 @@
 # SCREEN RESOLUTION: 1280X720
 
 # built-in imports only - no pip's
-
 import tkinter as tk
 from tkinter import ttk
 import random
@@ -15,7 +14,7 @@ import time
 # home page #
 #############
 
-def HomeWindow():
+def HomeWindow(): # displays homepage
     root.title("Tetris")
     root.geometry("1280x720")
     root.configure(background="black")
@@ -35,7 +34,7 @@ def HomeWindow():
     textbox.grid(row=5, column=4)
     root.mainloop()
 
-def GetUsername():
+def GetUsername():# retrives username input to textbox
     global textbox, username
     username = textbox.get()
     # if username is empty, generate random guest name
@@ -43,22 +42,22 @@ def GetUsername():
         username = GenerateRandomUser()
     print(username)
 
-def GenerateRandomUser():
+def GenerateRandomUser(): # generates random username if box is empty
     global username
     name = "user" + str(random.randint(1,999))
     return name
 
-def WipeAllWidgets():
+def WipeAllWidgets(): # clears all current widgets on screen
     global root
     for widget in root.winfo_children():
         widget.destroy()
 
-def BackHome():
-    # function returns user back to homepage
-    WipeAllWidgets()
-    HomeWindow()
 
-def ShowLeaderboard():
+
+def ShowLeaderboard(): # displays leaderboard page
+
+    # IF TIME: search for username and all scores, include vertical scrollbar
+
     f = open("leaderboard.txt", "r")
     scores = f.read().splitlines() # each entry seperated by commas
     f.close()
@@ -66,7 +65,6 @@ def ShowLeaderboard():
     # make back button to homepage
     ttk.Button(root,text="HOME",command=BackHome,padding=(5,10)).grid(row=0, column=1) 
 
-    
     # seperate all scores into array of name in 0 and score in 1, append to newscores
     tempscores = []
     for i in range(0,len(scores)):
@@ -75,14 +73,16 @@ def ShowLeaderboard():
     scores = Sort(tempscores)
     ttk.Label(root, text="L E A D E R B O A R D", font=("small fonts", 40, "bold"),foreground="#ffe81f",background="#000000").grid(row=0, column=0)
 
+    # create textbox to contain all scores
     scoreWidget = tk.Text(root, font=("small fonts", 14), background="#000000", foreground="#ffe81f")
     scoreWidget.columnconfigure(0,weight=1)
     scoreWidget.grid(row=1,column=0)
     
+    # display each score on page
     for index,item in enumerate(scores, start=1):
         scoreWidget.insert(tk.END, f"{index}.   {item[0]} - {item[1]}\n")
 
-def Sort(arr):
+def Sort(arr): # bubble sort for contents of leaderboard (desc.)
     n = len(arr)
     swapped = True
     while swapped:
@@ -94,33 +94,31 @@ def Sort(arr):
         n -= 1
     return arr
 
-
-
+##########################################################################
+####################### BUTTON CLICKED LOGIC #############################
 ##########################################################################
 
-def NewGameClicked():
+def NewGameClicked(): # logic for if a newgame is pressed
     GetUsername()
     WipeAllWidgets()
 
-def LoadGameClicked():
+def LoadGameClicked(): # logic for if a current game is pressed
     GetUsername()
     WipeAllWidgets()
 
-# open leaderboard and show top x scores/search for certain username
-# be able to show  ALL scores in a list on the page
-def LeaderboardClicked():
-    #######################################
-    # add vertical scroll bar functionality if time
-    #######################################
+def BackHome(): # returns user back to homepage
+    WipeAllWidgets()
+    HomeWindow()
+
+def LeaderboardClicked(): # logic for leaderboard display
     WipeAllWidgets()
     ShowLeaderboard()
 
-##########################################################################
 
 
-# can we make blocks by using tkinter canvas - store each canvas item once placed down in a 2d array, delete each row of them when row done and push rest down
 
-
+def PlayGame(): # main game logic
+    pass
 
 
 
@@ -129,14 +127,15 @@ def LeaderboardClicked():
 #############################
 global root 
 root = tk.Tk()
-# initial page open - new, load or leaderboard
-# enter name on same page
+
+# homepage open - name and button to select
 HomeWindow()
 
 
 ####################
 # load or play game#
 ####################
+# can we make blocks by using tkinter canvas - store each canvas item once placed down in a 2d array, delete each row of them when row done and push rest down
 # each shape an instnace of a class as it falls
 # 2d array mapping current grid
 # text file write scores etc
