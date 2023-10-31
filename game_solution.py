@@ -52,8 +52,6 @@ def WipeAllWidgets(): # clears all current widgets on screen
     for widget in root.winfo_children():
         widget.destroy()
 
-
-
 def ShowLeaderboard(): # displays leaderboard page
 
     # IF TIME: search for username and all scores, include vertical scrollbar
@@ -94,17 +92,24 @@ def Sort(arr): # bubble sort for contents of leaderboard (desc.)
         n -= 1
     return arr
 
-##########################################################################
-####################### BUTTON CLICKED LOGIC #############################
-##########################################################################
+########################
+# BUTTON CLICKED LOGIC #
+########################
 
 def NewGameClicked(): # logic for if a newgame is pressed
     GetUsername()
     WipeAllWidgets()
+    ttk.Button(root,text="HOME",command=BackHome,padding=(5,10)).grid(row=0, column=1) 
+    ttk.Label(root, text="P L A Y", font=("small fonts", 40, "bold"),foreground="#ffe81f",background="#000000").grid(row=0, column=0)
+    initialiseGame()
 
 def LoadGameClicked(): # logic for if a current game is pressed
     GetUsername()
     WipeAllWidgets()
+    ttk.Button(root,text="HOME",command=BackHome,padding=(5,10)).grid(row=0, column=1) 
+    ttk.Label(root, text="P L A Y", font=("small fonts", 40, "bold"),foreground="#ffe81f",background="#000000").grid(row=0, column=0)
+    initialiseGame()
+    # get the data from previosu game - maybe when clicking loadgame, new page wiht a drop down list of all 
 
 def BackHome(): # returns user back to homepage
     WipeAllWidgets()
@@ -114,13 +119,18 @@ def LeaderboardClicked(): # logic for leaderboard display
     WipeAllWidgets()
     ShowLeaderboard()
 
-
-
+def initialiseGame():
+    global gameBoard, score, gameCanvas
+    gameBoard = [] # represents blocks on board
+    for _ in range(20):
+        gameBoard.append(["","","","","","","","","",""])
+    score = 0
+    # make canvas for game - scale factor of x3 for each block
+    gameCanvas = tk.Canvas(root, width=300, height=600, background="darkgrey")
+    gameCanvas.grid(row=1,column=0)
 
 def PlayGame(): # main game logic
     pass
-
-
 
 #############################
 # map of cw workload and plan
@@ -131,7 +141,6 @@ root = tk.Tk()
 # homepage open - name and button to select
 HomeWindow()
 
-
 ####################
 # load or play game#
 ####################
@@ -140,6 +149,8 @@ HomeWindow()
 # 2d array mapping current grid
 # text file write scores etc
 
+
+# make boxes spawn and move down
 
 # intialise points and stuff
 
