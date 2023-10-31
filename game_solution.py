@@ -6,10 +6,67 @@ from tkinter import ttk
 import random
 from tkinter import font
 import time
+
+################################################
+################ CLASSES #######################
+################################################
+class Block():
+    def __init__(self):
+        piece1 = -1
+        piece2 = -1
+        piece3 = -1
+        piece4 = -1
+
+
+    # represent block as a 9x9 square : 
+    # [a,   b,   c,    d]
+    # [e,   f,   g,    h]
+    # [i,   j,   k,    l]
+    # [m,   n,   o,    p]
+
+    # a - straight line - aqua
+    # a1: #abcd
+    # a2: #bfjn
+    # a3: #mnop
+    # a4: #cgko
+
+    # b - left top L - dark blue
+    # b1: #aefg
+    # b2: #jkgc
+    # b3: #abcg
+    # b4: #bcfj
+
+    # c - right top L - orange
+    # c1: #efgc
+    # c2: #bcgk
+    # c3: #eabc
+    # c4: #aeij
+
+    # d - square - yellow
+    # d1: #fgjk
+    # ---
+
+    # e - right Z - lime green
+    # e1: #cdfg
+    # e2: #bfgk
+    # e3: #efbc
+    # e4: #bfgk
+
+    # f - left Z - red
+    # f1: #abfg
+    # f2: #cgfj
+    # f3: #ghkj
+    # f4: #cgfj
+
+    # h - upsdie T - magenta
+    # h1: #befg
+    # h2: #bfje
+    # h3: #efgj
+    # h4: #bfjg
+
 ################################################
 ################ FUNCTIONS #####################
 ################################################
-
 #############
 # home page #
 #############
