@@ -25,7 +25,7 @@ class Block():
     # [m,   n,   o,    p]
 
     # a - straight line - aqua
-    # a1: #abcd
+    # a1: #abcd pos1 = ((0,0),(0,1),(0,2),(0,3))
     # a2: #bfjn
     # a3: #mnop
     # a4: #cgko
