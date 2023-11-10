@@ -10,12 +10,27 @@ import time
 ################################################
 ################ CLASSES #######################
 ################################################
-class Block():
+class newBlock():
     def __init__(self):
-        piece1 = -1
-        piece2 = -1
-        piece3 = -1
-        piece4 = -1
+        self.piece1 = -1
+        self.piece2 = -1
+        self.piece3 = -1
+        self.piece4 = -1
+        self.blockNum = 1                   # random.randint(1,7) # generate which type of block to be
+        if self.blockNum == 1:              # straight line aqua
+            pass
+        elif self.blockNum == 2:            # left top L - dark blue
+            pass
+        elif self.blockNum == 3:            # right top L - orange
+            pass
+        elif self.blockNum == 4:            # square - yellow
+            pass
+        elif self.blockNum == 5:            # right z - lime green
+            pass
+        elif self.blockNum == 6:            # left z - red
+            pass
+        else:                               # upside down T - magenta
+            pass
 
 
     # represent block as a 9x9 square : 
@@ -80,10 +95,13 @@ def HomeWindow(): # displays homepage
     # output text
     ttk.Label(root, text="T E T R I S", font=("small fonts", 40, "bold"),background="#000000", foreground="#ffe81f").grid(row=0, column=5)
 
-    # 3 buttons - new, load or leaderboard
+    # choice buttons - new, load, leaderboard, exit, information page, controls page
     ttk.Button(root, text="NEW GAME", command=NewGameClicked,padding=(5,10)).grid(row=1, column=5)
     ttk.Button(root, text="LOAD GAME", command=LoadGameClicked, padding=(5,10)).grid(row=2, column=5)
     ttk.Button(root, text="LEADERBOARD", command=LeaderboardClicked, padding=(5,10)).grid(row=3, column=5)
+    ttk.Button(root, text="INFORMATION", command=InformationClicked, padding=(5,10)).grid(row=4,column=5)
+    ttk.Button(root,text="CONTROLS",command=ControlsClicked,padding=(5,10)).grid(row=5,column=5)
+    ttk.Button(root,text="EXIT", command=exitClicked,padding=(5,10)).grid(row=6,column=5)
     # username input
     ttk.Label(root, text="ENTER USERNAME: ", font=("small fonts", 16), background="#000000", foreground="#ffe81f").grid(row=5, column=1, rowspan=3)
     global textbox
@@ -149,6 +167,16 @@ def Sort(arr): # bubble sort for contents of leaderboard (desc.)
         n -= 1
     return arr
 
+def ShowInformation():
+    ttk.Button(root,text="HOME",command=BackHome,padding=(5,10)).grid(row=0,column=0)
+
+    ttk.Label(root,text="Here is some information about the game which could be useful for a user",font=("small fonts",24),foreground="#ffe81f",background="#000000").grid(row=1,column=0)
+
+def ShowControls():
+    ttk.Button(root,text="HOME",command=BackHome,padding=(5,10)).grid(row=0,column=0)
+
+    ttk.Label(root,text="Here the user will be able to adjust their controls to move the blocks and play the game",font=("small fonts",24),foreground="#ffe81f",background="#000000").grid(row=1,column=0)
+
 ########################
 # BUTTON CLICKED LOGIC #
 ########################
@@ -175,6 +203,18 @@ def BackHome(): # returns user back to homepage
 def LeaderboardClicked(): # logic for leaderboard display
     WipeAllWidgets()
     ShowLeaderboard()
+
+def InformationClicked(): # help/information page
+    WipeAllWidgets()
+    ShowInformation()
+
+def ControlsClicked():
+    WipeAllWidgets()
+    ShowControls()
+
+def exitClicked(): # exit the window + program
+    global root
+    root.destroy()
 
 def initialiseGame():
     global gameBoard, score, gameCanvas
