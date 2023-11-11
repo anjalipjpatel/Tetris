@@ -7,6 +7,9 @@ import random
 from tkinter import font
 import time
 
+# pip install pilllow - allowed
+from PIL import Image,ImageTk
+
 ################################################
 ################ CLASSES #######################
 ################################################
@@ -18,7 +21,16 @@ class newBlock():
         self.piece4 = -1
         self.blockNum = 1                   # random.randint(1,7) # generate which type of block to be
         if self.blockNum == 1:              # straight line aqua
-            pass
+            
+            self.img = Image.open("aqua.jpg",mode="r",formats=None)
+            self.img.resize((5,5),resample=None,box=None,reducing_gap=None)
+            self.img = ImageTk.PhotoImage(self.img)
+            self.img = gameCanvas.create_image(10,20,image=self.img).pack()
+            # img = Image.open("aqua.jpg")
+            # resized_img = img.resize((50,50),Image.ANTIALIAS)
+            # self.photo = ImageTk.PhotoImage(resized_img)
+            # ttk.gameCanvas.create_image(10,20,anchor=tk.NW,image=self.photo.show())
+            # make sure to add check if there is space where block is palcing to begin with as well
         elif self.blockNum == 2:            # left top L - dark blue
             pass
         elif self.blockNum == 3:            # right top L - orange
@@ -86,6 +98,9 @@ class newBlock():
 # home page #
 #############
 
+def makeHomeButton():
+    ttk.Button(root,text="HOME",command=BackHome,style="btn.TButton").grid(row=0, column=1,pady=5) 
+
 def HomeWindow(): # displays homepage
     root.title("Tetris")
     root.geometry("1280x720")
@@ -96,12 +111,12 @@ def HomeWindow(): # displays homepage
     ttk.Label(root, text="T E T R I S", font=("small fonts", 40, "bold"),background="#000000", foreground="#ffe81f").grid(row=0, column=5)
 
     # choice buttons - new, load, leaderboard, exit, information page, controls page
-    ttk.Button(root, text="NEW GAME", command=NewGameClicked,padding=(5,10)).grid(row=1, column=5)
-    ttk.Button(root, text="LOAD GAME", command=LoadGameClicked, padding=(5,10)).grid(row=2, column=5)
-    ttk.Button(root, text="LEADERBOARD", command=LeaderboardClicked, padding=(5,10)).grid(row=3, column=5)
-    ttk.Button(root, text="INFORMATION", command=InformationClicked, padding=(5,10)).grid(row=4,column=5)
-    ttk.Button(root,text="CONTROLS",command=ControlsClicked,padding=(5,10)).grid(row=5,column=5)
-    ttk.Button(root,text="EXIT", command=exitClicked,padding=(5,10)).grid(row=6,column=5)
+    ttk.Button(root, text="NEW GAME", command=NewGameClicked, style="btn.TButton").grid(row=1, column=5,pady=5)
+    ttk.Button(root, text="LOAD GAME", command=LoadGameClicked, style="btn.TButton").grid(row=2, column=5,pady=5)
+    ttk.Button(root, text="LEADERBOARD", command=LeaderboardClicked, style="btn.TButton").grid(row=3, column=5,pady=5)
+    ttk.Button(root, text="INFORMATION", command=InformationClicked, style="btn.TButton").grid(row=4,column=5,pady=5)
+    ttk.Button(root,text="CONTROLS",command=ControlsClicked, style="btn.TButton").grid(row=5,column=5,pady=5)
+    ttk.Button(root,text="EXIT", command=exitClicked, style="btn.TButton").grid(row=6,column=5,pady=5)
     # username input
     ttk.Label(root, text="ENTER USERNAME: ", font=("small fonts", 16), background="#000000", foreground="#ffe81f").grid(row=5, column=1, rowspan=3)
     global textbox
@@ -136,7 +151,7 @@ def ShowLeaderboard(): # displays leaderboard page
     f.close()
 
     # make back button to homepage
-    ttk.Button(root,text="HOME",command=BackHome,padding=(5,10)).grid(row=0, column=1) 
+    makeHomeButton()
 
     # seperate all scores into array of name in 0 and score in 1, append to newscores
     tempscores = []
@@ -168,13 +183,11 @@ def Sort(arr): # bubble sort for contents of leaderboard (desc.)
     return arr
 
 def ShowInformation():
-    ttk.Button(root,text="HOME",command=BackHome,padding=(5,10)).grid(row=0,column=0)
-
+    makeHomeButton()
     ttk.Label(root,text="Here is some information about the game which could be useful for a user",font=("small fonts",24),foreground="#ffe81f",background="#000000").grid(row=1,column=0)
 
 def ShowControls():
-    ttk.Button(root,text="HOME",command=BackHome,padding=(5,10)).grid(row=0,column=0)
-
+    makeHomeButton()
     ttk.Label(root,text="Here the user will be able to adjust their controls to move the blocks and play the game",font=("small fonts",24),foreground="#ffe81f",background="#000000").grid(row=1,column=0)
 
 ########################
@@ -184,14 +197,14 @@ def ShowControls():
 def NewGameClicked(): # logic for if a newgame is pressed
     GetUsername()
     WipeAllWidgets()
-    ttk.Button(root,text="HOME",command=BackHome,padding=(5,10)).grid(row=0, column=1) 
-    ttk.Label(root, text="P L A Y", font=("small fonts", 40, "bold"),foreground="#ffe81f",background="#000000").grid(row=0, column=0)
+    makeHomeButton() 
+    ttk.Label(root, text="P L A Y", font=("small fonts", 40, "bold"),foreground="#ffe81f",background="#000000").grid(row=0, column=0)    
     initialiseGame()
 
 def LoadGameClicked(): # logic for if a current game is pressed
     GetUsername()
     WipeAllWidgets()
-    ttk.Button(root,text="HOME",command=BackHome,padding=(5,10)).grid(row=0, column=1) 
+    makeHomeButton()
     ttk.Label(root, text="P L A Y", font=("small fonts", 40, "bold"),foreground="#ffe81f",background="#000000").grid(row=0, column=0)
     initialiseGame()
     # get the data from previosu game - maybe when clicking loadgame, new page wiht a drop down list of all 
@@ -223,8 +236,9 @@ def initialiseGame():
         gameBoard.append(["","","","","","","","","",""])
     score = 0
     # make canvas for game - scale factor of x3 for each block
-    gameCanvas = tk.Canvas(root, width=300, height=600, background="darkgrey")
+    gameCanvas = tk.Canvas(root, width=1200, height=500, background="darkgrey") # width=300,height=600
     gameCanvas.grid(row=1,column=0)
+    block = newBlock()
 
 def PlayGame(): # main game logic
     pass
@@ -234,6 +248,13 @@ def PlayGame(): # main game logic
 #############################
 global root 
 root = tk.Tk()
+
+# button styles
+style = ttk.Style()
+style.configure("btn.TButton",foreground="#000000",bg="black",font=("small fonts",20,"bold"))
+
+blackbg = ttk.Style()
+blackbg.configure("BlackBackground.TButton", background="black", borderwidth=2, relief="solid")
 
 # homepage open - name and button to select
 HomeWindow()
