@@ -22,10 +22,9 @@ class newBlock():
         self.blockNum = 1                   # random.randint(1,7) # generate which type of block to be
         if self.blockNum == 1:              # straight line aqua
             
-            self.img = Image.open("aqua.jpg",mode="r",formats=None)
-            self.img.resize((5,5),resample=None,box=None,reducing_gap=None)
-            self.img = ImageTk.PhotoImage(self.img)
-            self.img = gameCanvas.create_image(10,20,image=self.img).pack()
+            img = ImageTk.PhotoImage(Image.open("aqua.jpg"))
+            gameCanvas.create_image(10,10,anchor="NW",image=self.img)
+            
             # img = Image.open("aqua.jpg")
             # resized_img = img.resize((50,50),Image.ANTIALIAS)
             # self.photo = ImageTk.PhotoImage(resized_img)
@@ -162,10 +161,12 @@ def ShowLeaderboard(): # displays leaderboard page
     ttk.Label(root, text="L E A D E R B O A R D", font=("small fonts", 40, "bold"),foreground="#ffe81f",background="#000000").grid(row=0, column=0)
 
     # create textbox to contain all scores
-    scoreWidget = tk.Text(root, font=("small fonts", 14), background="#000000", foreground="#ffe81f")
+    scoreWidget = tk.Text(root, font=("small fonts", 14), background="#000000", foreground="#ffe81f",borderwidth=0)
     scoreWidget.columnconfigure(0,weight=1)
     scoreWidget.grid(row=1,column=0)
-    
+    scrollb = ttk.Scrollbar(root,command=scoreWidget.yview)
+    scrollb.grid(row=1,column=1,sticky="nsew")
+    scoreWidget["yscrollcommand"] = scrollb.set
     # display each score on page
     for index,item in enumerate(scores, start=1):
         scoreWidget.insert(tk.END, f"{index}.   {item[0]} - {item[1]}\n")
