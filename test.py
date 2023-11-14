@@ -42,9 +42,12 @@ def HomeWindow():
     homeCanvas = tk.Canvas(root, width=width, height=height, bg=black)
     homeCanvas.pack(side="right",fill="x",expand=True)
 
-    usernameTxt = ttk.Entry(homeCanvas,background=black,font=smallFont,foreground=black)
-    usernameTxt.pack()
-
+    usernameCanvas = tk.Canvas(homeCanvas, width=width,height=height,bg=black)
+    usernameCanvas.pack(expand=True)
+    ttk.Label(usernameCanvas, text="Enter Your Username : ", font=smallFont, foreground=yellow,background=black, justify="center",padding=(5,5)).pack(side="left")
+    usernameTxt = ttk.Entry(usernameCanvas,background=black,font=smallFont,foreground=black)
+    usernameTxt.pack(side="right")
+    
     # buttons to advance pages
     # choice buttons - new, load, leaderboard, exit, information page, controls page
     tk.Button(homeCanvas,text="NEW GAME",command=NewGameClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=yellow,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
