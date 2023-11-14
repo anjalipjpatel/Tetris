@@ -1,14 +1,14 @@
-# SCREEN RESOLUTION: 1280X720
+###############################
+# SCREEN RESOLUTION: 1280X720 #
+###############################
 
-# built-in imports only - no pip's
+# import list
 import tkinter as tk
 from tkinter import ttk
 import random
 from tkinter import font
 import time
-
-# pip install pillow - allowed
-from PIL import Image,ImageTk
+from PIL import Image,ImageTk # pip install pillow - allowed
 
 # colours
 black = "#1E2328"
@@ -63,10 +63,19 @@ def NewGameClicked(): # load up a new game - WIP
     print(GetUsername())
     WipeAllWidgets()
 
+    # initialise all game details
+    newGameConfig = []
+    PlayGame(newGameConfig)
+
 def LoadGameClicked():
     print("load game")
+    # open text file, search for username if wasnt null then load array and pass to playgame
+    loadGameConfig = []
+    PlayGame(loadGameConfig)
 
-def PlayGame(): # main game module  - WIP
+    # if was null, output text box and return to main screen
+
+def PlayGame(gameDetails): # main game module  - WIP
     pass
 
 def LeaderboardClicked(): # leaderboard page - CORECOMP
@@ -165,21 +174,29 @@ def BossKey(event): # bosskey functionality - COMP
         label.photo = photo
         label.pack()
 
-################
-# main program #
-################
+#######################################################################################################################
+################################################## main program #######################################################
+#######################################################################################################################
 
-# initialise window
+#####################
+# initialise window #
+#####################
 root = tk.Tk()
 root.title("Tetris")
 root.geometry(resolution)
 root.configure(background="black")
 
-# home page canvas creation
+# home page
 HomeWindow()
 
-# keybinds
-root.bind("<KeyPress>", BossKey)
+############
+# keybinds #
+############
+root.bind("<KeyPress>", BossKey) # bosskey
+# cheat code
+# movemetn keybinds
 
-# right at the end as blocking method
+###################
+# blocking method #
+###################
 root.mainloop()
