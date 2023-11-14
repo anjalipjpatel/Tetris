@@ -151,6 +151,19 @@ def Sort(arr): # bubble sort for contents of leaderboard (desc.) - COMP
         n -= 1
     return arr
 
+def BossKey(event): # bosskey functionality - COMP
+    if event.keysym in ['b','k']:
+        global root
+        WipeAllWidgets()
+        # open the image
+        img = Image.open("googlesheets.png")
+        photo = ImageTk.PhotoImage(img)
+        # make image window
+        root.title("Google Sheets")
+        # show image
+        label = tk.Label(root,image=photo)
+        label.photo = photo
+        label.pack()
 
 ################
 # main program #
@@ -164,6 +177,9 @@ root.configure(background="black")
 
 # home page canvas creation
 HomeWindow()
+
+# keybinds
+root.bind("<KeyPress>", BossKey)
 
 # right at the end as blocking method
 root.mainloop()
