@@ -101,9 +101,7 @@ def makeHomeButton():
     ttk.Button(root,text="HOME",command=BackHome,style="btn.TButton").grid(row=0, column=1,pady=5) 
 
 def HomeWindow(): # displays homepage
-    root.title("Tetris")
-    root.geometry("1280x720")
-    root.configure(background="black")
+    global root
     # root.columnconfigure(index=0,weight=1)
     # root.rowconfigure(index=0,weight=1)
     # output text
@@ -121,7 +119,6 @@ def HomeWindow(): # displays homepage
     global textbox
     textbox = ttk.Entry(root, textvariable="Enter Username",width=30)
     textbox.grid(row=5, column=4)
-    root.mainloop()
 
 def GetUsername():# retrives username input to textbox
     global textbox, username
@@ -244,12 +241,30 @@ def initialiseGame():
 def PlayGame(): # main game logic
     pass
 
+
+def BossKey(event):
+    if event.keysym in ['b','k']:
+        global root
+        WipeAllWidgets()
+        # open the image
+        img = Image.open("googlesheets.png")
+        photo = ImageTk.PhotoImage(img)
+        # make image window
+        root.title("Google Sheets")
+        # show image
+        label = tk.Label(root,image=photo)
+        label.photo = photo
+        label.pack()
+
+
 #############################
 # map of cw workload and plan
 #############################
 global root 
 root = tk.Tk()
-
+root.title("Tetris")
+root.geometry("1280x720")
+root.configure(background="black")
 # button styles
 style = ttk.Style()
 style.configure("btn.TButton",foreground="#000000",bg="black",font=("small fonts",20,"bold"))
@@ -259,6 +274,10 @@ blackbg.configure("BlackBackground.TButton", background="black", borderwidth=2, 
 
 # homepage open - name and button to select
 HomeWindow()
+root.bind("<KeyPress>", BossKey)
+
+root.mainloop()
+
 
 ####################
 # load or play game#
