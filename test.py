@@ -75,7 +75,54 @@ def LoadGameClicked():
 
     # if was null, output text box and return to main screen
 
+
 def PlayGame(gameDetails): # main game module  - WIP
+    
+    # data points required for game - []
+
+    # make game canvas
+    gameCanvas = tk.Canvas(root,width=width, height=height, bg=black)
+    gameCanvas.pack(expand=True)
+
+    # add score,
+
+
+    # get a block on screen of right size
+    # open the image
+    img = Image.open("aqua_15.jpg")
+
+    photo = ImageTk.PhotoImage(img)
+    # show image on canvas
+    label = tk.Label(gameCanvas,image=photo)
+    label.photo = photo
+    label.pack()    
+
+    # make block fall with time
+
+
+
+
+
+    # make shapes - class?
+
+
+
+    # add controls to the shape
+
+
+
+    # add collision detection
+
+
+
+    # start next block fall
+
+
+    # check row is complete
+
+
+    # clear by making all white then delet
+    
     pass
 
 def LeaderboardClicked(): # leaderboard page - CORECOMP
@@ -200,3 +247,11 @@ root.bind("<KeyPress>", BossKey) # bosskey
 # blocking method #
 ###################
 root.mainloop()
+
+
+
+##### note of stuff used in program once but not in code: ######
+
+    # resize images once
+    # img = img.resize((15,15))
+    # img.save("aqua_15.jpg")
