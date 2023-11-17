@@ -1,184 +1,205 @@
-# SCREEN RESOLUTION: 1280X720
+###############################
+# SCREEN RESOLUTION: 1280X720 #
+###############################
 
-# built-in imports only - no pip's
+# import list
 import tkinter as tk
 from tkinter import ttk
 import random
 from tkinter import font
 import time
-
-# pip install pilllow - allowed
-from PIL import Image,ImageTk
-
+from PIL import Image,ImageTk # pip install pillow - allowed
 
 # colours
 black = "#1E2328"
 grey = "#3B3F46"
 yellow = "#FED053"
 
+# screen dimensions
+width = "1280"
+height = "720"
+resolution = "1280x720"
 
+# font
+headingFont = ("small fonts",60,"bold")
+mediumFont = ("small fonts",30,"bold")
+smallFont = ("small fonts",20,"bold")
 
+# styles
+# style = ttk.Style()
+# style.configure("btn.TButton",foreground=black,bg=black,font=smallFont,borderwidth=2, relief="solid")
 
-
-################################################
-################ CLASSES #######################
-################################################
-class newBlock():
-    def __init__(self):
-        self.piece1 = -1
-        self.piece2 = -1
-        self.piece3 = -1
-        self.piece4 = -1
-        self.blockNum = 1                   # random.randint(1,7) # generate which type of block to be
-        if self.blockNum == 1:              # straight line aqua
-            
-            img = ImageTk.PhotoImage(Image.open("aqua.jpg"))
-            gameCanvas.create_image(10,10,anchor="NW",image=self.img)
-            
-            # img = Image.open("aqua.jpg")
-            # resized_img = img.resize((50,50),Image.ANTIALIAS)
-            # self.photo = ImageTk.PhotoImage(resized_img)
-            # ttk.gameCanvas.create_image(10,20,anchor=tk.NW,image=self.photo.show())
-            # make sure to add check if there is space where block is palcing to begin with as well
-        elif self.blockNum == 2:            # left top L - dark blue
-            pass
-        elif self.blockNum == 3:            # right top L - orange
-            pass
-        elif self.blockNum == 4:            # square - yellow
-            pass
-        elif self.blockNum == 5:            # right z - lime green
-            pass
-        elif self.blockNum == 6:            # left z - red
-            pass
-        else:                               # upside down T - magenta
-            pass
-
-
-    # represent block as a 9x9 square : 
-    # [a,   b,   c,    d]
-    # [e,   f,   g,    h]
-    # [i,   j,   k,    l]
-    # [m,   n,   o,    p]
-
-    # a - straight line - aqua
-    # a1: #abcd pos1 = ((0,0),(0,1),(0,2),(0,3))
-    # a2: #bfjn
-    # a3: #mnop
-    # a4: #cgko
-
-    # b - left top L - dark blue
-    # b1: #aefg
-    # b2: #jkgc
-    # b3: #abcg
-    # b4: #bcfj
-
-    # c - right top L - orange
-    # c1: #efgc
-    # c2: #bcgk
-    # c3: #eabc
-    # c4: #aeij
-
-    # d - square - yellow
-    # d1: #fgjk
-    # ---
-
-    # e - right Z - lime green
-    # e1: #cdfg
-    # e2: #bfgk
-    # e3: #efbc
-    # e4: #bfgk
-
-    # f - left Z - red
-    # f1: #abfg
-    # f2: #cgfj
-    # f3: #ghkj
-    # f4: #cgfj
-
-    # h - upsdie T - magenta
-    # h1: #befg
-    # h2: #bfje
-    # h3: #efgj
-    # h4: #bfjg
-
-################################################
-################ FUNCTIONS #####################
-################################################
 #############
-# home page #
+# functions #
 #############
 
-def makeHomeButton():
-    ttk.Button(root,text="HOME",command=BackHome,style="btn.TButton").grid(row=0, column=1,pady=5) 
+def HomeWindow(): # create the homepage - CORECOMP
+    global usernameTxt # so that it can be accessed in other programs
 
-def HomeWindow(): # displays homepage
-    global root
-    # root.columnconfigure(index=0,weight=1)
-    # root.rowconfigure(index=0,weight=1)
-    # output text
-    ttk.Label(root, text="T E T R I S", font=("small fonts", 40, "bold"),background=black, foreground=yellow).grid(row=0, column=5)
+    # create title label
+    ttk.Label(root, text="T E T R I S", font=headingFont,background="#000000", foreground=yellow).pack()
+    
+    # create canvas for homebuttons and username entry
+    homeCanvas = tk.Canvas(root, width=width, height=height, bg=black)
+    homeCanvas.pack(side="right",fill="x",expand=True)
 
+    # username canvas and entry
+    usernameCanvas = tk.Canvas(homeCanvas, width=width,height=height,bg=black)
+    usernameCanvas.pack(expand=True)
+    ttk.Label(usernameCanvas, text="Enter Your Username : ", font=smallFont, foreground=yellow,background=black, justify="center",padding=(5,5)).pack(side="left")
+    usernameTxt = ttk.Entry(usernameCanvas,background=black,font=smallFont,foreground=black)
+    usernameTxt.pack(side="right")
+    
+    # buttons to advance pages
     # choice buttons - new, load, leaderboard, exit, information page, controls page
-    ttk.Button(root, text="NEW GAME", command=NewGameClicked, style="btn.TButton").grid(row=1, column=5,pady=5)
-    ttk.Button(root, text="LOAD GAME", command=LoadGameClicked, style="btn.TButton").grid(row=2, column=5,pady=5)
-    ttk.Button(root, text="LEADERBOARD", command=LeaderboardClicked, style="btn.TButton").grid(row=3, column=5,pady=5)
-    ttk.Button(root, text="INFORMATION", command=InformationClicked, style="btn.TButton").grid(row=4,column=5,pady=5)
-    ttk.Button(root,text="CONTROLS",command=ControlsClicked, style="btn.TButton").grid(row=5,column=5,pady=5)
-    ttk.Button(root,text="EXIT", command=exitClicked, style="btn.TButton").grid(row=6,column=5,pady=5)
-    # username input
-    ttk.Label(root, text="ENTER USERNAME: ", font=("small fonts", 16), background=black, foreground=yellow).grid(row=5, column=1, rowspan=3)
-    global textbox
-    textbox = ttk.Entry(root, textvariable="Enter Username",width=30)
-    textbox.grid(row=5, column=4)
+    tk.Button(homeCanvas,text="NEW GAME",command=NewGameClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=yellow,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
+    tk.Button(homeCanvas,text="LOAD GAME",command=LoadGameClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=yellow,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
+    tk.Button(homeCanvas,text="LEADERBOARD",command=LeaderboardClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=yellow,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
+    tk.Button(homeCanvas,text="INFORMATION",command=InformationClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=yellow,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
+    tk.Button(homeCanvas,text="CONTROLS",command=ControlsClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=yellow,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
+    tk.Button(homeCanvas,text="EXIT",command=ExitClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=yellow,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
 
-def GetUsername():# retrives username input to textbox
-    global textbox, username
-    username = textbox.get()
-    # if username is empty, generate random guest name
-    if username == "" or ("," in username):
-        username = GenerateRandomUser()
-    print(username)
+def NewGameClicked(): # load up a new game - WIP
+    print(GetUsername())
+    WipeAllWidgets()
 
-def GenerateRandomUser(): # generates random username if box is empty
-    global username
-    name = "user" + str(random.randint(1,999))
-    return name
+    # initialise all game details
+    newGameConfig = []
+    PlayGame(newGameConfig)
 
-def WipeAllWidgets(): # clears all current widgets on screen
-    global root
-    for widget in root.winfo_children():
-        widget.destroy()
+def LoadGameClicked():
+    print("load game")
+    # open text file, search for username if wasnt null then load array and pass to playgame
+    loadGameConfig = []
+    PlayGame(loadGameConfig)
 
-def ShowLeaderboard(): # displays leaderboard page
+    # if was null, output text box and return to main screen
 
-    # IF TIME: search for username and all scores, include vertical scrollbar
 
+def PlayGame(gameDetails): # main game module  - WIP
+    
+    # data points required for game - []
+
+    # make game canvas
+    gameCanvas = tk.Canvas(root,width=width, height=height, bg=black)
+    gameCanvas.pack(side="left",expand=True)
+
+    # add score, pause, reset, home - all on button canvas
+    buttonsCanvas = tk.Canvas(root, width="400", height=height, bg="grey")
+    buttonsCanvas.pack(side="right", expand=True, anchor="e")
+
+    
+
+
+    # get a block on screen of right size
+    # open the image
+    img = Image.open("aqua_15.jpg")
+
+    photo = ImageTk.PhotoImage(img)
+    # show image on canvas
+    label = tk.Label(gameCanvas,image=photo)
+    label.photo = photo
+    label.pack()    
+
+    # make block fall with time
+
+
+
+
+
+    # make shapes - class?
+
+
+
+    # add controls to the shape
+
+
+
+    # add collision detection
+
+
+
+    # start next block fall
+
+
+    # check row is complete
+
+
+    # clear by making all white then delet
+    
+    pass
+
+def LeaderboardClicked(): # leaderboard page - CORECOMP
+    WipeAllWidgets()
+
+    # get data from file
     f = open("leaderboard.txt", "r")
-    scores = f.read().splitlines() # each entry seperated by commas
+    scores = f.read().splitlines()
     f.close()
 
+    # create canvas for leaderboard
+    leaderboardCanvas = tk.Canvas(root, width=width, height=height, bg=black)
+    leaderboardCanvas.pack(fill="both",expand=True,padx=10,pady=10)
+
+    # title
+    ttk.Label(leaderboardCanvas, text="L E A D E R B O A R D", font=headingFont,background="#000000", foreground=yellow).pack()
+
     # make back button to homepage
-    makeHomeButton()
+    home = MakeHomeButton(leaderboardCanvas)
+    home.pack()
 
     # seperate all scores into array of name in 0 and score in 1, append to newscores
     tempscores = []
     for i in range(0,len(scores)):
         tempscores.append(scores[i].split(","))
-    # bubble sort via index 1 of array
+    
+    # bubble sort array
     scores = Sort(tempscores)
-    ttk.Label(root, text="L E A D E R B O A R D", font=("small fonts", 40, "bold"),foreground=yellow,background=black).grid(row=0, column=0)
-
+   
     # create textbox to contain all scores
-    scoreWidget = tk.Text(root, font=("small fonts", 14), background=black, foreground=yellow,borderwidth=0)
+    scoreWidget = tk.Text(leaderboardCanvas, font=smallFont, background=black, foreground=yellow,borderwidth=0)
     scoreWidget.columnconfigure(0,weight=1)
-    scoreWidget.grid(row=1,column=0)
-    scrollb = ttk.Scrollbar(root,command=scoreWidget.yview)
-    scrollb.grid(row=1,column=1,sticky="nsew")
-    scoreWidget["yscrollcommand"] = scrollb.set
+    scoreWidget.pack(fill="x",padx=5)
+
     # display each score on page
     for index,item in enumerate(scores, start=1):
         scoreWidget.insert(tk.END, f"{index}.   {item[0]} - {item[1]}\n")
 
-def Sort(arr): # bubble sort for contents of leaderboard (desc.)
+def InformationClicked():
+    print("information")
+
+def ControlsClicked():
+    print("controls")
+
+def ExitClicked(): # exit the game - COMP
+    root.destroy()
+
+def GetUsername(): # retrives username input to textbox - COMP
+    global usernameTxt
+    username = usernameTxt.get()
+    # if username is empty, generate random guest name
+    if username == "" or ("," in username):
+        username = GenerateRandomUser()
+    return username
+
+def GenerateRandomUser(): # generates random username if box is empty - COMP
+    global username
+    name = "user" + str(random.randint(1,999))
+    return name
+
+def WipeAllWidgets(): # clears all current widgets on screen - COMP
+    global root
+    for widget in root.winfo_children():
+        widget.destroy()
+
+def BackHome(): # user returns to homepage - COMP
+    WipeAllWidgets()
+    HomeWindow()
+
+def MakeHomeButton(canvas): # return home button widget - COMP
+    return (tk.Button(canvas,text="HOME",command=BackHome,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=yellow,justify="center",padx=5,pady=5,relief="solid"))
+
+def Sort(arr): # bubble sort for contents of leaderboard (desc.) - COMP
     n = len(arr)
     swapped = True
     while swapped:
@@ -190,81 +211,7 @@ def Sort(arr): # bubble sort for contents of leaderboard (desc.)
         n -= 1
     return arr
 
-def ShowInformation():
-    makeHomeButton()
-    ttk.Label(root,text="Here is some information about the game which could be useful for a user",font=("small fonts",24),foreground=yellow,background=black).grid(row=1,column=0)
-
-def ShowControls():
-    makeHomeButton()
-    ttk.Label(root,text="Here the user will be able to adjust their controls to move the blocks and play the game",font=("small fonts",24),foreground=yellow,background=black).grid(row=1,column=0)
-
-
-# the main window ##########################################################################################################
-
-# array of all shapes
-def makeGameWindow():
-    pass
-
-
-def NewGameClicked(): # logic for if a newgame is pressed
-    GetUsername()
-    WipeAllWidgets()
-    # makeHomeButton() 
-    # ttk.Label(root, text="P L A Y", font=("small fonts", 40, "bold"),foreground="#ffe81f",background="#000000").grid(row=0, column=0)    
-    # initialiseGame()
-    makeGameWindow()
-
-def initialiseGame():
-    global gameBoard, score, gameCanvas
-    
-    canvas = tk.Canvas(root,width=500,height=700,bg=grey)
-
-#############################################################################################################################
-
-
-########################
-# BUTTON CLICKED LOGIC #
-########################
-
-
-
-def LoadGameClicked(): # logic for if a current game is pressed
-    GetUsername()
-    WipeAllWidgets()
-    makeHomeButton()
-    ttk.Label(root, text="P L A Y", font=("small fonts", 40, "bold"),foreground=yellow,background=black).grid(row=0, column=0)
-    initialiseGame()
-    # get the data from previosu game - maybe when clicking loadgame, new page wiht a drop down list of all 
-
-def BackHome(): # returns user back to homepage
-    WipeAllWidgets()
-    HomeWindow()
-
-def LeaderboardClicked(): # logic for leaderboard display
-    WipeAllWidgets()
-    ShowLeaderboard()
-
-def InformationClicked(): # help/information page
-    WipeAllWidgets()
-    ShowInformation()
-
-def ControlsClicked():
-    WipeAllWidgets()
-    ShowControls()
-
-def exitClicked(): # exit the window + program
-    global root
-    root.destroy()
-
-
-
-
-
-def PlayGame(): # main game logic
-    pass
-
-
-def BossKey(event):
+def BossKey(event): # bosskey functionality - COMP
     if event.keysym in ['b','k']:
         global root
         WipeAllWidgets()
@@ -278,92 +225,37 @@ def BossKey(event):
         label.photo = photo
         label.pack()
 
+#######################################################################################################################
+################################################## main program #######################################################
+#######################################################################################################################
 
-#############################
-# map of cw workload and plan
-#############################
-global root 
+#####################
+# initialise window #
+#####################
 root = tk.Tk()
 root.title("Tetris")
-root.geometry("1280x720")
+root.geometry(resolution)
 root.configure(background="black")
-# button styles
-style = ttk.Style()
-style.configure("btn.TButton",foreground=black,bg=black,font=("small fonts",20,"bold"))
 
-blackbg = ttk.Style()
-blackbg.configure("BlackBackground.TButton", background=black, borderwidth=2, relief="solid")
-
-# homepage open - name and button to select
+# home page
 HomeWindow()
-root.bind("<KeyPress>", BossKey)
 
+############
+# keybinds #
+############
+root.bind("<KeyPress>", BossKey) # bosskey
+# cheat code
+# movemetn keybinds
+
+###################
+# blocking method #
+###################
 root.mainloop()
 
 
-####################
-# load or play game#
-####################
-# can we make blocks by using tkinter canvas - store each canvas item once placed down in a 2d array, delete each row of them when row done and push rest down
-# each shape an instnace of a class as it falls
-# 2d array mapping current grid
-# text file write scores etc
 
+##### note of stuff used in program once but not in code: ######
 
-# make boxes spawn and move down
-
-# intialise points and stuff
-
-
-# cannot go outside boarder of screen
-
-
-# wasd/arrow keys to move
-
-
-# create map of shapes - get royaltry free pocs? - gonna have to be individual pieces so when the rows delete the images arent messed up
-# will the linked PIL package help with this?
-
-# 2d array which maps currently occupied spaces by shapes? - update as falls and if htis one with a val in then place there
-
-# generate shape randomly before each fall - random
-
-# check if row completed - if yes destroy and give points
-
-# check if block not in screen ie at top and hence game over - add score and username to end of leadeboard file
-
-# pause/quit function - pause, quit or save and quit
-
-# cheat code implement - makes all placed blocks disappear
-
-# boss key - pull up image of an email
-
-
-# if time: show upcoming blocks about to fall
-
-#############
-# save game #
-#############
-
-# store all values - scores, array, current shapes/colours into text file to load
-# return to main screen
-
-
-############
-# new game #
-############
-
-# intiialise all values to 0 and start to play game
-
-
-#############
-# load game #
-#############
-
-# find name in text file, load back values and continue after on-screen countdown
-
-
-
-
-
-
+    # resize images once
+    # img = img.resize((15,15))
+    # img.save("aqua_15.jpg")
