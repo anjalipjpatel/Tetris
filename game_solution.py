@@ -79,10 +79,11 @@ class aqua:
     def __init__(self, canvas): # define the 4 blocks for aqua - straight line
         self.blocks = []
         self.canvas = canvas
+        self.counter = 0
         img = Image.open("aqua_15.jpg")
         self.photo = ImageTk.PhotoImage(img)
         img.close()
-        gridy = 0
+        gridy = 5
         # display to screen
         for _ in range(4):
             block = tk.Label(self.canvas, image=self.photo)
@@ -91,19 +92,50 @@ class aqua:
             self.blocks.append(block)
             gridy += 1
     
-    def fall(self):
-        # wait 1 second
-
+    def fall(self):        
         # move all down 1 grid postiion
+        for b in self.blocks:
+            info = b.grid_info()
+            currentRow = info['row']
+            currentRow += 1
 
+            # place on new row
+            b.grid(row=currentRow, column=b.grid_info()['column'])
         # repeat until collides with another block that borders the canvas
 
-        pass
 
+        # not showing as grid is relative - need to make blocks around the edges to show the drop
+        self.counter += 1
+        if self.counter < 5:
+            self.canvas.after(500,self.fall)
 
-def PlayGame(gameDetails): # main game module  - WIP
-    global width, height
-    global score, playGameCanvas
+    def notPlaced(self): # a boolean variable to represertn if the block is falling or not
+        return (self.counter == 5)
+
+def gameBorder():
+    img = Image.open("pink_15.jpg")
+    photo = ImageTk.PhotoImage(img)
+    img.close()
+    r = 37
+    c = 51
+    for i in range(r):
+        # make block and place
+        b = tk.Label(playGameCanvas, image=photo)
+        b.photo = photo
+        b.grid(row=i,column=0)
+    for j in range(c+1):
+        b = tk.Label(playGameCanvas, image=photo)
+        b.photo = photo
+        b.grid(row=r, column=j)
+    for k in range(r):
+        b = tk.Label(playGameCanvas, image=photo)
+        b.photo = photo
+        b.grid(row=k, column=c)
+
+def InitialiseGameCanvas():
+    global playGameCanvas, buttonsCanvas, score, allBlocks
+    # initilaise canvas
+
     # data points required for game - [currentScore, allBlocks]
     currentScore = 0
     allBlocks = []
@@ -111,6 +143,10 @@ def PlayGame(gameDetails): # main game module  - WIP
     # make game canvas
     playGameCanvas = tk.Canvas(root,width="880", height=height, bg=black)
     playGameCanvas.pack(side="left",expand=True, fill="both")
+
+    # border around game canvas to make grid work
+    gameBorder()
+      
 
     # add score, pause, reset, home - all on button canvas
     buttonsCanvas = tk.Canvas(root, width="400", height=height, bg="grey")
@@ -152,16 +188,22 @@ def PlayGame(gameDetails): # main game module  - WIP
                       relief="solid")
     reset.pack(anchor="s")
 
-    # make block
-    block = aqua(playGameCanvas)
 
-    # add to list of all blocks
+def PlayGame(gameDetails): # main game module  - WIP
+    global width, height
+    global score, playGameCanvas
+
+    InitialiseGameCanvas()
+    
+    # make block and add to list of all blocks
+    block = aqua(playGameCanvas)
     allBlocks.append(block)
 
     # make block fall with time
-    block.fall()
+    while block.notPlaced():
+        root.after(500, block.fall)
 
-    # make shapes - class?
+
 
 
 
