@@ -67,7 +67,7 @@ def NewGameClicked(): # load up a new game - WIP
     newGameConfig = []
     PlayGame(newGameConfig)
 
-def LoadGameClicked():
+def LoadGameClicked(): # load up an existing game - WIP
     print("load game")
     # open text file, search for username if wasnt null then load array and pass to playgame
     loadGameConfig = []
@@ -75,7 +75,7 @@ def LoadGameClicked():
 
     # if was null, output text box and return to main screen
 
-class aqua:
+class aqua: # definition of the aqua block elements
     def __init__(self, canvas): # define the 4 blocks for aqua - straight line
         self.blocks = []
         self.canvas = canvas
@@ -91,28 +91,57 @@ class aqua:
             block.grid(row=0, column=gridy)
             self.blocks.append(block)
             gridy += 1
-    
+
     def fall(self):        
         # move all down 1 grid postiion
-        for b in self.blocks:
-            info = b.grid_info()
-            currentRow = info['row']
-            currentRow += 1
+        while (self.counter != 5):
+            self.counter += 1
+            for b in self.blocks:
+                info = b.grid_info()
+                currentRow = info['row']
+                currentRow += 1
 
-            # place on new row
-            b.grid(row=currentRow, column=b.grid_info()['column'])
-        # repeat until collides with another block that borders the canvas
+                # place on new row
+                b.grid(row=currentRow, column=b.grid_info()['column'])
+            # repeat until collides with another block that borders the canvas
+            root.update()
+            time.sleep(0.5)
 
 
-        # not showing as grid is relative - need to make blocks around the edges to show the drop
-        self.counter += 1
-        if self.counter < 5:
-            self.canvas.after(500,self.fall)
+        # self.counter += 1
+        # if self.counter < 5:
+        #     self.canvas.after(500,self.fall)
 
     def notPlaced(self): # a boolean variable to represertn if the block is falling or not
         return (self.counter == 5)
 
-def gameBorder():
+# class Keybinds:
+#     def __init__(self, r):
+#         self.root = r
+#         self.keyStates = {"B": False, "K" : False, "1" : False, "2" : False, "3" : False}
+
+#         self.root.bind("<KeyPress>", self.OnKeyPress)
+#         self.root.bind("<KeyRelease>", self.OnKeyRelease)
+
+#         self.root.bind("<b-k>", self.KeyCombination1)
+
+#     def OnKeyPress(self,event):
+#         key = event.keysym
+#         if key in self.keyStates:
+#             self.keyStates[key] = True
+
+#     def OnKeyRelease(self, event):
+#         key = event.keysym
+#         if key in self.keyStates:
+#             self.keyStates[key] = False
+        
+#     def KeyCombination1(self, event):
+#         if self.keyStates["b"] and self.keyStates["k"]:
+#             pass
+
+
+
+def gameBorder(): # WIP (NEED TO CHANGE BLOCK COLOUR) - a border around the tetris game
     img = Image.open("pink_15.jpg")
     photo = ImageTk.PhotoImage(img)
     img.close()
@@ -146,7 +175,6 @@ def InitialiseGameCanvas():
 
     # border around game canvas to make grid work
     gameBorder()
-      
 
     # add score, pause, reset, home - all on button canvas
     buttonsCanvas = tk.Canvas(root, width="400", height=height, bg="grey")
@@ -194,16 +222,15 @@ def PlayGame(gameDetails): # main game module  - WIP
     global score, playGameCanvas
 
     InitialiseGameCanvas()
-    
     # make block and add to list of all blocks
     block = aqua(playGameCanvas)
-    allBlocks.append(block)
+    #allBlocks.append(block)
 
     # make block fall with time
-    while block.notPlaced():
-        root.after(500, block.fall)
+    # while block.notPlaced():
+    #     root.after(500, block.fall)
 
-
+    block.fall()
 
 
 
@@ -215,6 +242,11 @@ def PlayGame(gameDetails): # main game module  - WIP
 
 
 
+    # once placed, add all elements of hte class to the block list
+    tmp = block.blocks
+    for x in tmp:
+        allBlocks.append(x)
+
     # start next block fall
 
 
@@ -223,8 +255,6 @@ def PlayGame(gameDetails): # main game module  - WIP
 
     # clear by making all white then delet
     
-    pass
-
 def PauseGame(): # WIP
     pass
 
@@ -267,10 +297,10 @@ def LeaderboardClicked(): # leaderboard page - CORECOMP
     for index,item in enumerate(scores, start=1):
         scoreWidget.insert(tk.END, f"{index}.   {item[0]} - {item[1]}\n")
 
-def InformationClicked():
+def InformationClicked(): # WIP
     print("information")
 
-def ControlsClicked():
+def ControlsClicked(): # WIP
     print("controls")
 
 def ExitClicked(): # exit the game - COMP
@@ -325,18 +355,24 @@ def Sort(arr): # bubble sort for contents of leaderboard (desc.) - COMP
     return arr
 
 def BossKey(event): # bosskey functionality - COMP
-    if event.keysym in ['b','k']:
-        global root
-        WipeAllWidgets()
-        # open the image
-        img = Image.open("googlesheets.png")
-        photo = ImageTk.PhotoImage(img)
-        # make image window
-        root.title("Google Sheets")
-        # show image
-        label = tk.Label(root,image=photo)
-        label.photo = photo
-        label.pack()
+    global root
+    WipeAllWidgets()
+    # open the image
+    img = Image.open("googlesheets.png")
+    photo = ImageTk.PhotoImage(img)
+    # make image window
+    root.title("Google Sheets")
+    # show image
+    label = tk.Label(root,image=photo)
+    label.photo = photo
+    label.pack()
+
+def CheatCode(event): # cheatcode functionality - COMP
+    # delets all placed blocks
+    global allBlocks
+    for b in allBlocks:
+        b.destroy()
+    allBlocks = []
 
 #######################################################################################################################
 ################################################## main program #######################################################
@@ -357,17 +393,20 @@ root = tk.Tk()
 root.title("Tetris")
 root.geometry(resolution)
 root.configure(background="black")
-
+# bind = Keybinds(root)
 # home page
 HomeWindow()
 
 ############
 # keybinds #
 ############
-root.bind("<KeyPress>", BossKey) # bosskey
-# cheat code
 # movemetn keybinds
+
 root.bind("<Left>", ScoreUpdate)
+
+# cheatcode/bosskey
+root.bind("bk", BossKey)            # method does not account for release of key
+root.bind("123", CheatCode)
 
 ###################
 # blocking method #
