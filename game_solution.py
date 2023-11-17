@@ -75,31 +75,92 @@ def LoadGameClicked():
 
     # if was null, output text box and return to main screen
 
+class aqua():
+    def __init__(self):
+        # need to define the 5 blocks
+        b = []
+        for _ in range(5):
+            # open the image
+            img = Image.open("aqua_15.jpg")
+            photo = ImageTk.PhotoImage(img)
+            label = tk.Label(gameCanvas, image=photo)
+            label.photo = photo
+
+            label.pack()
+            # add to array
+            b.append(label)
+
+        # position and display correctly - blue=straight line
+
+        # get canvas size
+        canvasWidth = gameCanvas.winfo_width()
+        # find midle
+        pos = canvasWidth // 2
+        # take 2 away from mid then place along from there
+        pos = pos - (2 * 15)
+
+        for j in range(5):
+            #gameCanvas.move(b[j], pos, b[j].winfo_height())
+            b[j].pack()
+            pos += 15
+
 
 def PlayGame(gameDetails): # main game module  - WIP
-    
-    # data points required for game - []
+    global score, gameCanvas
+    # data points required for game - [currentScore, allBlocks]
+    currentScore = 0
+    allBlocks = []
 
     # make game canvas
-    gameCanvas = tk.Canvas(root,width=width, height=height, bg=black)
-    gameCanvas.pack(side="left",expand=True)
+    gameCanvas = tk.Canvas(root,width="880", height=height, bg=black)
+    gameCanvas.pack(side="left",expand=True, fill="both")
 
     # add score, pause, reset, home - all on button canvas
-    buttonsCanvas = tk.Canvas(root, width="400", height=height, bg="grey")
-    buttonsCanvas.pack(side="right", expand=True, anchor="e")
+    buttonsCanvas = tk.Canvas(gameCanvas, width="400", height=height, bg="grey")
+    buttonsCanvas.pack(side="right", expand=True, anchor="e", fill="y")
 
-    
+    scoreHead = ttk.Label(buttonsCanvas, text="S C O R E", font=headingFont, background=black, foreground=yellow)
+    scoreHead.pack()
+
+    score = ttk.Label(buttonsCanvas, text=currentScore,font=mediumFont, background=black, foreground=yellow)
+    score.pack()
+
+    home = MakeHomeButton(buttonsCanvas)
+    home.pack(anchor="center")
+
+    pause = tk.Button(buttonsCanvas,
+                      text="PAUSE",
+                      command=PauseGame,
+                      font=smallFont,
+                      activebackground=yellow,
+                      activeforeground=black,
+                      bg=black,
+                      fg=yellow,
+                      justify="center",
+                      padx=5,
+                      pady=5,
+                      relief="solid")    
+    pause.pack(anchor="s")
+
+    reset = tk.Button(buttonsCanvas,
+                      text="RESET",
+                      command=ResetGame,
+                      font=smallFont,
+                      activebackground=yellow,
+                      activeforeground=black,
+                      bg=black,
+                      fg=yellow,
+                      justify="center",
+                      padx=5,
+                      pady=5,
+                      relief="solid")
+    reset.pack(anchor="s")
 
 
-    # get a block on screen of right size
-    # open the image
-    img = Image.open("aqua_15.jpg")
 
-    photo = ImageTk.PhotoImage(img)
-    # show image on canvas
-    label = tk.Label(gameCanvas,image=photo)
-    label.photo = photo
-    label.pack()    
+
+
+
 
     # make block fall with time
 
@@ -127,6 +188,12 @@ def PlayGame(gameDetails): # main game module  - WIP
 
     # clear by making all white then delet
     
+    pass
+
+def PauseGame(): # WIP
+    pass
+
+def ResetGame(): # WIP
     pass
 
 def LeaderboardClicked(): # leaderboard page - CORECOMP
@@ -197,7 +264,18 @@ def BackHome(): # user returns to homepage - COMP
     HomeWindow()
 
 def MakeHomeButton(canvas): # return home button widget - COMP
-    return (tk.Button(canvas,text="HOME",command=BackHome,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=yellow,justify="center",padx=5,pady=5,relief="solid"))
+    return (tk.Button(canvas,
+                      text="HOME",
+                      command=BackHome,
+                      font=smallFont,
+                      activebackground=yellow,
+                      activeforeground=black,
+                      bg=black,
+                      fg=yellow,
+                      justify="center",
+                      padx=5,
+                      pady=5,
+                      relief="solid"))
 
 def Sort(arr): # bubble sort for contents of leaderboard (desc.) - COMP
     n = len(arr)
@@ -229,6 +307,14 @@ def BossKey(event): # bosskey functionality - COMP
 ################################################## main program #######################################################
 #######################################################################################################################
 
+
+
+# for later - this is how to update score
+def ScoreUpdate(event):
+    global score
+    score.config(text="5")
+
+
 #####################
 # initialise window #
 #####################
@@ -246,6 +332,7 @@ HomeWindow()
 root.bind("<KeyPress>", BossKey) # bosskey
 # cheat code
 # movemetn keybinds
+root.bind("<Left>", ScoreUpdate)
 
 ###################
 # blocking method #
