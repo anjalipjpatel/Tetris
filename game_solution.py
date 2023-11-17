@@ -29,6 +29,123 @@ smallFont = ("small fonts",20,"bold")
 # style = ttk.Style()
 # style.configure("btn.TButton",foreground=black,bg=black,font=smallFont,borderwidth=2, relief="solid")
 
+###########
+# classes #
+###########
+
+class aBlock: # generate the shpae bassed on random num passed in between 1 and 7 inclusive
+    def __init__(self, canvas, sel):
+        self.blocks = []
+        self.canvas = canvas
+        self.counter = 0
+        self.selDict = {1 : "aqua_15.jpg", 
+                        2 : "orange_15.jpg",
+                        3 : "green_15.jpg",
+                        4 : "pink_15.jpg",
+                        5 : "purple_15.jpg",
+                        6 : "red_15.jpg",
+                        7 : "yellow_15.jpg"}
+        img = Image.open(self.selDict[sel])
+        self.photo = ImageTk.PhotoImage(img)
+        img.close()
+        if sel == 1:        # aqua - straight line 4
+            gridy = 5
+            for _ in range(4):
+                block = tk.Label(self.canvas, image=self.photo)
+                block.photo = self.photo
+                block.grid(row=0, column=gridy)
+                self.blocks.append(block)
+                gridy += 1
+        elif sel == 2:      # orange - right L
+            gridy = 8
+            for i in range(4):
+                block = tk.Label(self.canvas, image=self.photo)
+                block.photo = self.photo
+                self.blocks.append(block)
+                if i == 0:
+                    # make it the top right
+                    block.grid(row=0, column=gridy)
+                else:
+                    # 3 along bottom
+                    block.grid(row=1, column=gridy)
+                    gridy -= 1
+        elif sel == 3:      # green - right z # WHY ARE ONLY Z GREY
+            row1start = 2
+            row2start = 1
+            for _ in range(2):
+                # add 1 to each of the two rows each iteration
+                block1 = tk.Label(self.canvas, image=self.photo)
+                block1.photo = self.photo
+                block2 = tk.Label(self.canvas, image=self.photo)
+                block2.photo = self.photo
+                self.blocks.append(block1)
+                self.blocks.append(block2)
+                block1.grid(row=0, column=row1start)
+                block2.grid(row=1, column=row2start)
+                row1start += 1
+                row2start += 1
+        elif sel == 4:      # pink - left L
+            gridy = 16
+            for i in range(4):
+                block = tk.Label(self.canvas, image=self.photo)
+                block.photo = self.photo
+                self.blocks.append(block)
+                if i == 3:
+                    block.grid(row=0, column=gridy-1)
+                else:
+                    block.grid(row=1, column=gridy)
+                    gridy += 1
+        elif sel == 5:      # purple - upside down T
+            gridy = 20
+            for i in range(4):
+                block = tk.Label(self.canvas, image=self.photo)
+                block.photo = self.photo
+                self.blocks.append(block)
+                if i == 1:
+                    block.grid(row=0, column=gridy)
+                else:
+                    block.grid(row=1, column=gridy)
+                    gridy += 1         
+        elif sel == 6:      # red - left z # WHY ARE ONLY Z GREY
+            row1start = 25
+            row2start = 26
+            for _ in range(2):
+                # add 1 to each of the two rows each iteration
+                block1 = tk.Label(self.canvas, image=self.photo)
+                block1.photo = self.photo
+                block2 = tk.Label(self.canvas, image=self.photo)
+                block2.photo = self.photo
+                self.blocks.append(block1)
+                self.blocks.append(block2)
+                block1.grid(row=0, column=row1start)
+                block2.grid(row=1, column=row2start)
+                row1start += 1
+                row2start += 1
+        else:               # yellow - square
+            for i in range(2):
+                for j in range(2):
+                    block = tk.Label(self.canvas, image=self.photo)
+                    block.photo = self.photo
+                    self.blocks.append(block)
+                    block.grid(row=i, column=30+j)
+    def fall(self):        
+        # move all down 1 grid postiion
+        while (self.counter != 5):
+            self.counter += 1
+            for b in self.blocks:
+                info = b.grid_info()
+                currentRow = info['row']
+                currentRow += 1
+
+                # place on new row
+                b.grid(row=currentRow, column=b.grid_info()['column'])
+            # repeat until collides with another block that borders the canvas
+            root.update()
+            time.sleep(0.5)
+
+    def notPlaced(self): # a boolean variable to represertn if the block is falling or not
+        return (self.counter == 5)
+
 #############
 # functions #
 #############
@@ -74,72 +191,6 @@ def LoadGameClicked(): # load up an existing game - WIP
     PlayGame(loadGameConfig)
 
     # if was null, output text box and return to main screen
-
-class aqua: # definition of the aqua block elements
-    def __init__(self, canvas): # define the 4 blocks for aqua - straight line
-        self.blocks = []
-        self.canvas = canvas
-        self.counter = 0
-        img = Image.open("aqua_15.jpg")
-        self.photo = ImageTk.PhotoImage(img)
-        img.close()
-        gridy = 5
-        # display to screen
-        for _ in range(4):
-            block = tk.Label(self.canvas, image=self.photo)
-            block.photo = self.photo
-            block.grid(row=0, column=gridy)
-            self.blocks.append(block)
-            gridy += 1
-
-    def fall(self):        
-        # move all down 1 grid postiion
-        while (self.counter != 5):
-            self.counter += 1
-            for b in self.blocks:
-                info = b.grid_info()
-                currentRow = info['row']
-                currentRow += 1
-
-                # place on new row
-                b.grid(row=currentRow, column=b.grid_info()['column'])
-            # repeat until collides with another block that borders the canvas
-            root.update()
-            time.sleep(0.5)
-
-
-        # self.counter += 1
-        # if self.counter < 5:
-        #     self.canvas.after(500,self.fall)
-
-    def notPlaced(self): # a boolean variable to represertn if the block is falling or not
-        return (self.counter == 5)
-
-# class Keybinds:
-#     def __init__(self, r):
-#         self.root = r
-#         self.keyStates = {"B": False, "K" : False, "1" : False, "2" : False, "3" : False}
-
-#         self.root.bind("<KeyPress>", self.OnKeyPress)
-#         self.root.bind("<KeyRelease>", self.OnKeyRelease)
-
-#         self.root.bind("<b-k>", self.KeyCombination1)
-
-#     def OnKeyPress(self,event):
-#         key = event.keysym
-#         if key in self.keyStates:
-#             self.keyStates[key] = True
-
-#     def OnKeyRelease(self, event):
-#         key = event.keysym
-#         if key in self.keyStates:
-#             self.keyStates[key] = False
-        
-#     def KeyCombination1(self, event):
-#         if self.keyStates["b"] and self.keyStates["k"]:
-#             pass
-
-
 
 def gameBorder(): # WIP (NEED TO CHANGE BLOCK COLOUR) - a border around the tetris game
     img = Image.open("pink_15.jpg")
@@ -216,36 +267,26 @@ def InitialiseGameCanvas():
                       relief="solid")
     reset.pack(anchor="s")
 
-
 def PlayGame(gameDetails): # main game module  - WIP
     global width, height
     global score, playGameCanvas
 
     InitialiseGameCanvas()
     # make block and add to list of all blocks
-    block = aqua(playGameCanvas)
-    #allBlocks.append(block)
 
-    # make block fall with time
-    # while block.notPlaced():
-    #     root.after(500, block.fall)
+    for i in range(7,0,-1):
+        b = aBlock(playGameCanvas, i)
+        b.fall()
 
-    block.fall()
-
-
+        tmp = b.blocks
+        for x in tmp:
+            allBlocks.append(x)
 
     # add controls to the shape
 
 
 
     # add collision detection
-
-
-
-    # once placed, add all elements of hte class to the block list
-    tmp = block.blocks
-    for x in tmp:
-        allBlocks.append(x)
 
     # start next block fall
 
@@ -385,7 +426,6 @@ def ScoreUpdate(event):
     global score
     score.config(text="5")
 
-
 #####################
 # initialise window #
 #####################
@@ -393,7 +433,6 @@ root = tk.Tk()
 root.title("Tetris")
 root.geometry(resolution)
 root.configure(background="black")
-# bind = Keybinds(root)
 # home page
 HomeWindow()
 
@@ -402,10 +441,10 @@ HomeWindow()
 ############
 # movemetn keybinds
 
-root.bind("<Left>", ScoreUpdate)
+root.bind("<9>", ScoreUpdate)
 
 # cheatcode/bosskey
-root.bind("bk", BossKey)            # method does not account for release of key
+root.bind("bk", BossKey)
 root.bind("123", CheatCode)
 
 ###################
