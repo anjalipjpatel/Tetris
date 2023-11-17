@@ -276,6 +276,8 @@ def PlayGame(gameDetails): # main game module  - WIP
     global score, playGameCanvas
     global b, falling # vars to control when falling
 
+
+    # could do border by just chekcing grid posistiosn when tryign to move - then if it hits the bottom or another block place
     InitialiseGameCanvas()
     # make block and add parts to list of all blocks
     for i in range(7,0,-1):
@@ -445,7 +447,18 @@ def MoveLeft(event): # WIP
     # move each part one unit to the left
 
 def MoveRight(event): #WIP
-    pass
+    # make global the currently falling block properties
+    global b, falling
+    for block in b.blocks:
+        # get grid position
+        i = block.grid_info()
+        currentColumn = i['column']
+        currentColumn += 1
+        block.grid(row=i['row'], column=currentColumn)
+
+        # if collides then dont do
+    
+    # move each part one unit to the left
 
 def HardDrop(event): # WIP
     pass
