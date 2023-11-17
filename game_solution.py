@@ -69,7 +69,7 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                     # 3 along bottom
                     block.grid(row=1, column=gridy)
                     gridy -= 1
-        elif sel == 3:      # green - right z # WHY ARE ONLY Z GREY
+        elif sel == 3:      # green - right z
             row1start = 2
             row2start = 1
             for _ in range(2):
@@ -106,7 +106,7 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                 else:
                     block.grid(row=1, column=gridy)
                     gridy += 1         
-        elif sel == 6:      # red - left z # WHY ARE ONLY Z GREY
+        elif sel == 6:      # red - left z
             row1start = 25
             row2start = 26
             for _ in range(2):
@@ -276,8 +276,6 @@ def PlayGame(gameDetails): # main game module  - WIP
     global score, playGameCanvas
     global b, falling # vars to control when falling
 
-
-    # could do border by just chekcing grid posistiosn when tryign to move - then if it hits the bottom or another block place
     InitialiseGameCanvas()
     # make block and add parts to list of all blocks
     for i in range(7,0,-1):
@@ -290,22 +288,12 @@ def PlayGame(gameDetails): # main game module  - WIP
             allBlocks.append(x)
 
     # actual operation ##########
-
     # randomly generate number and hence shape
-
     # add controls to the shape
-
-
-
     # add collision detection
-
     # start next block fall
-
-
-    # check row is complete
-
-
-    # clear by making all white then delet
+    # check if row is complete
+    # clear by making all white then delete
     
 def PauseGame(): # WIP
     pass
@@ -470,8 +458,6 @@ def HoldPiece(event): # WIP
 ################################################## main program #######################################################
 #######################################################################################################################
 
-
-
 # for later - this is how to update score
 def ScoreUpdate(event):
     global score
@@ -490,8 +476,7 @@ HomeWindow()
 ############
 # keybinds #
 ############
-# movemetn keybinds
-
+# test
 root.bind("<9>", ScoreUpdate)
 
 # cheatcode/bosskey keybinds
@@ -507,13 +492,10 @@ root.bind("<Down>", HardDrop)
 # if time do softdrop with anohter key
 root.bind("<Up>", HoldPiece)
 
-
 ###################
 # blocking method #
 ###################
 root.mainloop()
-
-
 
 ##### note of stuff used in program once but not in code: ######
 
