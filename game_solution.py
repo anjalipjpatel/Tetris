@@ -128,7 +128,7 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                     block.photo = self.photo
                     self.blocks.append(block)
                     block.grid(row=i, column=30+j)
-    def fall(self):        
+    def fall(self):      
         # move all down 1 grid postiion
         while (self.counter != 5):
             self.counter += 1
@@ -139,6 +139,10 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
 
                 # place on new row
                 b.grid(row=currentRow, column=b.grid_info()['column'])
+            
+            # collision detection time
+            
+            
             # repeat until collides with another block that borders the canvas
             root.update()
             time.sleep(0.5)
@@ -212,7 +216,7 @@ def gameBorder(): # WIP (NEED TO CHANGE BLOCK COLOUR) - a border around the tetr
         b.photo = photo
         b.grid(row=k, column=c)
 
-def InitialiseGameCanvas():
+def InitialiseGameCanvas(): # COMP - create game canvas' and buttons
     global playGameCanvas, buttonsCanvas, score, allBlocks
     # initilaise canvas
 
@@ -270,17 +274,22 @@ def InitialiseGameCanvas():
 def PlayGame(gameDetails): # main game module  - WIP
     global width, height
     global score, playGameCanvas
+    global b, falling # vars to control when falling
 
     InitialiseGameCanvas()
-    # make block and add to list of all blocks
-
+    # make block and add parts to list of all blocks
     for i in range(7,0,-1):
         b = aBlock(playGameCanvas, i)
+        falling = True
         b.fall()
-
+        falling = False
         tmp = b.blocks
         for x in tmp:
             allBlocks.append(x)
+
+    # actual operation ##########
+
+    # randomly generate number and hence shape
 
     # add controls to the shape
 
@@ -338,7 +347,7 @@ def LeaderboardClicked(): # leaderboard page - CORECOMP
     for index,item in enumerate(scores, start=1):
         scoreWidget.insert(tk.END, f"{index}.   {item[0]} - {item[1]}\n")
 
-def InformationClicked(): # WIP
+def InformationClicked(): # ONLY IF WAY TOO MUCH TIME - WIP
     print("information")
 
 def ControlsClicked(): # WIP
@@ -415,6 +424,35 @@ def CheatCode(event): # cheatcode functionality - COMP
         b.destroy()
     allBlocks = []
 
+def TurnClockwise(event): # WIP
+    pass
+
+def TurnAnticlockwise(event): # WIP
+    pass
+
+def MoveLeft(event): # WIP
+    # make global the currently falling block properties
+    global b, falling
+    for block in b.blocks:
+        # get grid position
+        i = block.grid_info()
+        currentColumn = i['column']
+        currentColumn -= 1
+        block.grid(row=i['row'], column=currentColumn)
+
+        # if collides then dont do
+    
+    # move each part one unit to the left
+
+def MoveRight(event): #WIP
+    pass
+
+def HardDrop(event): # WIP
+    pass
+
+def HoldPiece(event): # WIP
+    pass
+
 #######################################################################################################################
 ################################################## main program #######################################################
 #######################################################################################################################
@@ -443,9 +481,19 @@ HomeWindow()
 
 root.bind("<9>", ScoreUpdate)
 
-# cheatcode/bosskey
+# cheatcode/bosskey keybinds
 root.bind("bk", BossKey)
 root.bind("123", CheatCode)
+
+# controls keybinds
+root.bind("x", TurnClockwise)
+root.bind("x", TurnAnticlockwise)
+root.bind("<Left>", MoveLeft)
+root.bind("<Right>", MoveRight)
+root.bind("<Down>", HardDrop)
+# if time do softdrop with anohter key
+root.bind("<Up>", HoldPiece)
+
 
 ###################
 # blocking method #
