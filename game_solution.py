@@ -75,53 +75,49 @@ def LoadGameClicked():
 
     # if was null, output text box and return to main screen
 
-class aqua():
-    def __init__(self):
-        # need to define the 5 blocks
-        b = []
-        for _ in range(5):
-            # open the image
-            img = Image.open("aqua_15.jpg")
-            photo = ImageTk.PhotoImage(img)
-            label = tk.Label(gameCanvas, image=photo)
-            label.photo = photo
+class aqua:
+    def __init__(self, canvas): # define the 4 blocks for aqua - straight line
+        self.blocks = []
+        self.canvas = canvas
+        img = Image.open("aqua_15.jpg")
+        self.photo = ImageTk.PhotoImage(img)
+        img.close()
+        gridy = 0
+        # display to screen
+        for _ in range(4):
+            block = tk.Label(self.canvas, image=self.photo)
+            block.photo = self.photo
+            block.grid(row=0, column=gridy)
+            self.blocks.append(block)
+            gridy += 1
+    
+    def fall(self):
+        # wait 1 second
 
-            label.pack()
-            # add to array
-            b.append(label)
+        # move all down 1 grid postiion
 
-        # position and display correctly - blue=straight line
+        # repeat until collides with another block that borders the canvas
 
-        # get canvas size
-        canvasWidth = gameCanvas.winfo_width()
-        # find midle
-        pos = canvasWidth // 2
-        # take 2 away from mid then place along from there
-        pos = pos - (2 * 15)
-
-        for j in range(5):
-            #gameCanvas.move(b[j], pos, b[j].winfo_height())
-            b[j].pack()
-            pos += 15
+        pass
 
 
 def PlayGame(gameDetails): # main game module  - WIP
-    global score, gameCanvas
+    global width, height
+    global score, playGameCanvas
     # data points required for game - [currentScore, allBlocks]
     currentScore = 0
     allBlocks = []
 
     # make game canvas
-    gameCanvas = tk.Canvas(root,width="880", height=height, bg=black)
-    gameCanvas.pack(side="left",expand=True, fill="both")
+    playGameCanvas = tk.Canvas(root,width="880", height=height, bg=black)
+    playGameCanvas.pack(side="left",expand=True, fill="both")
 
     # add score, pause, reset, home - all on button canvas
-    buttonsCanvas = tk.Canvas(gameCanvas, width="400", height=height, bg="grey")
+    buttonsCanvas = tk.Canvas(root, width="400", height=height, bg="grey")
     buttonsCanvas.pack(side="right", expand=True, anchor="e", fill="y")
-
+    
     scoreHead = ttk.Label(buttonsCanvas, text="S C O R E", font=headingFont, background=black, foreground=yellow)
     scoreHead.pack()
-
     score = ttk.Label(buttonsCanvas, text=currentScore,font=mediumFont, background=black, foreground=yellow)
     score.pack()
 
@@ -156,17 +152,14 @@ def PlayGame(gameDetails): # main game module  - WIP
                       relief="solid")
     reset.pack(anchor="s")
 
+    # make block
+    block = aqua(playGameCanvas)
 
-
-
-
-
+    # add to list of all blocks
+    allBlocks.append(block)
 
     # make block fall with time
-
-
-
-
+    block.fall()
 
     # make shapes - class?
 
