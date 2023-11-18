@@ -124,7 +124,8 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                     block.photo = self.photo
                     self.blocks.append(block)
                     block.grid(row=self.spawnPos[0]+i, column=self.spawnPos[1]+j)
-    def fall(self):      
+    def fall(self):
+        global Falling
         # move all down 1 grid postiion
         Falling = True
         while Falling:
@@ -135,7 +136,7 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                     currentRow += 1
                     b.grid(row=currentRow, column=b.grid_info()['column'])
                 root.update()
-                time.sleep(0.1)
+                time.sleep(0.25)
             else:
                 Falling = False
             # collision detection time
@@ -303,13 +304,10 @@ def IncrementScore(): # COMP - add 1 to score when blocks placed
     
 def PlayGame(gameDetails): # main game module  - WIP
     global width, height
-    global score, playGameCanvas
-    global b, falling # vars to control when falling
+    global score, playGameCanvas # vars to control when falling
 
     InitialiseGameCanvas()
     GameFunction()
-
-
 
     # add controls to the shape
     # add collision detection
@@ -319,13 +317,11 @@ def PlayGame(gameDetails): # main game module  - WIP
 # actual operation ##########
 # randomly generate number and hence shape
 def GameFunction():
-    global playGame, b, falling
+    global playGame, b
     playGame = True
     randBlock = random.randint(1,7)
     b = aBlock(playGameCanvas, randBlock)
-    falling = True
     b.fall()
-    falling = False
     # block placed so add one to score
     IncrementScore()
     for x in b.blocks:
@@ -336,7 +332,6 @@ def GameFunction():
         playGame = False
 
         # after each falling iteration check for a complete row
-    
     if playGame:
         GameFunction()
 
@@ -473,10 +468,10 @@ def TurnClockwise(event): # WIP
 def TurnAnticlockwise(event): # WIP
     pass
 
-def MoveLeft(event): # WIP
+def MoveLeft(event): # CORECOMP
     # make global the currently falling block properties
-    global b, falling
-    if falling:
+    global b, Falling
+    if Falling:
         canLeft = True
         col = []
         for block in b.blocks:
@@ -499,11 +494,11 @@ def MoveLeft(event): # WIP
     
     # move each part one unit to the left
 
-def MoveRight(event): #WIP
+def MoveRight(event): #CORECOMP
     # make global the currently falling block properties
-    global b, falling
+    global b, Falling
     
-    if falling:
+    if Falling:
         canRight = True
         col = []
         for block in b.blocks:
@@ -526,15 +521,17 @@ def MoveRight(event): #WIP
     
     # move each part one unit to the right
 
-def HardDrop(event): # WIP
-    global b, falling
-    # if falling:
-    #     for block in b.blocks:
-    #         # how are we chekcign for which one is > 10 and which should stay at 9
-
-    #         # implement as collision detection instead
-            
-    #         block.grid(row=10, column=block.grid_info()['row'])
+def HardDrop(event): # CORECOMP
+    global b, Falling
+    if Falling:
+        while b.CanMoveDown():
+            for block in b.blocks:
+                info = block.grid_info()
+                currentRow = info['row']
+                currentRow += 1
+                block.grid(row=currentRow, column=block.grid_info()['column'])
+        root.update()
+        time.sleep(0.25)                
 
 def HoldPiece(event): # WIP
     pass
