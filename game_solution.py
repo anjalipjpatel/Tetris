@@ -176,7 +176,6 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                 return True
         return False
 
-
     def RotationValid(self, newb):
         for i in range(len(newb)):
             newR = newb[i][0]
@@ -334,25 +333,80 @@ def GameFunction():
     randBlock = random.randint(1,7)
     b = aBlock(playGameCanvas, randBlock)
     b.fall()
+
+    # for x in range(10):
+    #     b = aBlock(playGameCanvas, 7)
+    #     b.fall()
     # block placed so add one to score
     IncrementScore()
     for x in b.blocks:
         allBlocks.append(x)
-
+    CheckFullRow()
     # remove after
-    if len(allBlocks) > 40:
-        playGame = False
+    # if len(allBlocks) > 40:
+    #     playGame = False
 
         # after each falling iteration check for a complete row
     if playGame:
         GameFunction()
 
+def CheckFullRow():
+    ''' 
+    a function that checks if a full row has been filled 
+    - if yes then it removes the row and moves the rest of the blocks down.
+    '''
+    # create array to represent grid
+    blockPosArray = [[None for i in range(11)] for j in range(21)]
+
+    # loop through all blocks
+    # place coordinates on array
+
+    for block in allBlocks:
+        info = block.grid_info()
+        blockPosArray[info['row']-2][info['column']-5] = block
+
+    # check if any rows are all True - if so delete the blocks in teh row and move the rest that are above down
+    for i in range(len(blockPosArray)):
+        # print(blockPosArray[i])
+        # input()
+        if None not in blockPosArray[i]: # row is full so need to delete
+            print("in")
+            whiteBlocks = []
+            img = Image.open("white_15.jpg")
+            image = ImageTk.PhotoImage(img)
+            img.close()
+            # delete all currently on row
+            # replace all with white
+            for j in range(len(blockPosArray[i])):
+                blockPosArray[i][j].destroy()
+                block = tk.Label(playGameCanvas, image=image)
+                block.photo = image
+                block.grid(row=i, column=j)
+                whiteBlocks.append(block)
+
+                # wait set time
+                time.sleep(0.05)
+
+            # delete row
+            for w in whiteBlocks:
+                w.destroy()
+                time.sleep(0.05)
+
+            # move all above down
+            for x in range(i,0,-1):
+                for r in range(len(blockPosArray[x])):
+                    if blockPosArray[x][r] != None: # move down 1
+                        info = blockPosArray[x][r].get_info()
+                        blockPosArray.grid(row=(info['row']+1), column=(info['column']))
 
 def PauseGame(event): # WIP
     pass
 
-def ResetGame(): # WIP
-    pass
+def ResetGame(): # COMP
+    playGameCanvas.destroy()
+    WipeAllWidgets()
+    # stop all other functinality going
+    PlayGame("a")
 
 def LeaderboardClicked(): # leaderboard page - CORECOMP
     WipeAllWidgets()
