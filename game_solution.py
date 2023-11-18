@@ -129,22 +129,34 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                     block.grid(row=i, column=30+j)
     def fall(self):      
         # move all down 1 grid postiion
-        while (self.counter != 5):
-            self.counter += 1
+        Falling = True
+        while Falling:
             for b in self.blocks:
                 info = b.grid_info()
                 currentRow = info['row']
                 currentRow += 1
-
-                # place on new row
-                b.grid(row=currentRow, column=b.grid_info()['column'])
-            
+                if currentRow > 10:         # at bottom of screen
+                    Falling = False
+                    return
+            if Falling:                     # all blocks in range
+                for b in self.blocks:
+                    info = b.grid_info()
+                    currentRow = info['row']
+                    currentRow += 1
+                    b.grid(row=currentRow, column=b.grid_info()['column'])
+                    
+                root.update()
+                time.sleep(0.5)
             # collision detection time
-            
-            
-            # repeat until collides with another block that borders the canvas
-            root.update()
-            time.sleep(0.5)
+                
+            # the way we implement flaling collision detection - check grid position for border 
+            # (<0 or > 10 for horizontal)
+            # (<0 or > 20 for vertical)
+            # if allowed, append pos to row array
+            # if any block outside then do not move
+
+        # place blocks in new row if allowed
+        # repeat until collides with another block that borders the canvas
 
     def notPlaced(self): # a boolean variable to represertn if the block is falling or not
         return (self.counter == 5)
@@ -287,12 +299,20 @@ def PlayGame(gameDetails): # main game module  - WIP
         falling = True
         b.fall()
         falling = False
+        # block placed so add one to score
+
         for x in b.blocks:
             allBlocks.append(x)
         # remove after
         if len(allBlocks) > 40:
             playGame = False
 
+
+        # after each falling iteration check for a complete row
+
+
+
+        # 
 
     # add controls to the shape
     # add collision detection
@@ -428,12 +448,13 @@ def TurnAnticlockwise(event): # WIP
 def MoveLeft(event): # WIP
     # make global the currently falling block properties
     global b, falling
-    for block in b.blocks:
-        # get grid position
-        i = block.grid_info()
-        currentColumn = i['column']
-        currentColumn -= 1
-        block.grid(row=i['row'], column=currentColumn)
+    if falling:
+        for block in b.blocks:
+            # get grid position
+            i = block.grid_info()
+            currentColumn = i['column']
+            currentColumn -= 1
+            block.grid(row=i['row'], column=currentColumn)
 
         # if collides then dont do
     
@@ -442,16 +463,18 @@ def MoveLeft(event): # WIP
 def MoveRight(event): #WIP
     # make global the currently falling block properties
     global b, falling
-    for block in b.blocks:
-        # get grid position
-        i = block.grid_info()
-        currentColumn = i['column']
-        currentColumn += 1
-        block.grid(row=i['row'], column=currentColumn)
-
-        # if collides then dont do
     
-    # move each part one unit to the left
+    if falling:
+        for block in b.blocks:
+            # get grid position
+            i = block.grid_info()
+            currentColumn = i['column']
+            currentColumn += 1
+            block.grid(row=i['row'], column=currentColumn)
+
+            # if collides then dont do
+    
+    # move each part one unit to the right
 
 def HardDrop(event): # WIP
     pass
@@ -463,9 +486,10 @@ def HoldPiece(event): # WIP
 ################################################## main program #######################################################
 #######################################################################################################################
 
-# for later - this is how to update score
+# for later - this is how to update score - another cheat code
 def ScoreUpdate(event):
     global score
+    # get score and add 5 to it
     score.config(text="5")
 
 #####################
