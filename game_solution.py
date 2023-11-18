@@ -33,6 +33,7 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
         self.blocks = []
         self.canvas = canvas
         self.counter = 0
+        self.sel = sel
         self.selDict = {1 : "aqua_15.jpg", 
                         2 : "orange_15.jpg",
                         3 : "green_15.jpg",
@@ -40,7 +41,7 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                         5 : "purple_15.jpg",
                         6 : "red_15.jpg",
                         7 : "yellow_15.jpg"}
-        img = Image.open(self.selDict[sel])
+        img = Image.open(self.selDict[self.sel])
         self.photo = ImageTk.PhotoImage(img)
         img.close()
         self.spawnPos = [0,10]
@@ -174,6 +175,17 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
             if info['row'] == r and info['column'] == c:
                 return True
         return False
+
+
+    def RotationValid(self, newb):
+        for i in range(len(newb)):
+            newR = newb[i][0]
+            newC = newb[i][1]
+            if newR < 0 or newR >=20 or newC < 0 or newC >= 10:
+                return False
+            if self.CollisionDetection(newR,newC):
+                return False
+        return True
 
 #############
 # functions #
@@ -463,7 +475,27 @@ def ScoreUpdate(event): # COMP - cheat code v2
     score.config(text=currentScore)
 
 def TurnClockwise(event): # WIP
-    pass
+    newBlocks = []
+    if Falling:
+        # rotate the bllocks using rotatin matrix
+        for block in b.blocks:
+            info = block.grid_info()
+            currentRow = info['row']
+            currentColumn = info['column']
+            newRow = b.spawnPos[0] + (currentColumn - b.spawnPos[1])
+            newCol = b.spawnPos[1] - (currentRow - b.spawnPos[0])
+            newBlocks.append([newRow,newCol])
+        if b.RotationValid(newBlocks):
+            for block in b.blocks:
+                block.destroy()
+            
+            b.blocks = []
+            for x in range(len(newBlocks)):
+                tmp = tk.Label(b.canvas, image=b.photo)
+                tmp.photo = b.photo
+                tmp.grid(row=newBlocks[x][0], column=newBlocks[x][1])
+                b.blocks.append(tmp)
+
 
 def TurnAnticlockwise(event): # WIP
     pass
@@ -533,7 +565,7 @@ def HardDrop(event): # CORECOMP
         root.update()
         time.sleep(0.25)                
 
-def HoldPiece(event): # WIP
+def HoldPiece(event): # WIP - if time
     pass
 
 #######################################################################################################################
@@ -562,7 +594,7 @@ root.bind("123", CheatCode)
 root.bind("<space>", PauseGame)
 # controls keybinds
 root.bind("x", TurnClockwise)
-root.bind("x", TurnAnticlockwise)
+root.bind("c", TurnAnticlockwise)
 root.bind("<Left>", MoveLeft)
 root.bind("<Right>", MoveRight)
 root.bind("<Down>", HardDrop)
