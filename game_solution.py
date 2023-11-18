@@ -47,30 +47,31 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
         img = Image.open(self.selDict[sel])
         self.photo = ImageTk.PhotoImage(img)
         img.close()
+        self.spawnPos = [0,10]
         if sel == 1:        # aqua - straight line 4
-            gridy = 5
+            gridy = self.spawnPos[1]
             for _ in range(4):
                 block = tk.Label(self.canvas, image=self.photo)
                 block.photo = self.photo
-                block.grid(row=0, column=gridy)
+                block.grid(row=self.spawnPos[0], column=gridy)
                 self.blocks.append(block)
                 gridy += 1
         elif sel == 2:      # orange - right L
-            gridy = 8
+            gridy = self.spawnPos[1]
             for i in range(4):
                 block = tk.Label(self.canvas, image=self.photo)
                 block.photo = self.photo
                 self.blocks.append(block)
                 if i == 0:
                     # make it the top right
-                    block.grid(row=0, column=gridy)
+                    block.grid(row=self.spawnPos[0], column=gridy)
                 else:
                     # 3 along bottom
-                    block.grid(row=1, column=gridy)
+                    block.grid(row=self.spawnPos[0]+1, column=gridy)
                     gridy -= 1
         elif sel == 3:      # green - right z
-            row1start = 2
-            row2start = 1
+            row1start = self.spawnPos[1] + 1
+            row2start = self.spawnPos[1]
             for _ in range(2):
                 # add 1 to each of the two rows each iteration
                 block1 = tk.Label(self.canvas, image=self.photo)
@@ -84,30 +85,30 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                 row1start += 1
                 row2start += 1
         elif sel == 4:      # pink - left L
-            gridy = 16
+            gridy = self.spawnPos[1]
             for i in range(4):
                 block = tk.Label(self.canvas, image=self.photo)
                 block.photo = self.photo
                 self.blocks.append(block)
                 if i == 3:
-                    block.grid(row=0, column=gridy-1)
+                    block.grid(row=self.spawnPos[0], column=gridy+1)
                 else:
-                    block.grid(row=1, column=gridy)
-                    gridy += 1
+                    block.grid(row=self.spawnPos[0]+1, column=gridy)
+                    gridy -= 1
         elif sel == 5:      # purple - upside down T
-            gridy = 20
+            gridy = self.spawnPos[1]
             for i in range(4):
                 block = tk.Label(self.canvas, image=self.photo)
                 block.photo = self.photo
                 self.blocks.append(block)
                 if i == 1:
-                    block.grid(row=0, column=gridy)
+                    block.grid(row=self.spawnPos[0], column=gridy)
                 else:
-                    block.grid(row=1, column=gridy)
+                    block.grid(row=self.spawnPos[0]+1, column=gridy)
                     gridy += 1         
         elif sel == 6:      # red - left z
-            row1start = 25
-            row2start = 26
+            row1start = self.spawnPos[1]
+            row2start = self.spawnPos[1] + 1
             for _ in range(2):
                 # add 1 to each of the two rows each iteration
                 block1 = tk.Label(self.canvas, image=self.photo)
@@ -126,7 +127,7 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                     block = tk.Label(self.canvas, image=self.photo)
                     block.photo = self.photo
                     self.blocks.append(block)
-                    block.grid(row=i, column=30+j)
+                    block.grid(row=self.spawnPos[0]+i, column=self.spawnPos[1]+j)
     def fall(self):      
         # move all down 1 grid postiion
         Falling = True
@@ -298,22 +299,29 @@ def PlayGame(gameDetails): # main game module  - WIP
     # actual operation ##########
     # randomly generate number and hence shape
 
-    playGame = True
-    while playGame:
-        randBlock = random.randint(1,7)
-        b = aBlock(playGameCanvas, randBlock)
+    # playGame = True
+    # while playGame:
+    #     randBlock = random.randint(1,7)
+    #     b = aBlock(playGameCanvas, randBlock)
+    #     falling = True
+    #     b.fall()
+    #     falling = False
+    #     # block placed so add one to score
+    #     IncrementScore()
+    #     for x in b.blocks:
+    #         allBlocks.append(x)
+    #     # remove after
+    #     if len(allBlocks) > 40:
+    #         playGame = False
+
+    for num in range(1,8):
+        b = aBlock(playGameCanvas, num)
         falling = True
         b.fall()
         falling = False
-        # block placed so add one to score
         IncrementScore()
         for x in b.blocks:
             allBlocks.append(x)
-        # remove after
-        if len(allBlocks) > 40:
-            playGame = False
-
-
         # after each falling iteration check for a complete row
 
 
@@ -445,6 +453,13 @@ def CheatCode(event): # cheatcode functionality - COMP
         b.destroy()
     allBlocks = []
 
+def ScoreUpdate(event): # COMP - cheat code v2
+    # get score and add 5 to it
+    currentScore = score.cget("text")
+    currentScore = int(currentScore)
+    currentScore += 5
+    score.config(text=currentScore)
+
 def TurnClockwise(event): # WIP
     pass
 
@@ -491,14 +506,6 @@ def HoldPiece(event): # WIP
 #######################################################################################################################
 ################################################## main program #######################################################
 #######################################################################################################################
-
-# for later - this is how to update score - another cheat code
-def ScoreUpdate(event):
-    # get score and add 5 to it
-    currentScore = score.cget("text")
-    currentScore = int(currentScore)
-    currentScore += 5
-    score.config(text=currentScore)
 
 #####################
 # initialise window #
