@@ -24,10 +24,6 @@ headingFont = ("small fonts",60,"bold")
 mediumFont = ("small fonts",30,"bold")
 smallFont = ("small fonts",20,"bold")
 
-# styles
-# style = ttk.Style()
-# style.configure("btn.TButton",foreground=black,bg=black,font=smallFont,borderwidth=2, relief="solid")
-
 ###########
 # classes #
 ###########
@@ -132,22 +128,16 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
         # move all down 1 grid postiion
         Falling = True
         while Falling:
-            for b in self.blocks:
-                info = b.grid_info()
-                currentRow = info['row']
-                currentRow += 1
-                if currentRow > 20:         # at bottom of screen
-                    Falling = False
-                    return
-            if Falling:                     # all blocks in range
+            if self.CanMoveDown():
                 for b in self.blocks:
                     info = b.grid_info()
                     currentRow = info['row']
                     currentRow += 1
                     b.grid(row=currentRow, column=b.grid_info()['column'])
-                    
                 root.update()
                 time.sleep(0.1)
+            else:
+                Falling = False
             # collision detection time
                 
             # the way we implement flaling collision detection - check grid position for border 
@@ -159,8 +149,30 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
         # place blocks in new row if allowed
         # repeat until collides with another block that borders the canvas
 
-    def notPlaced(self): # a boolean variable to represertn if the block is falling or not
-        return (self.counter == 5)
+    def CanMoveDown(self):
+        '''
+        Function that checks if the block can be moved downwards - Returns True if it can and False otherwise.
+        '''
+        for block in self.blocks:
+            info = block.grid_info()
+            currentRow = info['row']
+            currentRow += 1
+            currentColumn = info['column']
+            if currentRow > 20 or self.CollisionDetection(currentRow, currentColumn):
+                return False
+        return True
+
+    def CollisionDetection(self,r,c):
+        '''
+        Function that checks if there is a block at a specified grid position.
+        Returns True if there is a block there and otherwise False.
+        '''
+        # loop thorugh all elements and compare row and col values with r and c
+        for block in allBlocks:
+            info = block.grid_info()
+            if info['row'] == r and info['column'] == c:
+                return True
+        return False
 
 #############
 # functions #
@@ -295,34 +307,41 @@ def PlayGame(gameDetails): # main game module  - WIP
     global b, falling # vars to control when falling
 
     InitialiseGameCanvas()
+    GameFunction()
 
-    # actual operation ##########
-    # randomly generate number and hence shape
 
-    playGame = True
-    while playGame:
-        randBlock = random.randint(1,7)
-        b = aBlock(playGameCanvas, randBlock)
-        falling = True
-        b.fall()
-        falling = False
-        # block placed so add one to score
-        IncrementScore()
-        for x in b.blocks:
-            allBlocks.append(x)
-        # remove after
-        if len(allBlocks) > 40:
-            playGame = False
-
-        # after each falling iteration check for a complete row
 
     # add controls to the shape
     # add collision detection
-    # start next block fall
     # check if row is complete
     # clear by making all white then delete
+
+# actual operation ##########
+# randomly generate number and hence shape
+def GameFunction():
+    global playGame, b, falling
+    playGame = True
+    randBlock = random.randint(1,7)
+    b = aBlock(playGameCanvas, randBlock)
+    falling = True
+    b.fall()
+    falling = False
+    # block placed so add one to score
+    IncrementScore()
+    for x in b.blocks:
+        allBlocks.append(x)
+
+    # remove after
+    if len(allBlocks) > 40:
+        playGame = False
+
+        # after each falling iteration check for a complete row
     
-def PauseGame(): # WIP
+    if playGame:
+        GameFunction()
+
+
+def PauseGame(event): # WIP
     pass
 
 def ResetGame(): # WIP
@@ -543,7 +562,7 @@ root.bind("<9>", ScoreUpdate)
 # cheatcode/bosskey keybinds
 root.bind("bk", BossKey)
 root.bind("123", CheatCode)
-
+root.bind("<space>", PauseGame)
 # controls keybinds
 root.bind("x", TurnClockwise)
 root.bind("x", TurnAnticlockwise)
