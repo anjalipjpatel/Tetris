@@ -136,7 +136,7 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                 info = b.grid_info()
                 currentRow = info['row']
                 currentRow += 1
-                if currentRow > 10:         # at bottom of screen
+                if currentRow > 20:         # at bottom of screen
                     Falling = False
                     return
             if Falling:                     # all blocks in range
@@ -147,7 +147,7 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                     b.grid(row=currentRow, column=b.grid_info()['column'])
                     
                 root.update()
-                time.sleep(0.5)
+                time.sleep(0.1)
             # collision detection time
                 
             # the way we implement flaling collision detection - check grid position for border 
@@ -299,34 +299,22 @@ def PlayGame(gameDetails): # main game module  - WIP
     # actual operation ##########
     # randomly generate number and hence shape
 
-    # playGame = True
-    # while playGame:
-    #     randBlock = random.randint(1,7)
-    #     b = aBlock(playGameCanvas, randBlock)
-    #     falling = True
-    #     b.fall()
-    #     falling = False
-    #     # block placed so add one to score
-    #     IncrementScore()
-    #     for x in b.blocks:
-    #         allBlocks.append(x)
-    #     # remove after
-    #     if len(allBlocks) > 40:
-    #         playGame = False
-
-    for num in range(1,8):
-        b = aBlock(playGameCanvas, num)
+    playGame = True
+    while playGame:
+        randBlock = random.randint(1,7)
+        b = aBlock(playGameCanvas, randBlock)
         falling = True
         b.fall()
         falling = False
+        # block placed so add one to score
         IncrementScore()
         for x in b.blocks:
             allBlocks.append(x)
+        # remove after
+        if len(allBlocks) > 40:
+            playGame = False
+
         # after each falling iteration check for a complete row
-
-
-
-        # 
 
     # add controls to the shape
     # add collision detection
@@ -470,12 +458,23 @@ def MoveLeft(event): # WIP
     # make global the currently falling block properties
     global b, falling
     if falling:
+        canLeft = True
+        col = []
         for block in b.blocks:
             # get grid position
             i = block.grid_info()
             currentColumn = i['column']
+            currentRow = i['row']
             currentColumn -= 1
-            block.grid(row=i['row'], column=currentColumn)
+            if currentColumn < 6: # check horizontal limit not exceeded - col not < 5
+                canLeft = False
+            else:
+                col.append([currentRow,currentColumn])
+        if canLeft:
+            i = 0
+            for x in b.blocks:
+                x.grid(row=col[i][0], column=col[i][1])
+                i += 1
 
         # if collides then dont do
     
@@ -486,19 +485,37 @@ def MoveRight(event): #WIP
     global b, falling
     
     if falling:
+        canRight = True
+        col = []
         for block in b.blocks:
             # get grid position
             i = block.grid_info()
             currentColumn = i['column']
+            currentRow = i['row']
             currentColumn += 1
-            block.grid(row=i['row'], column=currentColumn)
+            if currentColumn > 15: # check horizontal limit not exceeded - col not > 15
+                canRight = False
+            else:
+                col.append([currentRow,currentColumn])
+        if canRight:
+            i = 0
+            for x in b.blocks:
+                x.grid(row=col[i][0], column=col[i][1])
+                i += 1
 
             # if collides then dont do
     
     # move each part one unit to the right
 
 def HardDrop(event): # WIP
-    pass
+    global b, falling
+    # if falling:
+    #     for block in b.blocks:
+    #         # how are we chekcign for which one is > 10 and which should stay at 9
+
+    #         # implement as collision detection instead
+            
+    #         block.grid(row=10, column=block.grid_info()['row'])
 
 def HoldPiece(event): # WIP
     pass
