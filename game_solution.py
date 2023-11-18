@@ -6,7 +6,6 @@
 import tkinter as tk
 from tkinter import ttk
 import random
-from tkinter import font
 import time
 from PIL import Image,ImageTk # pip install pillow - allowed
 
@@ -277,18 +276,24 @@ def PlayGame(gameDetails): # main game module  - WIP
     global b, falling # vars to control when falling
 
     InitialiseGameCanvas()
-    # make block and add parts to list of all blocks
-    for i in range(7,0,-1):
-        b = aBlock(playGameCanvas, i)
-        falling = True
-        b.fall()
-        falling = False
-        tmp = b.blocks
-        for x in tmp:
-            allBlocks.append(x)
 
     # actual operation ##########
     # randomly generate number and hence shape
+
+    playGame = True
+    while playGame:
+        randBlock = random.randint(1,7)
+        b = aBlock(playGameCanvas, randBlock)
+        falling = True
+        b.fall()
+        falling = False
+        for x in b.blocks:
+            allBlocks.append(x)
+        # remove after
+        if len(allBlocks) > 40:
+            playGame = False
+
+
     # add controls to the shape
     # add collision detection
     # start next block fall
@@ -398,7 +403,7 @@ def BossKey(event): # bosskey functionality - COMP
     global root
     WipeAllWidgets()
     # open the image
-    img = Image.open("googlesheets.png")
+    img = Image.open("googlesheets_9.png")
     photo = ImageTk.PhotoImage(img)
     # make image window
     root.title("Google Sheets")
@@ -502,3 +507,8 @@ root.mainloop()
     # resize images once
     # img = img.resize((15,15))
     # img.save("aqua_15.jpg")
+
+
+# image = Image.open("googlesheets_3.png")
+# img = image.resize((1280,720))
+# img.save("googlesheets_9.png")
