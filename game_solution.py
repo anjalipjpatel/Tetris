@@ -282,6 +282,12 @@ def InitialiseGameCanvas(): # COMP - create game canvas' and buttons
                       relief="solid")
     reset.pack(anchor="s")
 
+def IncrementScore(): # COMP - add 1 to score when blocks placed
+    currentScore = score.cget("text")
+    currentScore = int(currentScore)
+    currentScore += 1
+    score.config(text=currentScore)
+    
 def PlayGame(gameDetails): # main game module  - WIP
     global width, height
     global score, playGameCanvas
@@ -300,7 +306,7 @@ def PlayGame(gameDetails): # main game module  - WIP
         b.fall()
         falling = False
         # block placed so add one to score
-
+        IncrementScore()
         for x in b.blocks:
             allBlocks.append(x)
         # remove after
@@ -488,9 +494,11 @@ def HoldPiece(event): # WIP
 
 # for later - this is how to update score - another cheat code
 def ScoreUpdate(event):
-    global score
     # get score and add 5 to it
-    score.config(text="5")
+    currentScore = score.cget("text")
+    currentScore = int(currentScore)
+    currentScore += 5
+    score.config(text=currentScore)
 
 #####################
 # initialise window #
