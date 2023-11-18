@@ -475,8 +475,9 @@ def ScoreUpdate(event): # COMP - cheat code v2
     score.config(text=currentScore)
 
 def TurnClockwise(event): # WIP
-    newBlocks = []
+    global b, falling
     if Falling:
+        newBlocks = []
         # rotate the bllocks using rotatin matrix
         for block in b.blocks:
             info = block.grid_info()
@@ -486,16 +487,17 @@ def TurnClockwise(event): # WIP
             newCol = b.spawnPos[1] - (currentRow - b.spawnPos[0])
             newBlocks.append([newRow,newCol])
         if b.RotationValid(newBlocks):
+            # clear current blocks
             for block in b.blocks:
                 block.destroy()
             
             b.blocks = []
-            for x in range(len(newBlocks)):
+            for newBlock in newBlocks:
                 tmp = tk.Label(b.canvas, image=b.photo)
                 tmp.photo = b.photo
-                tmp.grid(row=newBlocks[x][0], column=newBlocks[x][1])
+                tmp.grid(row=newBlock[0], column=newBlock[1])
                 b.blocks.append(tmp)
-
+            root.update()
 
 def TurnAnticlockwise(event): # WIP
     pass
