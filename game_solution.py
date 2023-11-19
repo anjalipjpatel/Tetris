@@ -372,6 +372,16 @@ def gameBorder(): # COMP - a border around the tetris game
         b.photo = photo
         b.grid(row=k, column=c)
 
+    # make grid for actual blocks to map falling
+
+    for i in range(1,21):
+        for j in range(6,16,1):
+            # make black block
+            b = tk.Label(playGameCanvas, image=photo)
+            b.photo = photo
+            # grid in requried pos
+            b.grid(row=i, column=j)
+
 def InitialiseNewGameCanvas(s): # COMP - create game canvas' and buttons
     '''
     Create the game canvas - pass in score to initilaise value from prevoius games too
