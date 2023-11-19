@@ -2,7 +2,27 @@
 # SCREEN RESOLUTION: 1280X720 #
 ###############################
 
-# import list
+##############
+# objectives #
+##############
+# 1. Use of images - blocks that fall                   (COMP)
+# 2. Use of shapes - tetris blocks                      (COMP)
+# 3. Use of text - titles etc                           (COMP)
+# 4. Scoring mechanism - blocks placed + row cleared    (COMP)
+# 5. Leaderboard - on homepage w player name n pos      (COMP)
+# 6. Image Resolution - 1280x720                        (COMP)
+# 7. Movement of Objects - tetris blocks r,l and down   (COMP)
+# 8. User moves objects - r,l,down                      (COMP)
+# 9. Collision Detection - check if block in grid pos   (COMP)
+# 10. Pause and unpause - toplevel window               (COMP)
+# 11. Customize experince - keys that define movement   (TO - DO)
+# 12. Cheat codes - add score (clear blocks?)           (COMP - detemine if want to keep clear blocks)
+# 13. Save/Load - from text file                        (COMP)
+# 14. Boss Key - pulls up GoogleSheet                   (COMP)
+
+###############
+# import list #
+###############
 import tkinter as tk
 from tkinter import ttk
 import random
@@ -28,7 +48,6 @@ smallFont = ("small fonts", 20, "bold")
 ###########
 # classes #
 ###########
-
 class aBlock: # generate the shpae bassed on random num passed in between 1 and 7 inclusive
     def __init__(self, canvas, sel):
         self.blocks = []
@@ -226,7 +245,7 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
 #############
 # functions #
 #############
-def updateTime():
+def updateTime(): # COMP
     global elapsedTime
     elapsedTime += 1
     # update time display
@@ -813,12 +832,9 @@ root.bind("<Up>", HoldPiece)
 root.mainloop()
 
 ##### note of stuff used in program once but not in code: ######
-
 # resize images once
 # img = img.resize((15,15))
 # img.save("aqua_15.jpg")
-
-
 # image = Image.open("googlesheets_3.png")
 # img = image.resize((1280,720))
 # img.save("googlesheets_9.png")
