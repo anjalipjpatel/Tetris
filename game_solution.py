@@ -35,13 +35,13 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
         self.canvas = canvas
         self.counter = 0
         self.sel = sel
-        self.selDict = {1 : "aqua_15.jpg", 
-                        2 : "orange_15.jpg",
-                        3 : "green_15.jpg",
-                        4 : "pink_15.jpg",
-                        5 : "purple_15.jpg",
-                        6 : "red_15.jpg",
-                        7 : "yellow_15.jpg"}
+        self.selDict = {1 : "aqua.jpg", 
+                        2 : "orange.jpg",
+                        3 : "green.jpg",
+                        4 : "pink.jpg",
+                        5 : "purple.jpg",
+                        6 : "red.jpg",
+                        7 : "yellow.jpg"}
         img = Image.open(self.selDict[self.sel])
         self.photo = ImageTk.PhotoImage(img)
         img.close()
@@ -216,6 +216,12 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
 #############
 # functions #
 #############
+def updateTime():
+    global elapsedTime
+    elapsedTime += 1
+    # update time display
+    timeout.config(text=elapsedTime)
+    root.after(1000, updateTime)
 
 def HomeWindow(): # create the homepage - CORECOMP
     global usernameTxt # so that it can be accessed in other programs
@@ -296,11 +302,11 @@ def LoadGameClicked(): # load up an existing game - COMP
     # if was null, output text box and return to main screen
 
 def gameBorder(): # COMP - a border around the tetris game
-    img = Image.open("black_15.jpg")
+    img = Image.open("black.jpg")
     photo = ImageTk.PhotoImage(img)
     img.close()
-    r = 37
-    c = 51
+    r = 22
+    c = 28
     for i in range(r):
         # make block and place
         b = tk.Label(playGameCanvas, image=photo)
@@ -316,7 +322,7 @@ def gameBorder(): # COMP - a border around the tetris game
         b.grid(row=k, column=c)
 
 def InitialiseNewGameCanvas(s): # COMP - create game canvas' and buttons
-    global playGameCanvas, buttonsCanvas, score, allBlocks, blockPosArray
+    global playGameCanvas, buttonsCanvas, score, allBlocks, blockPosArray, timeout
     # initilaise canvas
 
     # make game canvas
@@ -334,6 +340,11 @@ def InitialiseNewGameCanvas(s): # COMP - create game canvas' and buttons
     scoreHead.pack(fill="x")
     score = ttk.Label(buttonsCanvas, text=s,font=mediumFont, background=black, foreground=yellow, anchor="center")
     score.pack(fill="x")
+
+    timeHead = ttk.Label(buttonsCanvas, text="T I M E", font=headingFont, background=black, foreground=yellow, anchor="center")
+    timeHead.pack(fill="x")
+    timeout = ttk.Label(buttonsCanvas, text="",font=mediumFont, background=black, foreground=yellow, anchor="center")
+    timeout.pack(fill="x")
 
     home = MakeHomeButton(buttonsCanvas)
     home.pack(anchor="center",fill="x")
@@ -393,10 +404,14 @@ def PlayGame(gameDetails): # main game module  - WIP
     global width, height
     global score, playGameCanvas # vars to control when falling
     global blockPosArray, allBlocks
+    global elapsedTime
+    elapsedTime = -1
     if gameDetails == []:
         InitialiseNewGameCanvas(0)
         blockPosArray = [[None for i in range(10)]for j in range(20)]
         allBlocks = []
+        timeStart = time.time()
+        updateTime()
         GameFunction()
     else: # need to restore game
         # username, blockPosArray, playGame, currentScore
@@ -410,7 +425,7 @@ def PlayGame(gameDetails): # main game module  - WIP
             # open white, grid to i, j    
             row = int(coords[i])
             col = int(coords[i+1])
-            img = Image.open("white_15.jpg")
+            img = Image.open("white.jpg")
             photo = ImageTk.PhotoImage(img)
             img.close()
             block = tk.Label(playGameCanvas, image=photo)
@@ -420,6 +435,7 @@ def PlayGame(gameDetails): # main game module  - WIP
             allBlocks.append(block)
 
         if gameDetails[2]:  # playGame = True
+            updateTime()
             GameFunction()          
             # then restore function back to gamefunction
 
