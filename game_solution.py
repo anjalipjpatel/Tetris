@@ -20,9 +20,9 @@ height = "720"
 resolution = "1280x720"
 
 # font
-headingFont = ("small fonts",60,"bold")
-mediumFont = ("small fonts",30,"bold")
-smallFont = ("small fonts",20,"bold")
+headingFont = ("small fonts", 60, "bold")
+mediumFont = ("small fonts", 30, "bold")
+smallFont = ("small fonts", 20, "bold")
 
 ###########
 # classes #
@@ -328,76 +328,68 @@ def PlayGame(gameDetails): # main game module  - WIP
 # actual operation ##########
 # randomly generate number and hence shape
 def GameFunction():
-    global playGame, b
+    global playGame, b, blockPosArray
     playGame = True
-    randBlock = random.randint(1,7)
-    b = aBlock(playGameCanvas, randBlock)
-    b.fall()
+    # create array to represent grid
+    blockPosArray = [[None for i in range(10)] for j in range(20)]
 
-    # for x in range(10):
-    #     b = aBlock(playGameCanvas, 7)
-    #     b.fall()
-    # block placed so add one to score
-    IncrementScore()
-    for x in b.blocks:
-        allBlocks.append(x)
-    CheckFullRow()
+    # randBlock = random.randint(1,7)
+    # b = aBlock(playGameCanvas, randBlock)
+    # b.fall()
+
+    for x in range(100):
+        b = aBlock(playGameCanvas, 7)
+        b.fall()
+        # block placed so add one to score
+        IncrementScore()
+        for x in b.blocks:
+            allBlocks.append(x)
+            # loop through all blocks
+            # place coordinates on array
+            info = x.grid_info()
+            blockPosArray[info['row']-1][info['column']-6] = x
+        for i in range(len(blockPosArray)):
+            print(blockPosArray[i])
+
+
+        CheckFullRow()
     # remove after
     # if len(allBlocks) > 40:
     #     playGame = False
 
         # after each falling iteration check for a complete row
-    if playGame:
-        GameFunction()
+    # if playGame:
+    #     GameFunction()
 
 def CheckFullRow():
     ''' 
     a function that checks if a full row has been filled 
     - if yes then it removes the row and moves the rest of the blocks down.
     '''
-    # create array to represent grid
-    blockPosArray = [[None for i in range(11)] for j in range(21)]
-
-    # loop through all blocks
-    # place coordinates on array
-
-    for block in allBlocks:
-        info = block.grid_info()
-        blockPosArray[info['row']-2][info['column']-5] = block
-
+    global blockPosArray
+    rowsToClear = True
+    rows = []
+    while rowsToClear:
+        rowsToClear = False
     # check if any rows are all True - if so delete the blocks in teh row and move the rest that are above down
-    for i in range(len(blockPosArray)):
-        # print(blockPosArray[i])
-        # input()
-        if None not in blockPosArray[i]: # row is full so need to delete
-            print("in")
-            whiteBlocks = []
-            img = Image.open("white_15.jpg")
-            image = ImageTk.PhotoImage(img)
-            img.close()
-            # delete all currently on row
-            # replace all with white
-            for j in range(len(blockPosArray[i])):
-                blockPosArray[i][j].destroy()
-                block = tk.Label(playGameCanvas, image=image)
-                block.photo = image
-                block.grid(row=i, column=j)
-                whiteBlocks.append(block)
+        for i in range(len(blockPosArray)-1,0,-1):
+            if None not in blockPosArray[i]: # row is full so need to delete
+                rows.append(i)
+                rowsToClear = True
 
-                # wait set time
-                time.sleep(0.05)
-
-            # delete row
-            for w in whiteBlocks:
-                w.destroy()
-                time.sleep(0.05)
-
-            # move all above down
-            for x in range(i,0,-1):
-                for r in range(len(blockPosArray[x])):
-                    if blockPosArray[x][r] != None: # move down 1
-                        info = blockPosArray[x][r].get_info()
-                        blockPosArray.grid(row=(info['row']+1), column=(info['column']))
+        if rowsToClear:
+            for rowClear in rows:
+                for j in range(len(blockPosArray[rowClear])):
+                    allBlocks.remove(blockPosArray[rowClear][j])
+                    blockPosArray[rowClear][j].destroy()
+                    blockPosArray[rowClear][j] = None
+                # move all above down - update block pos array to reflect the fact blocks are gone
+                for x in range(rowClear-1,0,-1):
+                    for b in blockPosArray[x]:
+                        #print(b)
+                        if b is not None:
+                            info = b.grid_info()
+                            b.grid(row=(info['row']+1), column=info['column'])
 
 def PauseGame(event): # WIP
     pass
