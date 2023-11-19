@@ -153,8 +153,18 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                     else:
                         CheckGameOver(True)
     def fall(self):
-        global Falling
+        global Falling, elapsedTime
         # move all down 1 grid postiion
+        speed = [1, 0.75, 0.5, 0.25]
+        speedIndex = 0
+        if elapsedTime > 0 and elapsedTime <= 10:
+            speedIndex = 0
+        elif elapsedTime > 10 and elapsedTime <= 20:
+            speedIndex = 1
+        elif elapsedTime > 20 and elapsedTime <= 30:
+            speedIndex = 2
+        elif elapsedTime > 30:
+            speedIndex = 3
         Falling = True
         while Falling:
             if self.CanMoveDown():
@@ -164,7 +174,7 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                     currentRow += 1
                     b.grid(row=currentRow, column=b.grid_info()['column'])
                 root.update()
-                time.sleep(0.25)
+                time.sleep(speed[speedIndex])
             else:
                 Falling = False
             # collision detection time
