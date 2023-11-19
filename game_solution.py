@@ -295,8 +295,8 @@ def LoadGameClicked(): # load up an existing game - COMP
 
     # if was null, output text box and return to main screen
 
-def gameBorder(): # WIP (NEED TO CHANGE BLOCK COLOUR) - a border around the tetris game
-    img = Image.open("pink_15.jpg")
+def gameBorder(): # COMP - a border around the tetris game
+    img = Image.open("black_15.jpg")
     photo = ImageTk.PhotoImage(img)
     img.close()
     r = 37
