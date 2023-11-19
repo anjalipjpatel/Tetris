@@ -56,7 +56,7 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                     self.blocks.append(block)
                     gridy += 1
                 else:
-                    CheckGameOver(b,True)
+                    CheckGameOver(True)
         elif sel == 2:      # orange - right L
             gridy = self.spawnPos[1]
             for i in range(4):
@@ -68,14 +68,14 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                         # make it the top right
                         block.grid(row=self.spawnPos[0], column=gridy)
                     else:
-                        CheckGameOver(b, True)
+                        CheckGameOver(True)
                 else:
                     if not self.CollisionDetection(self.spawnPos[0]+1, gridy):
                         # 3 along bottom
                         block.grid(row=self.spawnPos[0]+1, column=gridy)
                         gridy -= 1
                     else:
-                        CheckGameOver(b, True)
+                        CheckGameOver(True)
         elif sel == 3:      # green - right z
             row1start = self.spawnPos[1] + 1
             row2start = self.spawnPos[1]
@@ -93,7 +93,7 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                     row1start += 1
                     row2start += 1
                 else:
-                    CheckGameOver(b, True)
+                    CheckGameOver(True)
         elif sel == 4:      # pink - left L
             gridy = self.spawnPos[1]
             for i in range(4):
@@ -104,13 +104,13 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                     if not self.CollisionDetection(self.spawnPos[0], gridy+1):
                         block.grid(row=self.spawnPos[0], column=gridy+1)
                     else:
-                        CheckGameOver(b, True)
+                        CheckGameOver(True)
                 else:
                     if not self.CollisionDetection(self.spawnPos[0]+1, gridy):
                         block.grid(row=self.spawnPos[0]+1, column=gridy)
                         gridy -= 1
                     else:
-                        CheckGameOver(b, True)
+                        CheckGameOver(True)
         elif sel == 5:      # purple - upside down T
             gridy = self.spawnPos[1]
             for i in range(4):
@@ -123,7 +123,7 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                     block.grid(row=self.spawnPos[0]+1, column=gridy)
                     gridy += 1
                 else:
-                    CheckGameOver(b, True)
+                    CheckGameOver(True)
         elif sel == 6:      # red - left z
             row1start = self.spawnPos[1]
             row2start = self.spawnPos[1] + 1
@@ -141,7 +141,7 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                     row1start += 1
                     row2start += 1
                 else:
-                    CheckGameOver(b, True)
+                    CheckGameOver(True)
         else:               # yellow - square
             for i in range(2):
                 for j in range(2):
@@ -151,7 +151,7 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                     if not self.CollisionDetection(self.spawnPos[0]+i, self.spawnPos[1]+j):
                         block.grid(row=self.spawnPos[0]+i, column=self.spawnPos[1]+j)
                     else:
-                        CheckGameOver(b, True)
+                        CheckGameOver(True)
     def fall(self):
         global Falling
         # move all down 1 grid postiion
@@ -263,7 +263,7 @@ def LoadGameClicked(): # load up an existing game - COMP
         s.close()
         Found = False
         i = -1
-        while not Found: # try and find entry for user
+        while not Found and (i < len(tmp)-1): # try and find entry for user
             i += 1
             loadGameConfig = tmp[i].split(".")
             if loadGameConfig[0] == username:
@@ -280,9 +280,17 @@ def LoadGameClicked(): # load up an existing game - COMP
 
         else: # no corresponding game found - return to homepage
             WipeAllWidgets()
+            newWin = tk.Toplevel()
+            newWin.title("ERROR")
+            ttk.Label(newWin, text="ERROR: No game found", font=mediumFont, foreground=red,background=black, justify="center",padding=(5,5)).pack()
+            newWin.wait_window()
             HomeWindow()
     else: # no valid username input as playing anonymously so return to home
         WipeAllWidgets()
+        newWin = tk.Toplevel()
+        newWin.title("ERROR")
+        ttk.Label(newWin, text="ERROR: Anon Username - No game can be loaded", font=mediumFont, foreground=red,background=black, justify="center",padding=(5,5)).pack()
+        newWin.wait_window()
         HomeWindow()
 
     # if was null, output text box and return to main screen
@@ -424,8 +432,6 @@ def GameFunction(): # COMP
 
     for x in b.blocks:
         allBlocks.append(x)
-        # check if the position is valid - if not then game over
-        CheckGameOver(x, False)
         # loop through all blocks
         # place coordinates on array
         info = x.grid_info()
@@ -458,7 +464,7 @@ def CheckFullRow(): # COMP
                         blockPosArray[x][r] = None
             IncrementScore(5)
 
-def CheckGameOver(currBlock, fallCollision): # WIP
+def CheckGameOver(fallCollision): # WIP
     global playGame
     if fallCollision: # game deffo over
         playGame = False
