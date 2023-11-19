@@ -12,10 +12,10 @@
 # 5. Leaderboard - on homepage w player name n pos      (COMP)
 # 6. Image Resolution - 1280x720                        (COMP)
 # 7. Movement of Objects - tetris blocks r,l and down   (COMP)
-# 8. User moves objects - r,l,down                      (COMP)
+# 8. User moves objects - r,l,down                      (COMP - rotations?)
 # 9. Collision Detection - check if block in grid pos   (COMP)
 # 10. Pause and unpause - toplevel window               (COMP)
-# 11. Customize experince - keys that define movement   (TO - DO)
+# 11. Customize experince - keys that define movement   (COMP - can switch between 2 for left, right, down)
 # 12. Cheat codes - add score (clear blocks?)           (COMP - detemine if want to keep clear blocks)
 # 13. Save/Load - from text file                        (COMP)
 # 14. Boss Key - pulls up GoogleSheet                   (COMP)
@@ -616,7 +616,72 @@ def InformationClicked(): # ONLY IF WAY TOO MUCH TIME - WIP
     print("information")
 
 def ControlsClicked(): # WIP
-    print("controls")
+    global controlsPage
+    WipeAllWidgets()
+    # make page
+    controlsPage = True
+    controlCanvas = tk.Canvas(root, width=width, height=height, bg=black)
+    controlCanvas.pack(fill="both",expand=True)
+
+    # make drop-down options
+    l = ["<Left>", "a"]
+    r = ["<Right>", "d"]
+    d = ["<Down>", "<space>"]
+
+    lVal = tk.StringVar()
+    rVal = tk.StringVar()
+    dVal = tk.StringVar()
+    
+    h = MakeHomeButton(controlCanvas)
+    h.grid(row=0, column=0, columnspan=3)
+    
+    ttk.Label(controlCanvas, text="C O N T R O L S", font=headingFont,background="#000000", foreground=yellow).grid(row=0, column=3)
+
+    ttk.Label(controlCanvas, text="Move Left", font=mediumFont,background="#000000", foreground=yellow).grid(row=1,column=0, columnspan=3)
+    leftDropDown = tk.OptionMenu(controlCanvas, lVal, *l, command=onLeftChange)
+    leftDropDown.grid(row = 1, column= 5)
+    ttk.Label(controlCanvas, text="Move Right", font=mediumFont,background="#000000", foreground=yellow).grid(row=2,column=0, columnspan=3)
+    rightDropDown = tk.OptionMenu(controlCanvas, rVal, *r, command=onRightChange)
+    rightDropDown.grid(row=2,column=5)
+    ttk.Label(controlCanvas, text="Move Down", font=mediumFont,background="#000000", foreground=yellow).grid(row=3,column=0, columnspan=3)
+    downDropDown = tk.OptionMenu(controlCanvas, dVal, *d, command=onDownChange)
+    downDropDown.grid(row=3, column=5)
+
+def onLeftChange(value):
+    global keyBinds
+    l = ["<Left>", "a"]
+    if value not in keyBinds:
+        root.bind(value, MoveLeft)
+        if l[0] != value:
+            root.unbind(l[0])
+            keyBinds.remove(l[0])
+        else:
+            root.unbind(l[1])
+            keyBinds.remove(l[1])
+
+def onRightChange(value):
+    global keyBinds
+    r = ["<Right>", "d"]
+    if value not in keyBinds:
+        root.bind(value, MoveRight)
+        if r[0] != value:
+            root.unbind(r[0])
+            keyBinds.remove(r[0])
+        else:
+            root.unbind(r[1])
+            keyBinds.remove(r[1])
+
+def onDownChange(value):
+    global keyBinds
+    d = ["<Down>", "<space>"]
+    if value not in keyBinds:
+        root.bind(value, HardDrop)
+        if d[0] != value:
+            root.unbind(d[0])
+            keyBinds.remove(d[0])
+        else:
+            root.unbind(d[1])
+            keyBinds.remove(d[1])
 
 def ExitClicked(): # exit the game - COMP
     root.destroy()
@@ -825,6 +890,8 @@ root.bind("<Right>", MoveRight)
 root.bind("<Down>", HardDrop)
 # if time do softdrop with anohter key
 root.bind("<Up>", HoldPiece)
+
+keyBinds = ["<9>", "bk", "123", "x", "c", "<Left>", "<Right>", "<Down>"]
 
 ###################
 # blocking method #
