@@ -221,11 +221,10 @@ def NewGameClicked(): # load up a new game - WIP
     WipeAllWidgets()
 
     # initialise all game details
-    newGameConfig = []
-    PlayGame(newGameConfig)
+    PlayGame([])
 
 def LoadGameClicked(): # load up an existing game - WIP
-    global username, userInput
+    global username, userInput, blockPosArray, allBlocks, playGame, b, fall
     GetUsername()
     WipeAllWidgets()
 
@@ -235,24 +234,23 @@ def LoadGameClicked(): # load up an existing game - WIP
         s = open("loadGame.txt", "r")
         tmp = s.read().splitlines()
         s.close()
-
-        i = 0
         Found = False
-        while (i <= len(tmp)-1) and not Found:  # find corresponding game save
+        i = -1
+        while not Found: # try and find entry for user
+            i += 1
             loadGameConfig = tmp[i].split(".")
             if loadGameConfig[0] == username:
                 Found = True
-                # delete from array with text-file contents
-                tmp.remove(tmp[i])
-                # rewrite values to text-file
-                s = open("loadGame.txt", "w")
-                for j in range(len(tmp)):
-                    s.write(tmp[j] + "\n")
-                s.close()
-            i += 1
         
         if Found:   # pass to playgame
+            # remove from file
+            s = open("loadGame.txt", "w")
+            for j in range(len(tmp)):
+                if i != j:
+                    s.write(tmp[j]+"\n")
+            s.close()
             PlayGame(loadGameConfig)
+
         else: # no corresponding game found - return to homepage
             WipeAllWidgets()
             HomeWindow()
@@ -282,13 +280,9 @@ def gameBorder(): # WIP (NEED TO CHANGE BLOCK COLOUR) - a border around the tetr
         b.photo = photo
         b.grid(row=k, column=c)
 
-def InitialiseGameCanvas(): # COMP - create game canvas' and buttons
-    global playGameCanvas, buttonsCanvas, score, allBlocks
+def InitialiseNewGameCanvas(s): # COMP - create game canvas' and buttons
+    global playGameCanvas, buttonsCanvas, score, allBlocks, blockPosArray
     # initilaise canvas
-
-    # data points required for game - [currentScore, allBlocks]
-    currentScore = 0
-    allBlocks = []
 
     # make game canvas
     playGameCanvas = tk.Canvas(root,width="880", height=height, bg=black)
@@ -303,7 +297,7 @@ def InitialiseGameCanvas(): # COMP - create game canvas' and buttons
     
     scoreHead = ttk.Label(buttonsCanvas, text="S C O R E", font=headingFont, background=black, foreground=yellow)
     scoreHead.pack()
-    score = ttk.Label(buttonsCanvas, text=currentScore,font=mediumFont, background=black, foreground=yellow)
+    score = ttk.Label(buttonsCanvas, text=s,font=mediumFont, background=black, foreground=yellow)
     score.pack()
 
     home = MakeHomeButton(buttonsCanvas)
@@ -360,14 +354,36 @@ def IncrementScore(): # COMP - add 1 to score when blocks placed
 def PlayGame(gameDetails): # main game module  - WIP
     global width, height
     global score, playGameCanvas # vars to control when falling
-    
-    InitialiseGameCanvas()
-    GameFunction()
+    global blockPosArray, allBlocks
+    if gameDetails == []:
+        InitialiseNewGameCanvas(0)
+        blockPosArray = [[None for i in range(10)]for j in range(20)]
+        allBlocks = []
+        GameFunction()
+    else: # need to restore game
+        # username, blockPosArray, playGame, currentScore
+        # the objects wil not stay - make all white for now
+        loadScore = gameDetails[3]
+        InitialiseNewGameCanvas(loadScore)
+        blockPosArray = [[None for i in range(10)] for j in range(20)]
+        allBlocks = []
+        coords = gameDetails[1].split(",")
+        for i in range(0,len(coords)-1,2): # restore block
+            # open white, grid to i, j    
+            row = int(coords[i])
+            col = int(coords[i+1])
+            img = Image.open("white_15.jpg")
+            photo = ImageTk.PhotoImage(img)
+            img.close()
+            block = tk.Label(playGameCanvas, image=photo)
+            block.photo = photo
+            block.grid(row=row+1, column=col+6)
+            blockPosArray[row][col]= block
+            allBlocks.append(block)
 
-    # add controls to the shape
-    # add collision detection
-    # check if row is complete
-    # clear by making all white then delete
+        if gameDetails[2]:  # playGame = True
+            GameFunction()          
+            # then restore function back to gamefunction
 
 # actual operation ##########
 # randomly generate number and hence shape
@@ -375,7 +391,7 @@ def GameFunction():
     global playGame, b, blockPosArray, fall
     playGame = True
     # create array to represent grid
-    blockPosArray = [[None for i in range(10)] for j in range(20)]
+    #blockPosArray = [[None for i in range(10)] for j in range(20)]
 
     # randBlock = random.randint(1,7)
     # b = aBlock(playGameCanvas, randBlock)
@@ -408,30 +424,87 @@ def CheckFullRow(): # COMP
     a function that checks if a full row has been filled 
     - if yes then it removes the row and moves the rest of the blocks down.
     '''
-    global blockPosArray
-    rowsToClear = True
-    rows = []
-    while rowsToClear:
-        rowsToClear = False
-    # check if any rows are all True - if so delete the blocks in teh row and move the rest that are above down
-        for i in range(len(blockPosArray)-1,0,-1):
-            if None not in blockPosArray[i]: # row is full so need to delete
-                rows.append(i)
-                rowsToClear = True
 
-        if rowsToClear:
-            for rowClear in rows:
-                for j in range(len(blockPosArray[rowClear])):
-                    allBlocks.remove(blockPosArray[rowClear][j])
-                    blockPosArray[rowClear][j].destroy()
-                    blockPosArray[rowClear][j] = None
-                # move all above down - update block pos array to reflect the fact blocks are gone
-                for x in range(rowClear-1,0,-1):
-                    for b in blockPosArray[x]:
-                        #print(b)
-                        if b is not None:
-                            info = b.grid_info()
-                            b.grid(row=(info['row']+1), column=info['column'])
+    for i in range(len(blockPosArray)):
+        if None not in blockPosArray[i]:
+            for j in range(len(blockPosArray[i])):
+                allBlocks.remove(blockPosArray[i][j])
+                blockPosArray[i][j].destroy()
+                blockPosArray[i][j] = None
+            for x in range(i,0,-1):
+                for r in range(len(blockPosArray[x])):
+                    if blockPosArray[x][r] != None:
+                        info = blockPosArray[x][r].grid_info()
+                        blockPosArray[x][r].grid(row=(info['row']+1), column=(info['column']))
+                        blockPosArray[x+1][r] = blockPosArray[x][r]
+                        blockPosArray[x][r] = None
+
+
+
+
+
+    # global blockPosArray
+    # #clear, rowClear = RowsToClear()
+    # clear = True
+    # while clear:
+    #     clear = False
+        # for rowClear in range(len(blockPosArray)-1):
+        #     if None not in blockPosArray[rowClear]: # row is full so need to delete
+        #         for j in range(len(blockPosArray[rowClear])):
+        #             allBlocks.remove(blockPosArray[rowClear][j])
+        #             blockPosArray[rowClear][j].destroy()
+        #             blockPosArray[rowClear][j] = None
+        #             # move all above down - update block pos array to reflect the fact blocks are gone
+        #         clear = True
+        #         for x in range(rowClear-1,0,-1):
+        #             for b in blockPosArray[x]:
+        #                 if b is not None:
+        #                     info = b.grid_info()
+        #                     b.grid(row=(info['row']+1), column=info['column'])
+        #                     # update blockposarray positions
+        #                     blockPosArray[info['row']-1][info['column']-6] = b
+        #                     blockPosArray[info['row']-1][info['column']-6] = None
+
+
+        # we want to check if a row is full
+        # if it is full: destroy all items, remove reference from blockPosArray + allBlocks
+
+
+
+
+        # then want to move the rest above down
+        # count = -1
+        # for x in blockPosArray:
+        #     count += 1
+        #     if None not in x:
+        #         for i in range(len(x)):
+        #             # remove reference from blockPosArray, allBlocks
+        #             # destory item
+        #             allBlocks.remove(x[i])
+        #             x[i].destroy()
+        #             x[i] = None
+        #             clear = True
+
+
+        #         for j in range(count,0,-1):
+        #             for k in range(len(bl))
+
+                # for j in range(i-1, 0, -1):
+                #     for k in range(len(blockPosArray[j])):
+                #         if blockPosArray[j][k] != None:
+                #             info = blockPosArray[j][k].get_info()
+                #             blockPosArray[j][k].grid(row=(info['row']+1), column=info['column'])
+                #             blockPosArray[j+1][k] = blockPosArray[j][k]
+                #             blockPosArray[j][k] = None
+    # print(blockPosArray)
+    # input()
+
+def RowsToClear():
+    # check if any rows are all True - if so delete the blocks in teh row and move the rest that are above down
+    for i in range(len(blockPosArray)-1):
+        if None not in blockPosArray[i]: # row is full so need to delete
+            return (True, i)
+    return (False, i)
 
 def PauseGame(): # WIP
     pass
@@ -443,22 +516,19 @@ def ResetGame(): # COMP
     PlayGame("a")
 
 def SaveGame(): # WIP
-    # get main data from game - arrays and vars
-    # save as an array in text file
-    # use username as a reference in pos0 of array
-    # username, blockPosArray, allBlocks, playGame, b, fall
-    gameData = ""
-    gameData += (username + ".")
-    gameData += (str(blockPosArray) + ".")
-    gameData += (str(allBlocks) + ".")
-    gameData += (str(playGame) + ".")
-    gameData += (str(b) + ".")
-    gameData += (str(fall) + ".")
-    gameData += "\n"
-
-    s = open("loadGame.txt", "a")
-    s.write(gameData)
-    s.close()
+    # save username, array with where blocks are, playgame - rest can just be restarted from game cont
+    global username, playGame, score, blockPosArray
+    # username, blockPosArray, playGame, currentScore
+    # record blockposarray coords intiailly
+    coords = ""
+    for i in range(len(blockPosArray)):
+        for j in range(len(blockPosArray[i])):
+            if blockPosArray[i][j] is not None:
+                coords += str(i) + "," + str(j) + ","
+    if coords != "" or score > 0: # write as data to ssave
+        s = open("loadGame.txt", "a")
+        s.write(username+"."+coords+"."+str(playGame)+"."+str(score.cget("text"))+".\n")
+        s.close()
 
     # now take user back to homepage
     WipeAllWidgets()
