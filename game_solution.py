@@ -295,13 +295,13 @@ def InitialiseNewGameCanvas(s): # COMP - create game canvas' and buttons
     buttonsCanvas = tk.Canvas(root, width="400", height=height, bg="grey")
     buttonsCanvas.pack(side="right", expand=True, anchor="e", fill="y")
     
-    scoreHead = ttk.Label(buttonsCanvas, text="S C O R E", font=headingFont, background=black, foreground=yellow)
-    scoreHead.pack()
-    score = ttk.Label(buttonsCanvas, text=s,font=mediumFont, background=black, foreground=yellow)
-    score.pack()
+    scoreHead = ttk.Label(buttonsCanvas, text="S C O R E", font=headingFont, background=black, foreground=yellow, anchor="center")
+    scoreHead.pack(fill="x")
+    score = ttk.Label(buttonsCanvas, text=s,font=mediumFont, background=black, foreground=yellow, anchor="center")
+    score.pack(fill="x")
 
     home = MakeHomeButton(buttonsCanvas)
-    home.pack(anchor="center")
+    home.pack(anchor="center",fill="x")
 
     pause = tk.Button(buttonsCanvas,
                       text="PAUSE",
@@ -315,7 +315,7 @@ def InitialiseNewGameCanvas(s): # COMP - create game canvas' and buttons
                       padx=5,
                       pady=5,
                       relief="solid")    
-    pause.pack(anchor="s")
+    pause.pack(anchor="s",fill="x")
 
     save = tk.Button(buttonsCanvas,
                       text="SAVE",
@@ -329,7 +329,7 @@ def InitialiseNewGameCanvas(s): # COMP - create game canvas' and buttons
                       padx=5,
                       pady=5,
                       relief="solid")    
-    save.pack(anchor="s")
+    save.pack(anchor="s",fill="x")
 
     reset = tk.Button(buttonsCanvas,
                       text="RESET",
@@ -343,7 +343,10 @@ def InitialiseNewGameCanvas(s): # COMP - create game canvas' and buttons
                       padx=5,
                       pady=5,
                       relief="solid")
-    reset.pack(anchor="s")
+    reset.pack(anchor="s",fill="x")
+
+    name = ttk.Label(buttonsCanvas, text=username,font=mediumFont, background=black, foreground=yellow, anchor="center")
+    name.pack(fill="x")
 
 def IncrementScore(): # COMP - add 1 to score when blocks placed
     currentScore = score.cget("text")
@@ -438,66 +441,6 @@ def CheckFullRow(): # COMP
                         blockPosArray[x][r].grid(row=(info['row']+1), column=(info['column']))
                         blockPosArray[x+1][r] = blockPosArray[x][r]
                         blockPosArray[x][r] = None
-
-
-
-
-
-    # global blockPosArray
-    # #clear, rowClear = RowsToClear()
-    # clear = True
-    # while clear:
-    #     clear = False
-        # for rowClear in range(len(blockPosArray)-1):
-        #     if None not in blockPosArray[rowClear]: # row is full so need to delete
-        #         for j in range(len(blockPosArray[rowClear])):
-        #             allBlocks.remove(blockPosArray[rowClear][j])
-        #             blockPosArray[rowClear][j].destroy()
-        #             blockPosArray[rowClear][j] = None
-        #             # move all above down - update block pos array to reflect the fact blocks are gone
-        #         clear = True
-        #         for x in range(rowClear-1,0,-1):
-        #             for b in blockPosArray[x]:
-        #                 if b is not None:
-        #                     info = b.grid_info()
-        #                     b.grid(row=(info['row']+1), column=info['column'])
-        #                     # update blockposarray positions
-        #                     blockPosArray[info['row']-1][info['column']-6] = b
-        #                     blockPosArray[info['row']-1][info['column']-6] = None
-
-
-        # we want to check if a row is full
-        # if it is full: destroy all items, remove reference from blockPosArray + allBlocks
-
-
-
-
-        # then want to move the rest above down
-        # count = -1
-        # for x in blockPosArray:
-        #     count += 1
-        #     if None not in x:
-        #         for i in range(len(x)):
-        #             # remove reference from blockPosArray, allBlocks
-        #             # destory item
-        #             allBlocks.remove(x[i])
-        #             x[i].destroy()
-        #             x[i] = None
-        #             clear = True
-
-
-        #         for j in range(count,0,-1):
-        #             for k in range(len(bl))
-
-                # for j in range(i-1, 0, -1):
-                #     for k in range(len(blockPosArray[j])):
-                #         if blockPosArray[j][k] != None:
-                #             info = blockPosArray[j][k].get_info()
-                #             blockPosArray[j][k].grid(row=(info['row']+1), column=info['column'])
-                #             blockPosArray[j+1][k] = blockPosArray[j][k]
-                #             blockPosArray[j][k] = None
-    # print(blockPosArray)
-    # input()
 
 def RowsToClear():
     # check if any rows are all True - if so delete the blocks in teh row and move the rest that are above down
