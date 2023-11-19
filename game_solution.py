@@ -217,7 +217,7 @@ def HomeWindow(): # create the homepage - CORECOMP
     tk.Button(homeCanvas,text="EXIT",command=ExitClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=yellow,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
 
 def NewGameClicked(): # load up a new game - WIP
-    print(GetUsername())
+    GetUsername()
     WipeAllWidgets()
 
     # initialise all game details
@@ -225,6 +225,8 @@ def NewGameClicked(): # load up a new game - WIP
     PlayGame(newGameConfig)
 
 def LoadGameClicked(): # load up an existing game - WIP
+    GetUsername()
+    WipeAllWidgets()
     print("load game")
     # open text file, search for username if wasnt null then load array and pass to playgame
     loadGameConfig = []
@@ -293,6 +295,20 @@ def InitialiseGameCanvas(): # COMP - create game canvas' and buttons
                       relief="solid")    
     pause.pack(anchor="s")
 
+    save = tk.Button(buttonsCanvas,
+                      text="SAVE",
+                      command=SaveGame,
+                      font=smallFont,
+                      activebackground=yellow,
+                      activeforeground=black,
+                      bg=black,
+                      fg=yellow,
+                      justify="center",
+                      padx=5,
+                      pady=5,
+                      relief="solid")    
+    save.pack(anchor="s")
+
     reset = tk.Button(buttonsCanvas,
                       text="RESET",
                       command=ResetGame,
@@ -328,7 +344,7 @@ def PlayGame(gameDetails): # main game module  - WIP
 # actual operation ##########
 # randomly generate number and hence shape
 def GameFunction():
-    global playGame, b, blockPosArray
+    global playGame, b, blockPosArray, fall
     playGame = True
     # create array to represent grid
     blockPosArray = [[None for i in range(10)] for j in range(20)]
@@ -339,7 +355,9 @@ def GameFunction():
 
     for x in range(100):
         b = aBlock(playGameCanvas, 7)
+        fall = True
         b.fall()
+        fall = False
         # block placed so add one to score
         IncrementScore()
         for x in b.blocks:
@@ -348,10 +366,6 @@ def GameFunction():
             # place coordinates on array
             info = x.grid_info()
             blockPosArray[info['row']-1][info['column']-6] = x
-        for i in range(len(blockPosArray)):
-            print(blockPosArray[i])
-
-
         CheckFullRow()
     # remove after
     # if len(allBlocks) > 40:
@@ -361,7 +375,7 @@ def GameFunction():
     # if playGame:
     #     GameFunction()
 
-def CheckFullRow():
+def CheckFullRow(): # COMP
     ''' 
     a function that checks if a full row has been filled 
     - if yes then it removes the row and moves the rest of the blocks down.
@@ -391,7 +405,7 @@ def CheckFullRow():
                             info = b.grid_info()
                             b.grid(row=(info['row']+1), column=info['column'])
 
-def PauseGame(event): # WIP
+def PauseGame(): # WIP
     pass
 
 def ResetGame(): # COMP
@@ -399,6 +413,27 @@ def ResetGame(): # COMP
     WipeAllWidgets()
     # stop all other functinality going
     PlayGame("a")
+
+def SaveGame(): # WIP
+    # get main data from game - arrays and vars
+    # save as an array in text file
+    # use username as a reference in pos0 of array
+    # username, blockPosArray, allBlocks, playGame, b, fall
+    gameData = ""
+    gameData += (username + ".")
+    gameData += (str(blockPosArray) + ".")
+    gameData += (str(allBlocks) + ".")
+    gameData += (str(playGame) + ".")
+    gameData += (str(b) + ".")
+    gameData += (str(fall) + ".")
+
+    s = open("loadGame.txt", "a")
+    s.write(gameData)
+    s.close()
+
+    # now take user back to homepage
+    WipeAllWidgets()
+    HomeWindow()
 
 def LeaderboardClicked(): # leaderboard page - CORECOMP
     WipeAllWidgets()
@@ -446,7 +481,7 @@ def ExitClicked(): # exit the game - COMP
     root.destroy()
 
 def GetUsername(): # retrives username input to textbox - COMP
-    global usernameTxt
+    global usernameTxt, username
     username = usernameTxt.get()
     # if username is empty, generate random guest name
     if username == "" or ("," in username):
@@ -639,7 +674,6 @@ root.bind("<9>", ScoreUpdate)
 # cheatcode/bosskey keybinds
 root.bind("bk", BossKey)
 root.bind("123", CheatCode)
-root.bind("<space>", PauseGame)
 # controls keybinds
 root.bind("x", TurnClockwise)
 root.bind("c", TurnAnticlockwise)
