@@ -13,6 +13,7 @@ from PIL import Image,ImageTk # pip install pillow - allowed
 black = "#1E2328"
 grey = "#3B3F46"
 yellow = "#FED053"
+red = "#EE4B2B"
 
 # screen dimensions
 width = "1280"
@@ -50,9 +51,12 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
             for _ in range(4):
                 block = tk.Label(self.canvas, image=self.photo)
                 block.photo = self.photo
-                block.grid(row=self.spawnPos[0], column=gridy)
-                self.blocks.append(block)
-                gridy += 1
+                if not self.CollisionDetection(self.spawnPos[0], gridy):
+                    block.grid(row=self.spawnPos[0], column=gridy)
+                    self.blocks.append(block)
+                    gridy += 1
+                else:
+                    CheckGameOver(b,True)
         elif sel == 2:      # orange - right L
             gridy = self.spawnPos[1]
             for i in range(4):
@@ -60,12 +64,18 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                 block.photo = self.photo
                 self.blocks.append(block)
                 if i == 0:
-                    # make it the top right
-                    block.grid(row=self.spawnPos[0], column=gridy)
+                    if not self.CollisionDetection(self.spawnPos[0], gridy):
+                        # make it the top right
+                        block.grid(row=self.spawnPos[0], column=gridy)
+                    else:
+                        CheckGameOver(b, True)
                 else:
-                    # 3 along bottom
-                    block.grid(row=self.spawnPos[0]+1, column=gridy)
-                    gridy -= 1
+                    if not self.CollisionDetection(self.spawnPos[0]+1, gridy):
+                        # 3 along bottom
+                        block.grid(row=self.spawnPos[0]+1, column=gridy)
+                        gridy -= 1
+                    else:
+                        CheckGameOver(b, True)
         elif sel == 3:      # green - right z
             row1start = self.spawnPos[1] + 1
             row2start = self.spawnPos[1]
@@ -77,10 +87,13 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                 block2.photo = self.photo
                 self.blocks.append(block1)
                 self.blocks.append(block2)
-                block1.grid(row=0, column=row1start)
-                block2.grid(row=1, column=row2start)
-                row1start += 1
-                row2start += 1
+                if not self.CollisionDetection(0,row1start) and not self.CollisionDetection(0, row2start):
+                    block1.grid(row=0, column=row1start)
+                    block2.grid(row=1, column=row2start)
+                    row1start += 1
+                    row2start += 1
+                else:
+                    CheckGameOver(b, True)
         elif sel == 4:      # pink - left L
             gridy = self.spawnPos[1]
             for i in range(4):
@@ -88,21 +101,29 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                 block.photo = self.photo
                 self.blocks.append(block)
                 if i == 3:
-                    block.grid(row=self.spawnPos[0], column=gridy+1)
+                    if not self.CollisionDetection(self.spawnPos[0], gridy+1):
+                        block.grid(row=self.spawnPos[0], column=gridy+1)
+                    else:
+                        CheckGameOver(b, True)
                 else:
-                    block.grid(row=self.spawnPos[0]+1, column=gridy)
-                    gridy -= 1
+                    if not self.CollisionDetection(self.spawnPos[0]+1, gridy):
+                        block.grid(row=self.spawnPos[0]+1, column=gridy)
+                        gridy -= 1
+                    else:
+                        CheckGameOver(b, True)
         elif sel == 5:      # purple - upside down T
             gridy = self.spawnPos[1]
             for i in range(4):
                 block = tk.Label(self.canvas, image=self.photo)
                 block.photo = self.photo
                 self.blocks.append(block)
-                if i == 1:
+                if i == 1 and not self.CollisionDetection(self.spawnPos[0], gridy):
                     block.grid(row=self.spawnPos[0], column=gridy)
-                else:
+                elif not self.CollisionDetection(self.spawnPos[0]+1, gridy):
                     block.grid(row=self.spawnPos[0]+1, column=gridy)
-                    gridy += 1         
+                    gridy += 1
+                else:
+                    CheckGameOver(b, True)
         elif sel == 6:      # red - left z
             row1start = self.spawnPos[1]
             row2start = self.spawnPos[1] + 1
@@ -114,17 +135,23 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                 block2.photo = self.photo
                 self.blocks.append(block1)
                 self.blocks.append(block2)
-                block1.grid(row=0, column=row1start)
-                block2.grid(row=1, column=row2start)
-                row1start += 1
-                row2start += 1
+                if not self.CollisionDetection(0,row1start) and not self.CollisionDetection(1, row2start):
+                    block1.grid(row=0, column=row1start)
+                    block2.grid(row=1, column=row2start)
+                    row1start += 1
+                    row2start += 1
+                else:
+                    CheckGameOver(b, True)
         else:               # yellow - square
             for i in range(2):
                 for j in range(2):
                     block = tk.Label(self.canvas, image=self.photo)
                     block.photo = self.photo
                     self.blocks.append(block)
-                    block.grid(row=self.spawnPos[0]+i, column=self.spawnPos[1]+j)
+                    if not self.CollisionDetection(self.spawnPos[0]+i, self.spawnPos[1]+j):
+                        block.grid(row=self.spawnPos[0]+i, column=self.spawnPos[1]+j)
+                    else:
+                        CheckGameOver(b, True)
     def fall(self):
         global Falling
         # move all down 1 grid postiion
@@ -216,14 +243,14 @@ def HomeWindow(): # create the homepage - CORECOMP
     tk.Button(homeCanvas,text="CONTROLS",command=ControlsClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=yellow,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
     tk.Button(homeCanvas,text="EXIT",command=ExitClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=yellow,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
 
-def NewGameClicked(): # load up a new game - WIP
+def NewGameClicked(): # load up a new game - COMP
     GetUsername()
     WipeAllWidgets()
 
     # initialise all game details
     PlayGame([])
 
-def LoadGameClicked(): # load up an existing game - WIP
+def LoadGameClicked(): # load up an existing game - COMP
     global username, userInput, blockPosArray, allBlocks, playGame, b, fall
     GetUsername()
     WipeAllWidgets()
@@ -348,10 +375,10 @@ def InitialiseNewGameCanvas(s): # COMP - create game canvas' and buttons
     name = ttk.Label(buttonsCanvas, text=username,font=mediumFont, background=black, foreground=yellow, anchor="center")
     name.pack(fill="x")
 
-def IncrementScore(): # COMP - add 1 to score when blocks placed
+def IncrementScore(add): # COMP - add 1 to score when blocks placed
     currentScore = score.cget("text")
     currentScore = int(currentScore)
-    currentScore += 1
+    currentScore += add
     score.config(text=currentScore)
     
 def PlayGame(gameDetails): # main game module  - WIP
@@ -388,39 +415,27 @@ def PlayGame(gameDetails): # main game module  - WIP
             GameFunction()          
             # then restore function back to gamefunction
 
-# actual operation ##########
-# randomly generate number and hence shape
-def GameFunction():
-    global playGame, b, blockPosArray, fall
+def GameFunction(): # COMP
+    global playGame, b, blockPosArray
     playGame = True
-    # create array to represent grid
-    #blockPosArray = [[None for i in range(10)] for j in range(20)]
+    randBlock = random.randint(1,7)
+    b = aBlock(playGameCanvas, randBlock)
+    b.fall()
 
-    # randBlock = random.randint(1,7)
-    # b = aBlock(playGameCanvas, randBlock)
-    # b.fall()
-
-    for x in range(100):
-        b = aBlock(playGameCanvas, 7)
-        fall = True
-        b.fall()
-        fall = False
-        # block placed so add one to score
-        IncrementScore()
-        for x in b.blocks:
-            allBlocks.append(x)
-            # loop through all blocks
-            # place coordinates on array
-            info = x.grid_info()
-            blockPosArray[info['row']-1][info['column']-6] = x
-        CheckFullRow()
-    # remove after
-    # if len(allBlocks) > 40:
-    #     playGame = False
-
-        # after each falling iteration check for a complete row
-    # if playGame:
-    #     GameFunction()
+    for x in b.blocks:
+        allBlocks.append(x)
+        # check if the position is valid - if not then game over
+        CheckGameOver(x, False)
+        # loop through all blocks
+        # place coordinates on array
+        info = x.grid_info()
+        blockPosArray[info['row']-1][info['column']-6] = x
+    
+    # block placed so add one to score
+    IncrementScore(1)
+    CheckFullRow() # after each falling iteration check for a complete row
+    if playGame:
+        root.after(100, GameFunction)
 
 def CheckFullRow(): # COMP
     ''' 
@@ -441,24 +456,47 @@ def CheckFullRow(): # COMP
                         blockPosArray[x][r].grid(row=(info['row']+1), column=(info['column']))
                         blockPosArray[x+1][r] = blockPosArray[x][r]
                         blockPosArray[x][r] = None
+            IncrementScore(5)
 
-def RowsToClear():
-    # check if any rows are all True - if so delete the blocks in teh row and move the rest that are above down
-    for i in range(len(blockPosArray)-1):
-        if None not in blockPosArray[i]: # row is full so need to delete
-            return (True, i)
-    return (False, i)
+def CheckGameOver(currBlock, fallCollision): # WIP
+    global playGame
+    if fallCollision: # game deffo over
+        playGame = False
+        AddScoreToLeaderboard()
+        WipeAllWidgets()
+        gameOverCanvas = tk.Canvas(root, width=width, height=height, bg=black)
+        gameOverCanvas.pack(side="right",fill="x",expand=True)
+        home = MakeHomeButton(gameOverCanvas)
+        home.pack()
+        ttk.Label(gameOverCanvas, text="G A M E   O V E R", font=headingFont, foreground=red,background=black, justify="center",padding=(5,5)).pack()
 
-def PauseGame(): # WIP
-    pass
+def PauseGame(): # COMP
+    # make a new window popup - button to kill and the game restarts from where it was
+    newWin = tk.Toplevel()
+    newWin.title("PAUSED GAME")
+    restart = tk.Button(newWin,
+                      text="RESTART",
+                      command=lambda: newWin.destroy(),
+                      font=smallFont,
+                      activebackground=yellow,
+                      activeforeground=black,
+                      bg=black,
+                      fg=yellow,
+                      justify="center",
+                      padx=5,
+                      pady=5,
+                      relief="solid")    
+    restart.pack(anchor="s",fill="both")
+    newWin.wait_window()
 
 def ResetGame(): # COMP
+    AddScoreToLeaderboard()
     playGameCanvas.destroy()
     WipeAllWidgets()
     # stop all other functinality going
-    PlayGame("a")
+    PlayGame([])
 
-def SaveGame(): # WIP
+def SaveGame(): # COMP
     # save username, array with where blocks are, playgame - rest can just be restarted from game cont
     global username, playGame, score, blockPosArray
     # username, blockPosArray, playGame, currentScore
@@ -476,6 +514,16 @@ def SaveGame(): # WIP
     # now take user back to homepage
     WipeAllWidgets()
     HomeWindow()
+
+def AddScoreToLeaderboard(): # COMP
+    # called once blocks outside range, reset
+    global score, username
+    finalScore = score.cget("text")
+    if finalScore != 0:
+        line = username + "," + str(finalScore) + "\n"
+        f = open("leaderboard.txt", "a")
+        f.write(line)
+        f.close()
 
 def LeaderboardClicked(): # leaderboard page - CORECOMP
     WipeAllWidgets()
@@ -734,9 +782,9 @@ root.mainloop()
 
 ##### note of stuff used in program once but not in code: ######
 
-    # resize images once
-    # img = img.resize((15,15))
-    # img.save("aqua_15.jpg")
+# resize images once
+# img = img.resize((15,15))
+# img.save("aqua_15.jpg")
 
 
 # image = Image.open("googlesheets_3.png")
