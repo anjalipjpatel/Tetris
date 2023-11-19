@@ -225,12 +225,40 @@ def NewGameClicked(): # load up a new game - WIP
     PlayGame(newGameConfig)
 
 def LoadGameClicked(): # load up an existing game - WIP
+    global username, userInput
     GetUsername()
     WipeAllWidgets()
-    print("load game")
-    # open text file, search for username if wasnt null then load array and pass to playgame
-    loadGameConfig = []
-    PlayGame(loadGameConfig)
+
+    if userInput:   # not an anonymous user  
+        loadGameConfig = []
+        # open text file
+        s = open("loadGame.txt", "r")
+        tmp = s.read().splitlines()
+        s.close()
+
+        i = 0
+        Found = False
+        while (i <= len(tmp)-1) and not Found:  # find corresponding game save
+            loadGameConfig = tmp[i].split(".")
+            if loadGameConfig[0] == username:
+                Found = True
+                # delete from array with text-file contents
+                tmp.remove(tmp[i])
+                # rewrite values to text-file
+                s = open("loadGame.txt", "w")
+                for j in range(len(tmp)):
+                    s.write(tmp[j] + "\n")
+                s.close()
+            i += 1
+        
+        if Found:   # pass to playgame
+            PlayGame(loadGameConfig)
+        else: # no corresponding game found - return to homepage
+            WipeAllWidgets()
+            HomeWindow()
+    else: # no valid username input as playing anonymously so return to home
+        WipeAllWidgets()
+        HomeWindow()
 
     # if was null, output text box and return to main screen
 
@@ -332,7 +360,7 @@ def IncrementScore(): # COMP - add 1 to score when blocks placed
 def PlayGame(gameDetails): # main game module  - WIP
     global width, height
     global score, playGameCanvas # vars to control when falling
-
+    
     InitialiseGameCanvas()
     GameFunction()
 
@@ -426,6 +454,7 @@ def SaveGame(): # WIP
     gameData += (str(playGame) + ".")
     gameData += (str(b) + ".")
     gameData += (str(fall) + ".")
+    gameData += "\n"
 
     s = open("loadGame.txt", "a")
     s.write(gameData)
@@ -481,11 +510,13 @@ def ExitClicked(): # exit the game - COMP
     root.destroy()
 
 def GetUsername(): # retrives username input to textbox - COMP
-    global usernameTxt, username
+    global usernameTxt, username, userInput
     username = usernameTxt.get()
     # if username is empty, generate random guest name
     if username == "" or ("," in username):
         username = GenerateRandomUser()
+        userInput = False
+    userInput = True
     return username
 
 def GenerateRandomUser(): # generates random username if box is empty - COMP
