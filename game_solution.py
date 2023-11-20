@@ -182,7 +182,7 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
         '''
         global Falling, elapsedTime
         # move all down 1 grid postiion
-        speed = [1, 0.75, 0.5, 0.25]
+        speed = [0.75, 0.5, 0.25, 0.15]
         speedIndex = 0
         if elapsedTime > 0 and elapsedTime <= 10:
             speedIndex = 0
@@ -353,27 +353,23 @@ def gameBorder(): # COMP - a border around the tetris game
     '''
     Function that creates the border around the canvas of the game - to allow grid elements after to work well.
     '''
-    img = Image.open("black.jpg")
-    photo = ImageTk.PhotoImage(img)
-    img.close()
     r = 22
     c = 28
     for i in range(r):
         # make block and place
-        b = tk.Label(playGameCanvas, image=photo)
-        b.photo = photo
+        b = tk.Canvas(playGameCanvas, width=30, height=30, background=black, highlightthickness=0)
         b.grid(row=i,column=0)
     for j in range(c+1):
-        b = tk.Label(playGameCanvas, image=photo)
-        b.photo = photo
+        b = tk.Canvas(playGameCanvas, width=30, height=30, background=black, highlightthickness=0)
         b.grid(row=r, column=j)
     for k in range(r):
-        b = tk.Label(playGameCanvas, image=photo)
-        b.photo = photo
+        b = tk.Canvas(playGameCanvas, width=30, height=30, background=black, highlightthickness=0)
         b.grid(row=k, column=c)
 
     # make grid for actual blocks to map falling
-
+    img = Image.open("black.jpg")
+    photo = ImageTk.PhotoImage(img)
+    img.close()
     for i in range(1,21):
         for j in range(6,16,1):
             # make black block
@@ -557,16 +553,19 @@ def CheckGameOver(fallCollision): # COMP
     '''
     Checks if the game has ended due to the blocks overflowing
     '''
-    global playGame
+    global playGame, username
     if fallCollision: # game deffo over
         playGame = False
+        endScore = str(score.cget("text"))
         AddScoreToLeaderboard()
         WipeAllWidgets()
         gameOverCanvas = tk.Canvas(root, width=width, height=height, bg=black)
-        gameOverCanvas.pack(side="right",fill="x",expand=True)
+        gameOverCanvas.pack(side="right",fill="both",expand=True)
         home = MakeHomeButton(gameOverCanvas)
         home.pack()
         ttk.Label(gameOverCanvas, text="G A M E   O V E R", font=headingFont, foreground=red,background=black, justify="center",padding=(5,5)).pack()
+        ttk.Label(gameOverCanvas, text=("USERNAME: " + username), font=mediumFont, foreground=yellow,background=black, justify="center",padding=(5,5)).pack()
+        ttk.Label(gameOverCanvas, text=("SCORE: " + endScore), font=mediumFont, foreground=yellow, background=black, justify="center",padding=(5,5)).pack()
 
 def PauseGame(): # COMP
     '''
@@ -896,6 +895,8 @@ def TurnClockwise(event): # WIP
                 tmp.photo = b.photo
                 tmp.grid(row=newBlock[0], column=newBlock[1])
                 b.blocks.append(tmp)
+                
+
             root.update()
 
 def TurnAnticlockwise(event): # WIP
