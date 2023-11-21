@@ -36,8 +36,8 @@ yellow = "#FED053"
 red = "#EE4B2B"
 
 # screen dimensions
-screenwidth = "1280"
-screenheight = "720"
+screenwidth = 1280
+screenheight = 720
 resolution = "1280x720"
 
 # block default heights
@@ -607,19 +607,32 @@ def PauseGame(): # COMP
     # make a new window popup - button to kill and the game restarts from where it was
     newWin = tk.Toplevel()
     newWin.title("PAUSED GAME")
-    restart = tk.Button(newWin,
+    # open page in middle of screen
+    userscreenw = root.winfo_screenwidth()
+    userscreenh = root.winfo_screenheight()
+
+    x = (userscreenw/2) - (screenwidth/2)
+    y = (userscreenh/2) - (screenheight/2)
+
+    # make window centered on screen
+    newWin.geometry( '%dx%d+%d+%d' % (screenwidth, screenheight, x, y))
+
+    newWinCanvas = tk.Canvas(newWin, background=black)
+    newWinCanvas.pack(fill="both", expand=True)
+
+    restart = tk.Button(newWinCanvas,
                       text="RESTART",
                       command=lambda: newWin.destroy(),
                       font=smallFont,
                       activebackground=yellow,
                       activeforeground=black,
                       bg=black,
-                      fg=yellow,
+                      fg=red,
                       justify="center",
                       padx=5,
                       pady=5,
                       relief="solid")    
-    restart.pack(anchor="s",fill="both")
+    restart.pack(side="top", fill="both")
     newWin.wait_window()
 
 def ResetGame(): # COMP
@@ -1046,11 +1059,18 @@ root.configure(background="black")
 img = Image.open("logo.jpg")
 photo = ImageTk.PhotoImage(img)
 img.close()
-
-
-
-#img = tk.PhotoImage(file="logo.jpg")
 root.iconphoto(True, photo)
+
+# open page in middle of screen
+userscreenw = root.winfo_screenwidth()
+userscreenh = root.winfo_screenheight()
+
+x = (userscreenw/2) - (screenwidth/2)
+y = (userscreenh/2) - (screenheight/2)
+
+# make window centered on screen
+root.geometry( '%dx%d+%d+%d' % (screenwidth, screenheight, x, y))
+
 
 # home page
 HomeWindow()
