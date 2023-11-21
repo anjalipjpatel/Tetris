@@ -263,7 +263,7 @@ def HomeWindow(): # create the homepage - CORECOMP
     '''
     Function establishes the home-page and all related components (buttons, text etc.)
     '''
-    global usernameTxt # so that it can be accessed in other programs
+    global usernameTxt, blockCanvas # so that it can be accessed in other programs
 
     # red, orange, yellow, green, aqua, pink
     # create title canvas
@@ -281,7 +281,7 @@ def HomeWindow(): # create the homepage - CORECOMP
     homeCanvas.pack(side="right",fill="x",expand=True)
 
     # username canvas and entry
-    usernameCanvas = tk.Canvas(homeCanvas, width=width,height=height,bg=black, borderwidth=0)
+    usernameCanvas = tk.Canvas(homeCanvas, width=width,height=height,bg=black, highlightthickness=0)
     usernameCanvas.pack(expand=True)
     ttk.Label(usernameCanvas, text="Enter Your Username : ", font=smallFont, borderwidth=0,foreground=yellow,background=black, justify="center",padding=(5,5)).pack(side="left")
     usernameTxt = ttk.Entry(usernameCanvas,background=black,font=smallFont,foreground=black)
@@ -295,6 +295,119 @@ def HomeWindow(): # create the homepage - CORECOMP
     tk.Button(homeCanvas,text="INFORMATION",command=InformationClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=yellow,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
     tk.Button(homeCanvas,text="CONTROLS",command=ControlsClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=yellow,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
     tk.Button(homeCanvas,text="EXIT",command=ExitClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=yellow,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
+
+    # make tetris blocks on bottom of page - widthspan = 4, 
+    blockCanvas = tk.Canvas(homeCanvas, background="#000000", highlightthickness=0)
+    blockCanvas.pack(fill="x", anchor="s")
+    makeYellow(0)
+    makeRed(2)
+    makeAqua(5)
+    makeOrange(9)
+    makeGreen(13)
+    makePink(16)
+    makePurple(19)
+    makeYellow(22)
+    makeRed(25)
+    makeGreen(28)
+    makePurple(32)
+    makeOrange(35)
+    makeRed(38)
+
+# make coloured blocks
+def makeYellow(startPos):
+    global blockCanvas
+    # yellow square
+    img = Image.open("yellow.jpg")
+    photo = ImageTk.PhotoImage(img)
+    img.close()
+    for i in range(2):
+        for j in range(2):
+            block = tk.Label(blockCanvas, image=photo)
+            block.photo = photo
+            block.grid(row=i, column=startPos+j)
+def makeRed(startPos):
+    # red block
+    img = Image.open("red.jpg")
+    photo = ImageTk.PhotoImage(img)
+    img.close()
+    row1start = startPos
+    row2start = startPos + 1
+    for _ in range(2):
+        block1 = tk.Label(blockCanvas, image=photo)
+        block1.photo = photo
+        block1.grid(row=0, column=row1start)
+        block2 = tk.Label(blockCanvas, image=photo)
+        block2.photo = photo
+        block2.grid(row=1, column=row2start)
+        row1start += 1
+        row2start += 1
+def makeAqua(startPos):
+    # aqua
+    img = Image.open("aqua.jpg")
+    photo = ImageTk.PhotoImage(img)
+    img.close()
+    gridy = startPos
+    for _ in range(4):
+        block = tk.Label(blockCanvas, image=photo)
+        block.photo = photo
+        block.grid(row = 1, column=gridy)
+        gridy += 1
+def makeOrange(startPos):
+    # orange
+    img = Image.open("orange.jpg")
+    photo = ImageTk.PhotoImage(img)
+    img.close()
+    for i in range(4):
+        block = tk.Label(blockCanvas, image = photo)
+        block.photo = photo
+        if i == 3:
+            block.grid(row=0, column=startPos-1)
+        else:
+            block.grid(row=1, column=startPos)
+            startPos += 1
+def makeGreen(startPos):
+    # green
+    img = Image.open("green.jpg")
+    photo = ImageTk.PhotoImage(img)
+    img.close()
+    row1start = startPos + 1
+    row2start = startPos
+    for _ in range(2):
+        block1 = tk.Label(blockCanvas, image=photo)
+        block1.photo = photo
+        block1.grid(row=0,column=row1start)
+        block2 = tk.Label(blockCanvas, image=photo)
+        block2.photo = photo
+        block2.grid(row=1, column=row2start)
+        row1start += 1
+        row2start += 1
+def makePink(startPos):
+    # pink
+    img = Image.open("pink.jpg")
+    photo = ImageTk.PhotoImage(img)
+    img.close()
+    gridy = startPos
+    for i in range(4):
+        block = tk.Label(blockCanvas, image=photo)
+        block.photo = photo
+        if i == 0:
+            block.grid(row=0, column=gridy)
+        else:
+            block.grid(row=1, column=gridy)
+            gridy += 1
+def makePurple(startPos):
+    # purple
+    img = Image.open("purple.jpg")
+    photo = ImageTk.PhotoImage(img)
+    img.close()
+    for i in range(4):
+        block = tk.Label(blockCanvas, image=photo)
+        block.photo = photo
+        if i == 1:
+            block.grid(row=0, column=startPos)
+        else:
+            block.grid(row=1, column=startPos)
+            startPos += 1
 
 def GetUsername(): # retrives username input to textbox - COMP
     '''
