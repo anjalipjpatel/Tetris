@@ -246,19 +246,14 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                 return False
         return True
 
-#############
-# functions #
-#############
-def updateTime(): # COMP
-    '''
-    Function that updates the time on the screen every second of gameplay.
-    '''
-    global elapsedTime
-    elapsedTime += 1
-    # update time display
-    timeout.config(text=elapsedTime)
-    root.after(1000, updateTime)
+################################################################################################################
+######################################### FUNCTIONS ############################################################
+################################################################################################################
 
+
+##############
+# home page #
+##############
 def HomeWindow(): # create the homepage - CORECOMP
     '''
     Function establishes the home-page and all related components (buttons, text etc.)
@@ -288,6 +283,31 @@ def HomeWindow(): # create the homepage - CORECOMP
     tk.Button(homeCanvas,text="CONTROLS",command=ControlsClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=yellow,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
     tk.Button(homeCanvas,text="EXIT",command=ExitClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=yellow,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
 
+def GetUsername(): # retrives username input to textbox - COMP
+    '''
+    Function that returns username input into username text-box on homepage
+    '''
+    global usernameTxt, username, userInput
+    username = usernameTxt.get()
+    # if username is empty, generate random guest name
+    if username == "" or ("," in username):
+        username = GenerateRandomUser()
+        userInput = False
+    userInput = True
+    return username
+
+def GenerateRandomUser(): # generates random username if box is empty - COMP
+    '''
+    Function to generate an anonoymous-random user if no username is input
+    '''
+    global username
+    name = "user" + str(random.randint(1,999))
+    return name
+
+
+#############
+# game page #
+#############
 def NewGameClicked(): # load up a new game - COMP
     '''
     Function that specifies the actions and in what order they are exectued when the user requests a new game
@@ -634,6 +654,20 @@ def AddScoreToLeaderboard(): # COMP
         f.write(line)
         f.close()
 
+def updateTime(): # COMP
+    '''
+    Function that updates the time on the screen every second of gameplay.
+    '''
+    global elapsedTime
+    elapsedTime += 1
+    # update time display
+    timeout.config(text=elapsedTime)
+    root.after(1000, updateTime)
+
+
+###############
+# leaderboard #
+###############
 def LeaderboardClicked(): # leaderboard page - CORECOMP
     '''
     Function that creates leaderboard page and dispalys scores in descending order
@@ -673,12 +707,20 @@ def LeaderboardClicked(): # leaderboard page - CORECOMP
     for index,item in enumerate(scores, start=1):
         scoreWidget.insert(tk.END, f"{index}.   {item[0]} - {item[1]}\n")
 
+
+###############
+# information #
+###############
 def InformationClicked(): # ONLY IF WAY TOO MUCH TIME - WIP
     '''
     Function that displays game details to explain functionality
     '''
     print("information")
 
+
+############
+# controls #
+############
 def ControlsClicked(): # COMP
     '''
     Function that allows the user to switch between wasd-space and arrows controls
@@ -759,32 +801,15 @@ def onDownChange(value):
             root.unbind(d[1])
             keyBinds.remove(d[1])
 
+
+########
+# misc #
+########
 def ExitClicked(): # exit the game - COMP
     '''
     Exit's the game - destroys root window
     '''
     root.destroy()
-
-def GetUsername(): # retrives username input to textbox - COMP
-    '''
-    Function that returns username input into username text-box on homepage
-    '''
-    global usernameTxt, username, userInput
-    username = usernameTxt.get()
-    # if username is empty, generate random guest name
-    if username == "" or ("," in username):
-        username = GenerateRandomUser()
-        userInput = False
-    userInput = True
-    return username
-
-def GenerateRandomUser(): # generates random username if box is empty - COMP
-    '''
-    Function to generate an anonoymous-random user if no username is input
-    '''
-    global username
-    name = "user" + str(random.randint(1,999))
-    return name
 
 def WipeAllWidgets(): # clears all current widgets on screen - COMP
     '''
@@ -833,6 +858,9 @@ def Sort(arr): # COMP
         n -= 1
     return arr
 
+#########################
+# boss key + cheatcodes #
+#########################
 def BossKey(event): # bosskey functionality - COMP
     '''
     a function to load up image to act as if user is at work
@@ -869,6 +897,10 @@ def ScoreUpdate(event): # COMP - cheat code v2
     currentScore += 5
     score.config(text=currentScore)
 
+
+##################
+# block movement #
+#################
 def TurnClockwise(event): # WIP
     '''
     function that turns block clockwise
