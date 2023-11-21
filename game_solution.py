@@ -1042,6 +1042,16 @@ root.title("Tetris")
 root.geometry(resolution)
 root.configure(background="black")
 
+# change root window logos
+img = Image.open("logo.jpg")
+photo = ImageTk.PhotoImage(img)
+img.close()
+
+
+
+#img = tk.PhotoImage(file="logo.jpg")
+root.iconphoto(True, photo)
+
 # home page
 HomeWindow()
 
