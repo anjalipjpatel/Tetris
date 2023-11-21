@@ -387,7 +387,7 @@ def gameBorder(): # COMP - a border around the tetris game
     Function that creates the border around the canvas of the game - to allow grid elements after to work well.
     '''
     r = 22
-    c = 28
+    c = 30 #28
     for i in range(r):
         # make block and place
         b = tk.Canvas(playGameCanvas, width=30, height=30, background=black, highlightthickness=0)
@@ -417,16 +417,16 @@ def InitialiseNewGameCanvas(s): # COMP - create game canvas' and buttons
     '''
     global playGameCanvas, buttonsCanvas, score, allBlocks, blockPosArray, timeout
     # initilaise canvas
-
+    root.config(bg=black)
     # make game canvas
-    playGameCanvas = tk.Canvas(root,width="880", height=height, bg=black)
+    playGameCanvas = tk.Canvas(root,width="880", height=height, bg=black, borderwidth=0)
     playGameCanvas.pack(side="left",expand=True, fill="both")
 
     # border around game canvas to make grid work
     gameBorder()
 
     # add score, pause, reset, home - all on button canvas
-    buttonsCanvas = tk.Canvas(root, width="400", height=height, bg="grey")
+    buttonsCanvas = tk.Canvas(root, width="600", height=height, bg=black, borderwidth=0)
     buttonsCanvas.pack(side="right", expand=True, anchor="e", fill="y")
     
     scoreHead = ttk.Label(buttonsCanvas, text="S C O R E", font=headingFont, background=black, foreground=yellow, anchor="center")
@@ -1041,6 +1041,7 @@ root = tk.Tk()
 root.title("Tetris")
 root.geometry(resolution)
 root.configure(background="black")
+
 # home page
 HomeWindow()
 
