@@ -36,11 +36,16 @@ yellow = "#FED053"
 red = "#EE4B2B"
 
 # screen dimensions
-width = "1280"
-height = "720"
+screenwidth = "1280"
+screenheight = "720"
 resolution = "1280x720"
 
+# block default heights
+height = 50
+width = 100
+
 # font
+titleFont = ("small fonts", 100, "bold")
 headingFont = ("small fonts", 60, "bold")
 mediumFont = ("small fonts", 30, "bold")
 smallFont = ("small fonts", 20, "bold")
@@ -260,17 +265,25 @@ def HomeWindow(): # create the homepage - CORECOMP
     '''
     global usernameTxt # so that it can be accessed in other programs
 
-    # create title label
-    ttk.Label(root, text="T E T R I S", font=headingFont,background="#000000", foreground=yellow).pack()
-    
+    # red, orange, yellow, green, aqua, pink
+    # create title canvas
+    titleCanvas = tk.Canvas(root, width=width, height=height, bg=black)
+    ttk.Label(titleCanvas, text="T", font=titleFont,foreground="#ff6961", background="#000000").grid(row=0, column=0)
+    ttk.Label(titleCanvas, text="E", font=titleFont,foreground="#fac898", background="#000000").grid(row=0, column=1)
+    ttk.Label(titleCanvas, text="T", font=titleFont,foreground="#fdfd96", background="#000000").grid(row=0, column=2)
+    ttk.Label(titleCanvas, text="R", font=titleFont,foreground="#fdf06a", background="#000000").grid(row=0, column=3)
+    ttk.Label(titleCanvas, text="I", font=titleFont,foreground="#f6fdfa", background="#000000").grid(row=0, column=4)
+    ttk.Label(titleCanvas, text="S", font=titleFont,foreground="#f8c8dc", background="#000000").grid(row=0, column=5)
+
+    titleCanvas.pack()
     # create canvas for homebuttons and username entry
     homeCanvas = tk.Canvas(root, width=width, height=height, bg=black)
     homeCanvas.pack(side="right",fill="x",expand=True)
 
     # username canvas and entry
-    usernameCanvas = tk.Canvas(homeCanvas, width=width,height=height,bg=black)
+    usernameCanvas = tk.Canvas(homeCanvas, width=width,height=height,bg=black, borderwidth=0)
     usernameCanvas.pack(expand=True)
-    ttk.Label(usernameCanvas, text="Enter Your Username : ", font=smallFont, foreground=yellow,background=black, justify="center",padding=(5,5)).pack(side="left")
+    ttk.Label(usernameCanvas, text="Enter Your Username : ", font=smallFont, borderwidth=0,foreground=yellow,background=black, justify="center",padding=(5,5)).pack(side="left")
     usernameTxt = ttk.Entry(usernameCanvas,background=black,font=smallFont,foreground=black)
     usernameTxt.pack(side="right")
     
