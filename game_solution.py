@@ -1010,17 +1010,32 @@ def BossKey(event): # bosskey functionality - COMP
     '''
     a function to load up image to act as if user is at work
     '''
-    global root
-    WipeAllWidgets()
-    # open the image
-    img = Image.open("googlesheets_9.png")
-    photo = ImageTk.PhotoImage(img)
-    # make image window
-    root.title("Google Sheets")
-    # show image
-    label = tk.Label(root,image=photo)
-    label.photo = photo
-    label.pack()
+    global root, bossKeyOn, bossk
+    if not bossKeyOn:
+        bossKeyOn = True
+        bossk = tk.Toplevel()
+        bossk.title("GOOGLE SHEETS")
+        # open page in middle of screen
+        userscreenw = root.winfo_screenwidth()
+        userscreenh = root.winfo_screenheight()
+
+        x = (userscreenw/2) - (screenwidth/2)
+        y = (userscreenh/2) - (screenheight/2)
+
+        # make window centered on screen
+        bossk.geometry( '%dx%d+%d+%d' % (screenwidth, screenheight, x, y))
+
+        # open the image
+        img = Image.open("googlesheets_9.png")
+        photo = ImageTk.PhotoImage(img)
+        # make image window
+        # show image
+        label = tk.Label(bossk,image=photo)
+        label.photo = photo
+        label.pack()
+    else:
+        bossKeyOn = False
+        bossk.destroy()
 
 def CheatCode(event): # cheatcode functionality - COMP
     '''
@@ -1193,7 +1208,7 @@ root.geometry( '%dx%d+%d+%d' % (screenwidth, screenheight, x, y))
 
 # home page
 HomeWindow()
-
+bossKeyOn = False
 ############
 # keybinds #
 ############
