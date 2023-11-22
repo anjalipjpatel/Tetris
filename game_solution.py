@@ -717,6 +717,7 @@ def PauseGame(): # COMP
     '''
     Function that pauses the game by creating a Tk TopLevel window - press button to restart
     '''
+    global score, username
     # make a new window popup - button to kill and the game restarts from where it was
     newWin = tk.Toplevel()
     newWin.title("PAUSED GAME")
@@ -733,7 +734,10 @@ def PauseGame(): # COMP
     newWinCanvas = tk.Canvas(newWin, background=black)
     newWinCanvas.pack(fill="both", expand=True)
 
-    restart = tk.Button(newWinCanvas,
+    ttk.Label(newWinCanvas, text=username,font=mediumFont, background=black, foreground=yellow, anchor="center").pack(fill="x")
+    ttk.Label(newWinCanvas, text=("Score: " + str(score.cget("text"))),font=mediumFont, background=black, foreground=yellow, anchor="center").pack(fill="x")
+    ttk.Label(newWinCanvas, text=("Time: " + str(elapsedTime)), font=mediumFont, background=black, foreground=yellow, anchor="center").pack(fill="x")
+    tk.Button(newWinCanvas,
                       text="RESTART",
                       command=lambda: newWin.destroy(),
                       font=smallFont,
@@ -744,8 +748,10 @@ def PauseGame(): # COMP
                       justify="center",
                       padx=5,
                       pady=5,
-                      relief="solid")    
-    restart.pack(side="top", fill="both")
+                      relief="solid").pack(side="top", fill="both")
+    tk.Button(newWinCanvas,text="EXIT",command=ExitClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=red,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
+
+
     newWin.wait_window()
 
 def ResetGame(): # COMP
