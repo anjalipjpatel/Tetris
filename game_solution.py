@@ -1194,30 +1194,25 @@ img = Image.open("logo.jpg")
 photo = ImageTk.PhotoImage(img)
 img.close()
 root.iconphoto(True, photo)
-
-# open page in middle of screen
+# make window centered on screen
 userscreenw = root.winfo_screenwidth()
 userscreenh = root.winfo_screenheight()
-
 x = (userscreenw/2) - (screenwidth/2)
 y = (userscreenh/2) - (screenheight/2)
-
-# make window centered on screen
 root.geometry( '%dx%d+%d+%d' % (screenwidth, screenheight, x, y))
 
 
 # home page
 HomeWindow()
-bossKeyOn = False
 ############
 # keybinds #
 ############
-# test
-root.bind("<9>", ScoreUpdate)
-
 # cheatcode/bosskey keybinds
+bossKeyOn = False
 root.bind("bk", BossKey)
 root.bind("123", CheatCode)
+root.bind("96", ScoreUpdate)
+
 # controls keybinds
 root.bind("x", TurnClockwise)
 root.bind("c", TurnAnticlockwise)
@@ -1227,7 +1222,7 @@ root.bind("<Down>", HardDrop)
 # if time do softdrop with anohter key
 root.bind("<Up>", HoldPiece)
 
-keyBinds = ["<9>", "bk", "123", "x", "c", "<Left>", "<Right>", "<Down>"]
+keyBinds = ["9644", "bk", "123", "x", "c", "<Left>", "<Right>", "<Down>"]
 
 ###################
 # blocking method #
