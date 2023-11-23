@@ -1,4 +1,4 @@
-# 16321_python_work
+# COMP16321_python_work
 
 ## Anjali Patel - Tetris Game - November 2023.
 
