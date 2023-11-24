@@ -67,6 +67,9 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
 
         root.bind(keyBinds["clockwise"], self.RotateClockwise)
         root.bind(keyBinds["anticlockwise"], self.RotateAnticlockwise)
+        root.bind(keyBinds["left"], self.MoveLeft)
+        root.bind(keyBinds["right"], self.MoveRight)
+        root.bind(keyBinds["down"], self.MoveDown)
 
         self.selDict = {1 : "aqua.jpg", 
                         2 : "orange.jpg",
@@ -194,15 +197,15 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
 
 
         # move all down 1 grid postiion
-        speed = [0.75, 0.5, 0.25, 0.15]
+        speed = [0.5, 0.25, 0.15, 0.1]
         speedIndex = 0
         if elapsedTime > 0 and elapsedTime <= 10:
             speedIndex = 0
-        elif elapsedTime > 10 and elapsedTime <= 20:
+        elif elapsedTime > 10 and elapsedTime <= 30:
             speedIndex = 1
-        elif elapsedTime > 20 and elapsedTime <= 30:
+        elif elapsedTime > 30 and elapsedTime <= 45:
             speedIndex = 2
-        elif elapsedTime > 30:
+        elif elapsedTime > 45:
             speedIndex = 3
         Falling = True
         while Falling:
@@ -216,7 +219,12 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                 time.sleep(speed[speedIndex])
             else:
                 Falling = False
-                root.unbind("x")
+                root.unbind(keyBinds["anticlockwise"])
+                root.unbind(keyBinds["clockwise"])
+                root.unbind(keyBinds["left"])
+                root.unbind(keyBinds["right"])
+                root.unbind(keyBinds["down"])
+
                 return
     def CanMoveDown(self):
         '''
@@ -256,7 +264,6 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
             if self.CollisionDetection(newR,newC):
                 return False
         return True
-
     def RotateClockwise(self,event):
         newPos = []
         # block centre
@@ -281,7 +288,6 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
             for i,block in enumerate(self.blocks):
                 newRow, newCol = newPos[i]
                 block.grid(row=newRow, column=newCol)
-
     def RotateAnticlockwise(self, event):
         newPos = []
 
@@ -307,6 +313,61 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
             for i, block in enumerate(self.blocks):
                 newRow, newCol = newPos[i]
                 block.grid(row=newRow, column=newCol)
+    def MoveLeft(self,event): 
+        '''
+        Function that moves block left
+        '''
+        # make global the currently falling block properties
+        canLeft = True
+        col = []
+        for block in self.blocks:
+                # get grid position
+                i = block.grid_info()
+                currentColumn = i['column']
+                currentRow = i['row']
+                currentColumn -= 1
+                if currentColumn < 6: # check horizontal limit not exceeded - col not < 5
+                    canLeft = False
+                else:
+                    col.append([currentRow,currentColumn])
+        if canLeft:
+                i = 0
+                for x in b.blocks:
+                    x.grid(row=col[i][0], column=col[i][1])
+                    i += 1
+    def MoveRight(self, event):
+        canRight = True
+        col = []
+        for block in self.blocks:
+            # get grid position
+            i = block.grid_info()
+            currentColumn = i['column']
+            currentRow = i['row']
+            currentColumn += 1
+            if currentColumn > 15: # check horizontal limit not exceeded - col not > 15
+                canRight = False
+            else:
+                col.append([currentRow,currentColumn])
+        if canRight:
+            i = 0
+            for x in b.blocks:
+                x.grid(row=col[i][0], column=col[i][1])
+                i += 1
+
+    def MoveDown(self,event): # CORECOMP
+        '''
+        Function that drops block down to bottom
+        '''
+        global b, Falling
+        if Falling:
+            while b.CanMoveDown():
+                for block in self.blocks:
+                    info = block.grid_info()
+                    currentRow = info['row']
+                    currentRow += 1
+                    block.grid(row=currentRow, column=block.grid_info()['column'])
+            root.update()
+            time.sleep(0.1)     
 
 ################################################################################################################
 ######################################### FUNCTIONS ############################################################
@@ -1110,89 +1171,7 @@ def ScoreUpdate(event): # COMP - cheat code v2
     currentScore = int(currentScore)
     currentScore += 5
     score.config(text=currentScore)
-
-
-##################
-# block movement #
-#################
-    '''
-    Function that turns block anticlockwise
-    '''
-    pass
-
-def MoveLeft(event): # CORECOMP
-    '''
-    Function that moves block left
-    '''
-    # make global the currently falling block properties
-    global b, Falling
-    if Falling:
-        canLeft = True
-        col = []
-        for block in b.blocks:
-            # get grid position
-            i = block.grid_info()
-            currentColumn = i['column']
-            currentRow = i['row']
-            currentColumn -= 1
-            if currentColumn < 6: # check horizontal limit not exceeded - col not < 5
-                canLeft = False
-            else:
-                col.append([currentRow,currentColumn])
-        if canLeft:
-            i = 0
-            for x in b.blocks:
-                x.grid(row=col[i][0], column=col[i][1])
-                i += 1
-
-        # if collides then dont do
-    
-    # move each part one unit to the left
-
-def MoveRight(event): #CORECOMP
-    '''
-    Function that moves block right
-    '''
-    # make global the currently falling block properties
-    global b, Falling
-    
-    if Falling:
-        canRight = True
-        col = []
-        for block in b.blocks:
-            # get grid position
-            i = block.grid_info()
-            currentColumn = i['column']
-            currentRow = i['row']
-            currentColumn += 1
-            if currentColumn > 15: # check horizontal limit not exceeded - col not > 15
-                canRight = False
-            else:
-                col.append([currentRow,currentColumn])
-        if canRight:
-            i = 0
-            for x in b.blocks:
-                x.grid(row=col[i][0], column=col[i][1])
-                i += 1
-
-            # if collides then dont do
-    
-    # move each part one unit to the right
-
-def HardDrop(event): # CORECOMP
-    '''
-    Function that drops block down to bottom
-    '''
-    global b, Falling
-    if Falling:
-        while b.CanMoveDown():
-            for block in b.blocks:
-                info = block.grid_info()
-                currentRow = info['row']
-                currentRow += 1
-                block.grid(row=currentRow, column=block.grid_info()['column'])
-        root.update()
-        time.sleep(0.25)                
+   
 
 #######################################################################################################################
 ################################################## main program #######################################################
@@ -1238,13 +1217,6 @@ bossKeyOn = False
 root.bind("bk", BossKey)
 root.bind("123", CheatCode)
 root.bind("96", ScoreUpdate)
-
-# controls keybinds
-#root.bind("c", b.TurnAnticlockwise)
-root.bind("<Left>", MoveLeft)
-root.bind("<Right>", MoveRight)
-root.bind("<Down>", HardDrop)
-
 
 ###################
 # blocking method #
