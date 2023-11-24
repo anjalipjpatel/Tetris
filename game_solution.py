@@ -27,7 +27,7 @@ import tkinter as tk
 from tkinter import ttk
 import random
 import time
-from PIL import Image,ImageTk # pip install pillow - allowed
+from PIL import Image,ImageTk
 
 # colours
 black = "#1E2328"
@@ -50,14 +50,15 @@ headingFont = ("small fonts", 60, "bold")
 mediumFont = ("small fonts", 30, "bold")
 smallFont = ("small fonts", 20, "bold")
 
-###########
-# classes #
-###########
-class aBlock: # generate the shpae bassed on random num passed in between 1 and 7 inclusive
+################################################################################################################
+######################################### CLASSES ##############################################################
+################################################################################################################
+class aBlock: # generate the shape based on random number, let it fall and controls on the block
     def __init__(self, canvas, sel):
-        '''
-        Function initialises block that has been randomly selected in main program. 
-        It also places it on the screen at a specified starting point in the middle of the grid
+        ''' Initialises block selected, places on grid at specified starting point in the middle of the screen.
+        Parameters:
+        canvas (tkinter Canvas)     : the canvas to place the block on
+        sel (int)                   : the block to generate
         '''
         global keyBinds
         self.blocks = []
@@ -188,10 +189,9 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                         block.grid(row=self.spawnPos[0]+i, column=self.spawnPos[1]+j)
                     else:
                         CheckGameOver(True)
+    
     def fall(self):
-        '''
-        Function that allows the block to move down the page until it collides with another block/the bottom.
-        Also controls the speed of the fall based on the time elapsed - changes between 0 and 30s.
+        '''Allows block to move down page until it collides with another/reaches the bottom
         '''
         global Falling, elapsedTime, keyBinds
         # move all down 1 grid postiion
@@ -224,9 +224,11 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                 root.unbind(keyBinds["right"])
                 root.unbind(keyBinds["down"])
                 return
+    
     def CanMoveDown(self):
-        '''
-        Function that checks if the block can be moved downwards - Returns True if it can and False otherwise.
+        '''Checks if the block can be moved downwards
+        Returns:
+        Boolean : True if it can move down and False if it cannot
         '''
         for block in self.blocks:
             info = block.grid_info()
@@ -237,10 +239,14 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
             if currentRow > 20 or self.CollisionDetection(currentRow, currentColumn):
                 return False
         return True
+    
     def CollisionDetection(self,r,c):
-        '''
-        Function that checks if there is a block at a specified grid position.
-        Returns True if there is a block there and otherwise False.
+        ''' Checks if there isa block at a specified grid position.
+        Parameters:
+        r (int)
+        c (int)
+        Return:
+        Boolean : True if there is a block in the place and False otherwise.
         '''
         # loop thorugh all elements and compare row and col values with r and c
         for block in allBlocks:
@@ -248,11 +254,12 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
             if info['row'] == r and info['column'] == c:
                 return True
         return False
+    
     def RotationValid(self, newb):
-        '''
-        Function that checks if a rotation is valid - does not collide and within bounds.
-
-        Returns True if valid and False if not valid.
+        ''' Checks if a rotation is valid (does not collide with blocks and within grid bounds)
+        Paramters: newb (array)
+        Returns:
+        Boolean : True if valid, False if not
         '''
         for i in range(len(newb)):
             newR = newb[i][0]
@@ -262,7 +269,11 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
             if self.CollisionDetection(newR,newC):
                 return False
         return True
+    
     def RotateClockwise(self,event):
+        ''' Rotates the block clockwise
+        Parameters: event (python event)
+        '''
         newPos = []
         # block centre
            
@@ -286,7 +297,11 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
             for i,block in enumerate(self.blocks):
                 newRow, newCol = newPos[i]
                 block.grid(row=newRow, column=newCol)
+    
     def RotateAnticlockwise(self, event):
+        '''Rotates the block anticlockwise
+        Parameters: event (python event)
+        '''
         newPos = []
 
         # block centre
@@ -311,9 +326,10 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
             for i, block in enumerate(self.blocks):
                 newRow, newCol = newPos[i]
                 block.grid(row=newRow, column=newCol)
+    
     def MoveLeft(self,event): 
-        '''
-        Function that moves block left
+        '''Moves the block left
+        Parameters: event (python event)
         '''
         # make global the currently falling block properties
         canLeft = True
@@ -333,7 +349,11 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                 for x in b.blocks:
                     x.grid(row=col[i][0], column=col[i][1])
                     i += 1
+    
     def MoveRight(self, event):
+        '''Moves the block right
+        Parameters: event (python event)
+        '''
         canRight = True
         col = []
         for block in self.blocks:
@@ -351,9 +371,10 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
             for x in b.blocks:
                 x.grid(row=col[i][0], column=col[i][1])
                 i += 1
-    def MoveDown(self,event): # CORECOMP
-        '''
-        Function that drops block down to bottom
+    
+    def MoveDown(self,event):
+        '''Drops block as far down as it can go before colliding
+        Parameters: event (python event)
         '''
         global b, Falling
         if Falling:
@@ -366,17 +387,16 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
             root.update()
             time.sleep(0.1)     
 
+
 ################################################################################################################
 ######################################### FUNCTIONS ############################################################
 ################################################################################################################
 
-
 ##############
 # home page #
 ##############
-def HomeWindow(): # create the homepage - CORECOMP
-    '''
-    Function establishes the home-page and all related components (buttons, text etc.)
+def HomeWindow(): # create the homepage window
+    '''Defines all widgets on the homepage window
     '''
     global usernameTxt, blockCanvas # so that it can be accessed in other programs
 
@@ -429,6 +449,7 @@ def HomeWindow(): # create the homepage - CORECOMP
 
 # make coloured blocks
 def makeYellow(startPos):
+    '''Parameters: startPos (int)'''
     global blockCanvas
     # yellow square
     img = Image.open("yellow.jpg")
@@ -440,6 +461,7 @@ def makeYellow(startPos):
             block.photo = photo
             block.grid(row=i, column=startPos+j)
 def makeRed(startPos):
+    '''Parameters: startPos (int)'''
     # red block
     img = Image.open("red.jpg")
     photo = ImageTk.PhotoImage(img)
@@ -456,6 +478,7 @@ def makeRed(startPos):
         row1start += 1
         row2start += 1
 def makeAqua(startPos):
+    '''Parameters: startPos (int)'''
     # aqua
     img = Image.open("aqua.jpg")
     photo = ImageTk.PhotoImage(img)
@@ -467,6 +490,7 @@ def makeAqua(startPos):
         block.grid(row = 1, column=gridy)
         gridy += 1
 def makeOrange(startPos):
+    '''Parameters: startPos (int)'''
     # orange
     img = Image.open("orange.jpg")
     photo = ImageTk.PhotoImage(img)
@@ -480,6 +504,7 @@ def makeOrange(startPos):
             block.grid(row=1, column=startPos)
             startPos += 1
 def makeGreen(startPos):
+    '''Parameters: startPos (int)'''
     # green
     img = Image.open("green.jpg")
     photo = ImageTk.PhotoImage(img)
@@ -496,6 +521,7 @@ def makeGreen(startPos):
         row1start += 1
         row2start += 1
 def makePink(startPos):
+    '''Parameters: startPos (int)'''
     # pink
     img = Image.open("pink.jpg")
     photo = ImageTk.PhotoImage(img)
@@ -510,6 +536,7 @@ def makePink(startPos):
             block.grid(row=1, column=gridy)
             gridy += 1
 def makePurple(startPos):
+    '''Parameters: startPos (int)'''
     # purple
     img = Image.open("purple.jpg")
     photo = ImageTk.PhotoImage(img)
@@ -523,10 +550,11 @@ def makePurple(startPos):
             block.grid(row=1, column=startPos)
             startPos += 1
 
-def GetUsername(): # retrives username input to textbox - COMP
+def GetUsername(): # retrives username input to textbox
+    '''Retrives the username input on the homepage
+    Returns: str (username)
     '''
-    Function that returns username input into username text-box on homepage
-    '''
+
     global usernameTxt, username, userInput
     username = usernameTxt.get()
     # if username is empty, generate random guest name
@@ -536,9 +564,9 @@ def GetUsername(): # retrives username input to textbox - COMP
     userInput = True
     return username
 
-def GenerateRandomUser(): # generates random username if box is empty - COMP
-    '''
-    Function to generate an anonoymous-random user if no username is input
+def GenerateRandomUser(): # generates random username if box is empty
+    '''Generates an anonymous guest username
+    Returns: str (guestUsername)
     '''
     global username
     name = "user" + str(random.randint(1,999))
@@ -548,24 +576,15 @@ def GenerateRandomUser(): # generates random username if box is empty - COMP
 #############
 # game page #
 #############
-def NewGameClicked(): # load up a new game - COMP
-    '''
-    Function that specifies the actions and in what order they are exectued when the user requests a new game
-    '''
-    
+def NewGameClicked(): # load up a new game
+    '''Specifies the order of function calls when a user clicks to load a new game'''
     GetUsername()
     WipeAllWidgets()
-
-    # initialise all game details
     PlayGame([])
 
-def LoadGameClicked(): # load up an existing game - COMP
-    '''
-    Function that loads a saved game from memory if a correspondign save exists under the username input on the home-screen.
-
-    If there is no corresponding entry, show a topLevel tkinter window as an error message and redirect back to homepage.
-    '''
-    global username, userInput, blockPosArray, allBlocks, playGame, b, fall
+def LoadGameClicked(): # load up an existing game
+    '''Function loads a game-save file - if there is no associated entry/user is a guest then an error message pops up and returned to homescreen'''
+    global username, userInput, blockPosArray, allBlocks, playGame, b
     GetUsername()
     WipeAllWidgets()
 
@@ -598,29 +617,33 @@ def LoadGameClicked(): # load up an existing game - COMP
             newWin.title("ERROR")
             ttk.Label(newWin, text="ERROR: No game found", font=mediumFont, foreground=red,background=black, justify="center",padding=(5,5)).pack()
 
+            # open in middle of screen
             screenwidth = root.winfo_screenwidth()
             screenheight = root.winfo_screenheight()
             x = (screenwidth - newWin.winfo_reqwidth()) // 2
             y = (screenheight - newWin.winfo_reqheight()) // 2
-
             newWin.geometry(f"+{x}+{y}")
-
             newWin.wait_window()
             HomeWindow()
+
     else: # no valid username input as playing anonymously so return to home
         WipeAllWidgets()
         newWin = tk.Toplevel()
         newWin.title("ERROR")
         ttk.Label(newWin, text="ERROR: Anon Username - No game can be loaded", font=mediumFont, foreground=red,background=black, justify="center",padding=(5,5)).pack()
+        # open in middle of screen
+        screenwidth = root.winfo_screenwidth()
+        screenheight = root.winfo_screenheight()
+        x = (screenwidth - newWin.winfo_reqwidth()) // 2
+        y = (screenheight - newWin.winfo_reqheight()) // 2
+        newWin.geometry(f"+{x}+{y}")
         newWin.wait_window()
         HomeWindow()
 
     # if was null, output text box and return to main screen
 
-def gameBorder(): # COMP - a border around the tetris game
-    '''
-    Function that creates the border around the canvas of the game - to allow grid elements after to work well.
-    '''
+def gameBorder(): # a border around the tetris game
+    '''Creates invisible game border around canvas'''
     r = 22
     c = 31
     for i in range(r):
@@ -630,9 +653,6 @@ def gameBorder(): # COMP - a border around the tetris game
     for j in range(c):
         b = tk.Canvas(playGameCanvas, width=30, height=30, background=black, highlightthickness=0)
         b.grid(row=r, column=j)
-    # for k in range(r):
-    #     b = tk.Canvas(playGameCanvas, width=30, height=30, background=black, highlightthickness=0)
-    #     b.grid(row=k, column=c)
 
     # make grid for actual blocks to map falling
     img = Image.open("black.jpg")
@@ -646,7 +666,7 @@ def gameBorder(): # COMP - a border around the tetris game
             # grid in requried pos
             b.grid(row=i, column=j)
 
-def InitialiseNewGameCanvas(s): # COMP - create game canvas' and buttons
+def InitialiseNewGameCanvas(s): # create game canvas' and buttons
     '''
     Create the game canvas - pass in score to initilaise value from prevoius games too
     '''
@@ -722,18 +742,20 @@ def InitialiseNewGameCanvas(s): # COMP - create game canvas' and buttons
     name = ttk.Label(buttonsCanvas, text=username,font=mediumFont, background=black, foreground=yellow, anchor="center")
     name.pack(fill="x")
 
-def IncrementScore(add): # COMP - add 1 to score when blocks placed
+def IncrementScore(add): # add 1 to score when blocks placed
     '''
     Increment the score by the value passed into the function
+    Paramters: add (int)
     '''
     currentScore = score.cget("text")
     currentScore = int(currentScore)
     currentScore += add
     score.config(text=currentScore)
     
-def PlayGame(gameDetails): # main game module  - COMP
+def PlayGame(gameDetails): # main game module
     '''
     Main logic to load up game-save/initialise game
+    Parameters: gameDetails (array)
     '''
     global width, height
     global score, playGameCanvas # vars to control when falling
@@ -748,7 +770,6 @@ def PlayGame(gameDetails): # main game module  - COMP
         GameFunction()
     else: # need to restore game
         # username, blockPosArray, playGame, currentScore, time
-        # the objects wil not stay - make all white for now
         loadScore = gameDetails[3]
         InitialiseNewGameCanvas(loadScore)
         coords = gameDetails[1].split(",")
@@ -770,12 +791,9 @@ def PlayGame(gameDetails): # main game module  - COMP
         if gameDetails[2]:  # playGame = True
             updateTime()
             GameFunction()          
-            # then restore function back to gamefunction
 
-def GameFunction(): # COMP
-    '''
-    Logic of the actual game
-    '''
+def GameFunction(): # logic of game
+    '''Holds the logic/flow of the game'''
     global playGame, b, blockPosArray
     playGame = True
     randBlock = random.randint(1,7)
@@ -795,11 +813,8 @@ def GameFunction(): # COMP
     if playGame:
         root.after(100, GameFunction)
 
-def CheckFullRow(): # COMP
-    ''' 
-    a function that checks if a full row has been filled 
-    - if yes then it removes the row and moves the rest of the blocks down.
-    '''
+def CheckFullRow(): # checks for a completed row
+    ''' Function to check if any rows are complete : if they are then remove row, increment score and move the rest of the blocks down.'''
 
     for i in range(len(blockPosArray)):
         if None not in blockPosArray[i]:
@@ -816,9 +831,10 @@ def CheckFullRow(): # COMP
                         blockPosArray[x][r] = None
             IncrementScore(5)
 
-def CheckGameOver(fallCollision): # COMP
+def CheckGameOver(fallCollision): # checks if game is over (blocks above row0 on grid)
     '''
-    Checks if the game has ended due to the blocks overflowing
+    Checks if the game has ended due to the blocks overflowing on canvas
+    Paramters: fallCollision (boolean)
     '''
     global playGame, username
     if fallCollision: # game deffo over
@@ -834,9 +850,9 @@ def CheckGameOver(fallCollision): # COMP
         ttk.Label(gameOverCanvas, text=("USERNAME: " + username), font=mediumFont, foreground=yellow,background=black, justify="center",padding=(5,5)).pack()
         ttk.Label(gameOverCanvas, text=("SCORE: " + endScore), font=mediumFont, foreground=yellow, background=black, justify="center",padding=(5,5)).pack()
 
-def PauseGame(): # COMP
+def PauseGame(): # pause the game
     '''
-    Function that pauses the game by creating a Tk TopLevel window - press button to restart
+    Pauses the game by creating a Tk TopLevel window - press button/dismiss to restart
     '''
     global score, username
     # make a new window popup - button to kill and the game restarts from where it was
@@ -890,9 +906,9 @@ def PauseGame(): # COMP
 
     newWin.wait_window()
 
-def ResetGame(): # COMP
+def ResetGame(): # reset the game
     '''
-    Function that saves score to leaderboard and restarts the game
+    Saves score to leaderboard and restarts the game
     '''
     AddScoreToLeaderboard()
     playGameCanvas.destroy()
@@ -900,9 +916,9 @@ def ResetGame(): # COMP
     # stop all other functinality going
     PlayGame([])
 
-def SaveGame(): # COMP
+def SaveGame(): # save the game to a file to be reloaded later - if time store array with colours so can load that back
     '''
-    Function to save the game data to loadGame.txt to laod back later
+    Save the game data to loadGame.txt to laod back later
     '''
     # save username, array with where blocks are, playgame - rest can just be restarted from game cont
     global username, playGame, score, blockPosArray
@@ -913,7 +929,7 @@ def SaveGame(): # COMP
         for j in range(len(blockPosArray[i])):
             if blockPosArray[i][j] is not None:
                 coords += str(i) + "," + str(j) + ","
-    if coords != "" or score > 0: # write as data to ssave
+    if coords != "" or int(score.cget("text")) > 0: # write as data to ssave
         s = open("loadGame.txt", "a")
         s.write(username+"."+coords+"."+str(playGame)+"."+str(score.cget("text"))+"."+str(timeout.cget("text"))+".\n")
         s.close()
@@ -922,9 +938,9 @@ def SaveGame(): # COMP
     WipeAllWidgets()
     HomeWindow()
 
-def AddScoreToLeaderboard(): # COMP
+def AddScoreToLeaderboard(): # appends to end of leaderboard file
     '''
-    Function to append newest game to leaderboard file
+    Append newest game to leaderboard file
     '''
     # called once blocks outside range, reset
     global score, username
@@ -935,9 +951,9 @@ def AddScoreToLeaderboard(): # COMP
         f.write(line)
         f.close()
 
-def updateTime(): # COMP
+def updateTime(): # updates timer on screen
     '''
-    Function that updates the time on the screen every second of gameplay.
+    Updates the time on the screen every second of gameplay.
     '''
     global elapsedTime
     if not CheckWindowOpen("PAUSED GAME") and not CheckWindowOpen("GOOGLE SHEETS"):
@@ -946,7 +962,10 @@ def updateTime(): # COMP
         timeout.config(text=elapsedTime)
     root.after(1000, updateTime)
 
-def CheckWindowOpen(title):
+def CheckWindowOpen(title): # checks if specified window is open
+    '''Checks if a specified window is open on root
+    Paramters: title (str)
+    '''
     for window in root.winfo_children():
         if isinstance(window, tk.Toplevel) and window.title() == title:
             return True
@@ -955,9 +974,8 @@ def CheckWindowOpen(title):
 ###############
 # leaderboard #
 ###############
-def LeaderboardClicked(): # leaderboard page - CORECOMP
-    '''
-    Function that creates leaderboard page and dispalys scores in descending order
+def LeaderboardClicked(): # opens leaderboard page 
+    '''Creates leaderboard page and dispalys scores in descending order
     '''
     WipeAllWidgets()
 
@@ -997,9 +1015,8 @@ def LeaderboardClicked(): # leaderboard page - CORECOMP
 ############
 # controls #
 ############
-def ControlsClicked(): # COMP
-    '''
-    Function that allows the user to switch between wasd-space and arrows controls
+def ControlsClicked(): # opens controls page
+    '''Allows the user to switch between controls controls by displaying a drop-down list
     '''
     global controlsPage
     WipeAllWidgets()
@@ -1051,54 +1068,66 @@ def ControlsClicked(): # COMP
     h.pack()
     
 def OnLeftChange(value):
+    '''Updates the moveLeft keybind
+    Parameters: value (str)
+    '''
     global keyBinds
     if value not in keyBinds.values():
         keyBinds["left"] = value
 def OnRightChange(value):
+    '''Updates the moveRight keybind
+    Parameters: value (str)'''
     global keyBinds
     if value not in keyBinds.values():
         keyBinds["right"] = value
 def OnDownChange(value):
+    '''Updates the move down keybind
+    Parameters: value (str)'''
     global keyBinds
     if value not in keyBinds.values():
         keyBinds["down"] = value
 def OnClockChange(value):
+    '''Updates the clockwise keybind
+    Parameters: value (str)'''
     global keyBinds
     if value not in keyBinds.values():
         keyBinds["clockwise"] = value
 def OnAntiClockChange(value):
+    '''Updates the anticlockwise keybind
+    Parameters: value (str)'''
     global keyBinds
     if value not in keyBinds.values():
         keyBinds["anticlockwise"] = value
 
-
 ########
 # misc #
 ########
-def ExitClicked(): # exit the game - COMP
+def ExitClicked(): # exit the game
     '''
     Exit's the game - destroys root window
     '''
     root.destroy()
 
-def WipeAllWidgets(): # clears all current widgets on screen - COMP
+def WipeAllWidgets(): # clears all current widgets on screen
     '''
-    Function to remove all elements on screen
+    Remove all elements on screen
     '''
     global root
     for widget in root.winfo_children():
         widget.destroy()
 
-def BackHome(): # user returns to homepage - COMP
+def BackHome(): # user returns to homepage
     '''
-    Function to take user back to homepage
+   Take user back to homepage
     '''
     WipeAllWidgets()
     HomeWindow()
 
-def MakeHomeButton(canvas): # return home button widget - COMP
+def MakeHomeButton(canvas): # return home button widget
     '''
-    Function that returns a button with styling that allows a user to navigate back to the homepage
+    Returns a button with styling that allows a user to navigate back to the homepage
+    Paramters: Tkinter Canvas
+    Returns: Tkinter Button
     '''
     return (tk.Button(canvas,
                       text="HOME",
@@ -1113,9 +1142,10 @@ def MakeHomeButton(canvas): # return home button widget - COMP
                       pady=5,
                       relief="solid"))
 
-def Sort(arr): # COMP
+def Sort(arr): # bubble sort on array
     '''
-    a bubble sort on the contents of the leaderboard - descending
+    Bubble sort on the contents of the leaderboard - descending
+    Paramters: arr (array)
     '''
     n = len(arr)
     swapped = True
@@ -1131,9 +1161,10 @@ def Sort(arr): # COMP
 #########################
 # boss key + cheatcodes #
 #########################
-def BossKey(event): # bosskey functionality - COMP
+def BossKey(event): # bosskey functionality
     '''
-    a function to load up image to act as if user is at work
+    Load up image to act as if user is at work - google sheets document
+    Paramters: event (python event)
     '''
     global root, bossKeyOn, bossk
     if not bossKeyOn:
@@ -1159,9 +1190,10 @@ def BossKey(event): # bosskey functionality - COMP
         bossKeyOn = False
         bossk.destroy()
 
-def CheatCode(event): # cheatcode functionality - COMP
+def CheatCode(event): # cheatcode functionality
     '''
-    a function that destroys all blocks on page when key-combo is pressed
+    Destroys all placed blocks on page when key-combo is pressed
+    Paramters: event (python event)
     '''
     # delets all placed blocks
     global allBlocks, blockPosArray
@@ -1172,9 +1204,10 @@ def CheatCode(event): # cheatcode functionality - COMP
     # update blockposarray
     blockPosArray = [[None for i in range(10)]for j in range(20)]
 
-def ScoreUpdate(event): # COMP - cheat code v2
+def ScoreUpdate(event): # cheatcode v2
     '''
     cheatcode that updates the score by +5 when key combo pressed
+    Paramters: event (python event)
     '''
     # get score and add 5 to it
     currentScore = score.cget("text")
@@ -1200,6 +1233,7 @@ img = Image.open("logo.jpg")
 photo = ImageTk.PhotoImage(img)
 img.close()
 root.iconphoto(True, photo)
+
 # make window centered on screen
 userscreenw = root.winfo_screenwidth()
 userscreenh = root.winfo_screenheight()
@@ -1207,9 +1241,10 @@ x = (userscreenw/2) - (screenwidth/2)
 y = (userscreenh/2) - (screenheight/2)
 root.geometry( '%dx%d+%d+%d' % (screenwidth, screenheight, x, y))
 
-
-# home page
+# load home page
 HomeWindow()
+
+
 ############
 # keybinds #
 ############
