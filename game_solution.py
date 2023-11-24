@@ -12,10 +12,10 @@
 # 5. Leaderboard - on homepage w player name n pos      (COMP)
 # 6. Image Resolution - 1280x720                        (COMP)
 # 7. Movement of Objects - tetris blocks r,l and down   (COMP)
-# 8. User moves objects - r,l,down                      (COMP - rotations?)
+# 8. User moves objects - r,l,down                      (COMP)
 # 9. Collision Detection - check if block in grid pos   (COMP)
 # 10. Pause and unpause - toplevel window               (COMP)
-# 11. Customize experince - keys that define movement   (COMP - can switch between 2 for left, right, down)
+# 11. Customize experince - keys that define movement   (COMP)
 # 12. Cheat codes - add score (clear blocks?)           (COMP)
 # 13. Save/Load - from text file                        (COMP)
 # 14. Boss Key - pulls up GoogleSheet                   (COMP)
@@ -1111,7 +1111,7 @@ def CheatCode(event): # cheatcode functionality - COMP
     allBlocks = []
 
     # update blockposarray
-    blockPosArray = []
+    blockPosArray = [[None for i in range(10)]for j in range(20)]
 
 def ScoreUpdate(event): # COMP - cheat code v2
     '''
@@ -1127,41 +1127,6 @@ def ScoreUpdate(event): # COMP - cheat code v2
 ##################
 # block movement #
 #################
-# def TurnClockwise(event): # WIP
-#     '''
-#     function that turns block clockwise
-#     '''
-
-#     # manulaly do rotations based on seclectin
-
-#     # use relative middle block to reconstruct block in direction
-#     global b, Falling
-#     if Falling:
-#         newBlocks = []
-#         # rotate the bllocks using rotatin matrix
-#         for block in b.blocks:
-#             info = block.grid_info()
-#             currentRow = info['row']
-#             currentColumn = info['column']
-#             newRow = b.spawnPos[0] + (currentColumn - b.spawnPos[1])
-#             newCol = b.spawnPos[1] - (currentRow - b.spawnPos[0])
-#             newBlocks.append([newRow,newCol])
-#         if b.RotationValid(newBlocks):
-#             # clear current blocks
-#             for block in b.blocks:
-#                 block.destroy()
-            
-#             b.blocks = []
-#             for newBlock in newBlocks:
-#                 tmp = tk.Label(b.canvas, image=b.photo)
-#                 tmp.photo = b.photo
-#                 tmp.grid(row=newBlock[0], column=newBlock[1])
-#                 b.blocks.append(tmp)
-                
-
-#             root.update()
-
-# def TurnAnticlockwise(event): # WIP
     '''
     Function that turns block anticlockwise
     '''
@@ -1241,12 +1206,6 @@ def HardDrop(event): # CORECOMP
         root.update()
         time.sleep(0.25)                
 
-def HoldPiece(event): # WIP - if time
-    '''
-    Function that switches out the block to the next in hold
-    '''
-    pass
-
 #######################################################################################################################
 ################################################## main program #######################################################
 #######################################################################################################################
@@ -1277,6 +1236,15 @@ HomeWindow()
 ############
 # keybinds #
 ############
+keyBinds = {"score" : "96",
+            "boss"  : "bk",
+            "clear" : "123",
+            "clockwise" : "x",
+            "anticlockwise" : "c",
+            "left"  : "<Left>",
+            "right" : "<Right>",
+            "down"  : "<Down>"}
+
 # cheatcode/bosskey keybinds
 bossKeyOn = False
 root.bind("bk", BossKey)
@@ -1289,15 +1257,6 @@ root.bind("<Left>", MoveLeft)
 root.bind("<Right>", MoveRight)
 root.bind("<Down>", HardDrop)
 
-keyBinds = {"score" : "96",
-            "boss"  : "bk",
-            "clear" : "123",
-            "clockwise" : "x",
-            "anticlockwise" : "c",
-            "left"  : "<Left>",
-            "right" : "<Right>",
-            "down"  : "<Down>"
-            }
 
 ###################
 # blocking method #
