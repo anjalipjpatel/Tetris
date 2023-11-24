@@ -59,10 +59,15 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
         Function initialises block that has been randomly selected in main program. 
         It also places it on the screen at a specified starting point in the middle of the grid
         '''
+        global keyBinds
         self.blocks = []
         self.canvas = canvas
         self.counter = 0
         self.sel = sel
+
+        root.bind(keyBinds["clockwise"], self.RotateClockwise)
+        root.bind(keyBinds["anticlockwise"], self.RotateAnticlockwise)
+
         self.selDict = {1 : "aqua.jpg", 
                         2 : "orange.jpg",
                         3 : "green.jpg",
@@ -185,7 +190,9 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
         Function that allows the block to move down the page until it collides with another block/the bottom.
         Also controls the speed of the fall based on the time elapsed - changes between 0 and 30s.
         '''
-        global Falling, elapsedTime
+        global Falling, elapsedTime, keyBinds
+
+
         # move all down 1 grid postiion
         speed = [0.75, 0.5, 0.25, 0.15]
         speedIndex = 0
@@ -209,6 +216,9 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                 time.sleep(speed[speedIndex])
             else:
                 Falling = False
+                root.unbind("x")
+                return
+
 
     def CanMoveDown(self):
         '''
@@ -245,19 +255,18 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
         for i in range(len(newb)):
             newR = newb[i][0]
             newC = newb[i][1]
-            if newR < 0 or newR >=20 or newC < 0 or newC >= 10:
+            if newR <= 0 or newR >=20 or newC <= 0 or newC >= 10:
                 return False
             if self.CollisionDetection(newR,newC):
                 return False
         return True
 
-    def RotateClockwise(self):
+    def RotateClockwise(self,event):
         newPos = []
         # block centre
-        centreRow = sum(info['row'] for block in self.blocks) // len(self.blocks)
-        centreCol = sum(info['column'] for block in self.blocks) // len(self.blocks)
-
-
+           
+        centreRow = sum(block.grid_info()['row'] for block in self.blocks) // len(self.blocks)
+        centreCol = sum(block.grid_info()['column'] for block in self.blocks) // len(self.blocks)
 
         for block in self.blocks:
             info = block.grid_info()
@@ -265,19 +274,43 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
             # calculate relative row and col positoins
             relRow = currentRow - centreRow
             relCol = currentCol - centreCol
-        
-            newRow = centreRow - relRow
-            newCol = centreCol + relCol
+
+            # new row and col after  rotation
+            newRow = centreRow - relCol
+            newCol = centreCol + relRow
 
             newPos.append((newRow, newCol))
         
         if self.RotationValid(newPos):
-            i = 0
             for i,block in enumerate(self.blocks):
                 newRow, newCol = newPos[i]
                 block.grid(row=newRow, column=newCol)
 
+    def RotateAnticlockwise(self, event):
+        newPos = []
 
+        # block centre
+        centerRow = sum(block.grid_info()['row'] for block in self.blocks) // len(self.blocks)
+        centerCol = sum(block.grid_info()['column'] for block in self.blocks) // len(self.blocks)
+
+        for block in self.blocks:
+            info = block.grid_info()
+            currentRow, currentCol = info['row'], info['column']
+
+            # calculate relative row and col positions
+            relRow = currentRow - centerRow
+            relCol = currentCol - centerCol
+
+            # new row and col after  rotation
+            newRow = centerRow + relCol
+            newCol = centerCol - relRow
+
+            newPos.append((newRow, newCol))
+
+        if self.RotationValid(newPos):
+            for i, block in enumerate(self.blocks):
+                newRow, newCol = newPos[i]
+                block.grid(row=newRow, column=newCol)
 
 ################################################################################################################
 ######################################### FUNCTIONS ############################################################
@@ -1255,7 +1288,6 @@ root.bind("123", CheatCode)
 root.bind("96", ScoreUpdate)
 
 # controls keybinds
-#root.bind("x", b.RotateClockwise)
 #root.bind("c", b.TurnAnticlockwise)
 root.bind("<Left>", MoveLeft)
 root.bind("<Right>", MoveRight)
