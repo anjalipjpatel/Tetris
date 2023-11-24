@@ -16,7 +16,7 @@
 # 9. Collision Detection - check if block in grid pos   (COMP)
 # 10. Pause and unpause - toplevel window               (COMP)
 # 11. Customize experince - keys that define movement   (COMP - can switch between 2 for left, right, down)
-# 12. Cheat codes - add score (clear blocks?)           (COMP - detemine if want to keep clear blocks)
+# 12. Cheat codes - add score (clear blocks?)           (COMP)
 # 13. Save/Load - from text file                        (COMP)
 # 14. Boss Key - pulls up GoogleSheet                   (COMP)
 
@@ -622,7 +622,6 @@ def PlayGame(gameDetails): # main game module  - COMP
         InitialiseNewGameCanvas(0)
         blockPosArray = [[None for i in range(10)]for j in range(20)]
         allBlocks = []
-        timeStart = time.time()
         updateTime()
         GameFunction()
     else: # need to restore game
@@ -633,6 +632,8 @@ def PlayGame(gameDetails): # main game module  - COMP
         blockPosArray = [[None for i in range(10)] for j in range(20)]
         allBlocks = []
         coords = gameDetails[1].split(",")
+        elapsedTime = int(gameDetails[4])
+        timeout.config(text=elapsedTime)
         for i in range(0,len(coords)-1,2): # restore block
             # open white, grid to i, j    
             row = int(coords[i])
@@ -779,7 +780,7 @@ def SaveGame(): # COMP
                 coords += str(i) + "," + str(j) + ","
     if coords != "" or score > 0: # write as data to ssave
         s = open("loadGame.txt", "a")
-        s.write(username+"."+coords+"."+str(playGame)+"."+str(score.cget("text"))+".\n")
+        s.write(username+"."+coords+"."+str(playGame)+"."+str(score.cget("text"))+"."+str(timeout.cget("text"))+".\n")
         s.close()
 
     # now take user back to homepage
@@ -1042,10 +1043,13 @@ def CheatCode(event): # cheatcode functionality - COMP
     a function that destroys all blocks on page when key-combo is pressed
     '''
     # delets all placed blocks
-    global allBlocks
+    global allBlocks, blockPosArray
     for b in allBlocks:
         b.destroy()
     allBlocks = []
+
+    # update blockposarray
+    blockPosArray = []
 
 def ScoreUpdate(event): # COMP - cheat code v2
     '''
@@ -1065,6 +1069,14 @@ def TurnClockwise(event): # WIP
     '''
     function that turns block clockwise
     '''
+
+    # manulaly do rotations based on seclectin
+
+    # use relative middle block to reconstruct block in direction
+
+
+
+
     global b, falling
     if Falling:
         newBlocks = []
@@ -1219,8 +1231,6 @@ root.bind("c", TurnAnticlockwise)
 root.bind("<Left>", MoveLeft)
 root.bind("<Right>", MoveRight)
 root.bind("<Down>", HardDrop)
-# if time do softdrop with anohter key
-root.bind("<Up>", HoldPiece)
 
 keyBinds = ["9644", "bk", "123", "x", "c", "<Left>", "<Right>", "<Down>"]
 
