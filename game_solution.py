@@ -215,6 +215,7 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                     b.grid(row=currentRow, column=b.grid_info()['column'])
                 root.update()
                 time.sleep(speed[speedIndex])
+            
             else:
                 Falling = False
                 root.unbind(keyBinds["anticlockwise"])
@@ -931,15 +932,15 @@ def updateTime(): # COMP
     Function that updates the time on the screen every second of gameplay.
     '''
     global elapsedTime
-    if not CheckPausedOpen():
+    if not CheckWindowOpen("PAUSED GAME") and not CheckWindowOpen("GOOGLE SHEETS"):
         elapsedTime += 1
         # update time display
         timeout.config(text=elapsedTime)
     root.after(1000, updateTime)
 
-def CheckPausedOpen():
+def CheckWindowOpen(title):
     for window in root.winfo_children():
-        if isinstance(window, tk.Toplevel) and window.title() == "PAUSED GAME":
+        if isinstance(window, tk.Toplevel) and window.title() == title:
             return True
     return False
 
@@ -1003,70 +1004,70 @@ def ControlsClicked(): # COMP
     l = ["<Left>", "a"]
     r = ["<Right>", "d"]
     d = ["<Down>", "<space>"]
+    clock = ["x", "<Up>"]
+    anticlock = ["z", "<c>"]
 
     lVal = tk.StringVar()
     rVal = tk.StringVar()
     dVal = tk.StringVar()
-    
-    h = MakeHomeButton(controlCanvas)
-    h.grid(row=0, column=0, columnspan=3)
-    
+    cwVal = tk.StringVar()
+    acwVal = tk.StringVar()
+
+
+
     ttk.Label(controlCanvas, text="C O N T R O L S", font=headingFont,background="#000000", foreground=yellow).grid(row=0, column=3)
 
     ttk.Label(controlCanvas, text="Move Left", font=mediumFont,background="#000000", foreground=yellow).grid(row=1,column=0, columnspan=3)
-    leftDropDown = tk.OptionMenu(controlCanvas, lVal, *l, command=onLeftChange)
+    leftDropDown = tk.OptionMenu(controlCanvas, lVal, *l, command=OnLeftChange)
     leftDropDown.grid(row = 1, column= 5)
+
     ttk.Label(controlCanvas, text="Move Right", font=mediumFont,background="#000000", foreground=yellow).grid(row=2,column=0, columnspan=3)
-    rightDropDown = tk.OptionMenu(controlCanvas, rVal, *r, command=onRightChange)
+    rightDropDown = tk.OptionMenu(controlCanvas, rVal, *r, command=OnRightChange)
     rightDropDown.grid(row=2,column=5)
+
     ttk.Label(controlCanvas, text="Move Down", font=mediumFont,background="#000000", foreground=yellow).grid(row=3,column=0, columnspan=3)
-    downDropDown = tk.OptionMenu(controlCanvas, dVal, *d, command=onDownChange)
+    downDropDown = tk.OptionMenu(controlCanvas, dVal, *d, command=OnDownChange)
     downDropDown.grid(row=3, column=5)
 
-def onLeftChange(value):
-    '''
-    Function that updates the keybind for the moveleft function
-    '''
+    ttk.Label(controlCanvas, text="Clockwise", font=mediumFont,background="#000000", foreground=yellow).grid(row=4,column=0, columnspan=3)
+    cwDropDown = tk.OptionMenu(controlCanvas, cwVal, *clock, command=OnClockChange)
+    cwDropDown.grid(row=4, column=5)
 
-    # check if value matches the dictionry - if it does then do nothing
+    ttk.Label(controlCanvas, text="Anticlockwise", font=mediumFont,background="#000000", foreground=yellow).grid(row=5,column=0, columnspan=3)
+    acwDropDown = tk.OptionMenu(controlCanvas, acwVal, *anticlock, command= OnAntiClockChange)
+    acwDropDown.grid(row=5, column=5)
 
-    # else remove associated keybind in dictionary and rebind and update dictionary to reflect
+    h = MakeHomeButton(controlCanvas)
+    h.grid(row=10, column=3, columnspan=3)
+    
 
+def OnLeftChange(value):
     global keyBinds
-    if value == keyBinds["left"]:
-        return
-    else:
-        root.unbind(keyBinds["left"])
-        root.bind(value, MoveLeft)
+    if value not in keyBinds.values():
         keyBinds["left"] = value
-    
-    root.bind(keyBinds["left"], MoveLeft)
 
-def onRightChange(value):
-    '''
-    Function that updates the keybind for the moveright function
-    '''
-
+def OnRightChange(value):
     global keyBinds
-    if value != keyBinds["right"]:
-        root.unbind(keyBinds["right"])
-        root.bind(value, MoveRight)
+    if value not in keyBinds.values():
         keyBinds["right"] = value
-    
-    root.bind(keyBinds["right"], MoveRight)
 
-def onDownChange(value):
-    '''
-    Function that updates the keybind for the hardrop function
-    '''
 
+def OnDownChange(value):
     global keyBinds
-    if value != keyBinds["down"]:
-        root.unbind(keyBinds["down"])
-        root.bind(value, HardDrop)
+    if value not in keyBinds.values():
         keyBinds["down"] = value
-    
-    root.bind(keyBinds["down"], HardDrop)
+
+
+def OnClockChange(value):
+    global keyBinds
+    if value not in keyBinds.values():
+        keyBinds["clockwise"] = value
+
+def OnAntiClockChange(value):
+    global keyBinds
+    if value not in keyBinds.values():
+        keyBinds["anticlockwise"] = value
+
 
 
 ########
@@ -1140,9 +1141,6 @@ def BossKey(event): # bosskey functionality - COMP
         # open page in middle of screen
         userscreenw = root.winfo_screenwidth()
         userscreenh = root.winfo_screenheight()
-
-        x = (userscreenw/2) - (screenwidth/2)
-        y = (userscreenh/2) - (screenheight/2)
 
         # make window centered on screen
         bossk.geometry( '%dx%d+%d+%d' % (screenwidth, screenheight, x, y))
