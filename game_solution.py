@@ -251,6 +251,34 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                 return False
         return True
 
+    def RotateClockwise(self):
+        newPos = []
+        # block centre
+        centreRow = sum(info['row'] for block in self.blocks) // len(self.blocks)
+        centreCol = sum(info['column'] for block in self.blocks) // len(self.blocks)
+
+
+
+        for block in self.blocks:
+            info = block.grid_info()
+            currentRow, currentCol = info['row'], info['column']
+            # calculate relative row and col positoins
+            relRow = currentRow - centreRow
+            relCol = currentCol - centreCol
+        
+            newRow = centreRow - relRow
+            newCol = centreCol + relCol
+
+            newPos.append((newRow, newCol))
+        
+        if self.RotationValid(newPos):
+            i = 0
+            for i,block in enumerate(self.blocks):
+                newRow, newCol = newPos[i]
+                block.grid(row=newRow, column=newCol)
+
+
+
 ################################################################################################################
 ######################################### FUNCTIONS ############################################################
 ################################################################################################################
@@ -499,7 +527,7 @@ def gameBorder(): # COMP - a border around the tetris game
     '''
     Function that creates the border around the canvas of the game - to allow grid elements after to work well.
     '''
-    r = 21
+    r = 22
     c = 31
     for i in range(r):
         # make block and place
@@ -508,9 +536,9 @@ def gameBorder(): # COMP - a border around the tetris game
     for j in range(c):
         b = tk.Canvas(playGameCanvas, width=30, height=30, background=black, highlightthickness=0)
         b.grid(row=r, column=j)
-    for k in range(r):
-        b = tk.Canvas(playGameCanvas, width=30, height=30, background=black, highlightthickness=0)
-        b.grid(row=k, column=c)
+    # for k in range(r):
+    #     b = tk.Canvas(playGameCanvas, width=30, height=30, background=black, highlightthickness=0)
+    #     b.grid(row=k, column=c)
 
     # make grid for actual blocks to map falling
     img = Image.open("black.jpg")
@@ -618,19 +646,17 @@ def PlayGame(gameDetails): # main game module  - COMP
     global blockPosArray, allBlocks
     global elapsedTime
     elapsedTime = -1
+    blockPosArray = [[None for i in range(10)]for j in range(20)]
+    allBlocks = []
     if gameDetails == []:
         InitialiseNewGameCanvas(0)
-        blockPosArray = [[None for i in range(10)]for j in range(20)]
-        allBlocks = []
         updateTime()
         GameFunction()
     else: # need to restore game
-        # username, blockPosArray, playGame, currentScore
+        # username, blockPosArray, playGame, currentScore, time
         # the objects wil not stay - make all white for now
         loadScore = gameDetails[3]
         InitialiseNewGameCanvas(loadScore)
-        blockPosArray = [[None for i in range(10)] for j in range(20)]
-        allBlocks = []
         coords = gameDetails[1].split(",")
         elapsedTime = int(gameDetails[4])
         timeout.config(text=elapsedTime)
@@ -913,46 +939,46 @@ def onLeftChange(value):
     '''
     Function that updates the keybind for the moveleft function
     '''
+
+    # check if value matches the dictionry - if it does then do nothing
+
+    # else remove associated keybind in dictionary and rebind and update dictionary to reflect
+
     global keyBinds
-    l = ["<Left>", "a"]
-    if value not in keyBinds:
+    if value == keyBinds["left"]:
+        return
+    else:
+        root.unbind(keyBinds["left"])
         root.bind(value, MoveLeft)
-        if l[0] != value:
-            root.unbind(l[0])
-            keyBinds.remove(l[0])
-        else:
-            root.unbind(l[1])
-            keyBinds.remove(l[1])
+        keyBinds["left"] = value
+    
+    root.bind(keyBinds["left"], MoveLeft)
 
 def onRightChange(value):
     '''
     Function that updates the keybind for the moveright function
     '''
+
     global keyBinds
-    r = ["<Right>", "d"]
-    if value not in keyBinds:
+    if value != keyBinds["right"]:
+        root.unbind(keyBinds["right"])
         root.bind(value, MoveRight)
-        if r[0] != value:
-            root.unbind(r[0])
-            keyBinds.remove(r[0])
-        else:
-            root.unbind(r[1])
-            keyBinds.remove(r[1])
+        keyBinds["right"] = value
+    
+    root.bind(keyBinds["right"], MoveRight)
 
 def onDownChange(value):
     '''
     Function that updates the keybind for the hardrop function
     '''
+
     global keyBinds
-    d = ["<Down>", "<space>"]
-    if value not in keyBinds:
+    if value != keyBinds["down"]:
+        root.unbind(keyBinds["down"])
         root.bind(value, HardDrop)
-        if d[0] != value:
-            root.unbind(d[0])
-            keyBinds.remove(d[0])
-        else:
-            root.unbind(d[1])
-            keyBinds.remove(d[1])
+        keyBinds["down"] = value
+    
+    root.bind(keyBinds["down"], HardDrop)
 
 
 ########
@@ -1072,45 +1098,41 @@ def ScoreUpdate(event): # COMP - cheat code v2
 ##################
 # block movement #
 #################
-def TurnClockwise(event): # WIP
-    '''
-    function that turns block clockwise
-    '''
+# def TurnClockwise(event): # WIP
+#     '''
+#     function that turns block clockwise
+#     '''
 
-    # manulaly do rotations based on seclectin
+#     # manulaly do rotations based on seclectin
 
-    # use relative middle block to reconstruct block in direction
-
-
-
-
-    global b, falling
-    if Falling:
-        newBlocks = []
-        # rotate the bllocks using rotatin matrix
-        for block in b.blocks:
-            info = block.grid_info()
-            currentRow = info['row']
-            currentColumn = info['column']
-            newRow = b.spawnPos[0] + (currentColumn - b.spawnPos[1])
-            newCol = b.spawnPos[1] - (currentRow - b.spawnPos[0])
-            newBlocks.append([newRow,newCol])
-        if b.RotationValid(newBlocks):
-            # clear current blocks
-            for block in b.blocks:
-                block.destroy()
+#     # use relative middle block to reconstruct block in direction
+#     global b, Falling
+#     if Falling:
+#         newBlocks = []
+#         # rotate the bllocks using rotatin matrix
+#         for block in b.blocks:
+#             info = block.grid_info()
+#             currentRow = info['row']
+#             currentColumn = info['column']
+#             newRow = b.spawnPos[0] + (currentColumn - b.spawnPos[1])
+#             newCol = b.spawnPos[1] - (currentRow - b.spawnPos[0])
+#             newBlocks.append([newRow,newCol])
+#         if b.RotationValid(newBlocks):
+#             # clear current blocks
+#             for block in b.blocks:
+#                 block.destroy()
             
-            b.blocks = []
-            for newBlock in newBlocks:
-                tmp = tk.Label(b.canvas, image=b.photo)
-                tmp.photo = b.photo
-                tmp.grid(row=newBlock[0], column=newBlock[1])
-                b.blocks.append(tmp)
+#             b.blocks = []
+#             for newBlock in newBlocks:
+#                 tmp = tk.Label(b.canvas, image=b.photo)
+#                 tmp.photo = b.photo
+#                 tmp.grid(row=newBlock[0], column=newBlock[1])
+#                 b.blocks.append(tmp)
                 
 
-            root.update()
+#             root.update()
 
-def TurnAnticlockwise(event): # WIP
+# def TurnAnticlockwise(event): # WIP
     '''
     Function that turns block anticlockwise
     '''
@@ -1233,13 +1255,21 @@ root.bind("123", CheatCode)
 root.bind("96", ScoreUpdate)
 
 # controls keybinds
-root.bind("x", TurnClockwise)
-root.bind("c", TurnAnticlockwise)
+#root.bind("x", b.RotateClockwise)
+#root.bind("c", b.TurnAnticlockwise)
 root.bind("<Left>", MoveLeft)
 root.bind("<Right>", MoveRight)
 root.bind("<Down>", HardDrop)
 
-keyBinds = ["9644", "bk", "123", "x", "c", "<Left>", "<Right>", "<Down>"]
+keyBinds = {"score" : "96",
+            "boss"  : "bk",
+            "clear" : "123",
+            "clockwise" : "x",
+            "anticlockwise" : "c",
+            "left"  : "<Left>",
+            "right" : "<Right>",
+            "down"  : "<Down>"
+            }
 
 ###################
 # blocking method #
