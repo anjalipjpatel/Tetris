@@ -74,7 +74,7 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
         self.photo = ImageTk.PhotoImage(img)
         img.close()
         self.spawnPos = [0,10]
-        if sel == 1:        # aqua - straight line 4
+        if sel == 1:        # aqua - straight line 4            
             gridy = self.spawnPos[1]
             for _ in range(4):
                 block = tk.Label(self.canvas, image=self.photo)
@@ -499,13 +499,13 @@ def gameBorder(): # COMP - a border around the tetris game
     '''
     Function that creates the border around the canvas of the game - to allow grid elements after to work well.
     '''
-    r = 22
-    c = 30 #28
+    r = 21
+    c = 31
     for i in range(r):
         # make block and place
         b = tk.Canvas(playGameCanvas, width=30, height=30, background=black, highlightthickness=0)
         b.grid(row=i,column=0)
-    for j in range(c+1):
+    for j in range(c):
         b = tk.Canvas(playGameCanvas, width=30, height=30, background=black, highlightthickness=0)
         b.grid(row=r, column=j)
     for k in range(r):
@@ -752,6 +752,7 @@ def PauseGame(): # COMP
                       relief="solid").pack(side="top", fill="both")
     tk.Button(newWinCanvas,text="EXIT",command=ExitClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=red,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
 
+    paused = True
 
     newWin.wait_window()
 
@@ -805,11 +806,17 @@ def updateTime(): # COMP
     Function that updates the time on the screen every second of gameplay.
     '''
     global elapsedTime
-    elapsedTime += 1
-    # update time display
-    timeout.config(text=elapsedTime)
+    if not CheckPausedOpen():
+        elapsedTime += 1
+        # update time display
+        timeout.config(text=elapsedTime)
     root.after(1000, updateTime)
 
+def CheckPausedOpen():
+    for window in root.winfo_children():
+        if isinstance(window, tk.Toplevel) and window.title() == "PAUSED GAME":
+            return True
+    return False
 
 ###############
 # leaderboard #
