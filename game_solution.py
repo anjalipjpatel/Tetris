@@ -597,6 +597,14 @@ def LoadGameClicked(): # load up an existing game - COMP
             newWin = tk.Toplevel()
             newWin.title("ERROR")
             ttk.Label(newWin, text="ERROR: No game found", font=mediumFont, foreground=red,background=black, justify="center",padding=(5,5)).pack()
+
+            screenwidth = root.winfo_screenwidth()
+            screenheight = root.winfo_screenheight()
+            x = (screenwidth - newWin.winfo_reqwidth()) // 2
+            y = (screenheight - newWin.winfo_reqheight()) // 2
+
+            newWin.geometry(f"+{x}+{y}")
+
             newWin.wait_window()
             HomeWindow()
     else: # no valid username input as playing anonymously so return to home
