@@ -194,8 +194,6 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
         Also controls the speed of the fall based on the time elapsed - changes between 0 and 30s.
         '''
         global Falling, elapsedTime, keyBinds
-
-
         # move all down 1 grid postiion
         speed = [0.5, 0.25, 0.15, 0.1]
         speedIndex = 0
@@ -224,7 +222,6 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                 root.unbind(keyBinds["left"])
                 root.unbind(keyBinds["right"])
                 root.unbind(keyBinds["down"])
-
                 return
     def CanMoveDown(self):
         '''
@@ -353,7 +350,6 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
             for x in b.blocks:
                 x.grid(row=col[i][0], column=col[i][1])
                 i += 1
-
     def MoveDown(self,event): # CORECOMP
         '''
         Function that drops block down to bottom
@@ -411,7 +407,7 @@ def HomeWindow(): # create the homepage - CORECOMP
     tk.Button(homeCanvas,text="LOAD GAME",command=LoadGameClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=yellow,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
     tk.Button(homeCanvas,text="LEADERBOARD",command=LeaderboardClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=yellow,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
     tk.Button(homeCanvas,text="CONTROLS",command=ControlsClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=yellow,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
-    tk.Button(homeCanvas,text="EXIT",command=ExitClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=yellow,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
+    tk.Button(homeCanvas,text="EXIT",command=ExitClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=red,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
 
     # make tetris blocks on bottom of page - widthspan = 4, 
     blockCanvas = tk.Canvas(homeCanvas, background="#000000", highlightthickness=0)
@@ -860,11 +856,25 @@ def PauseGame(): # COMP
                       activebackground=yellow,
                       activeforeground=black,
                       bg=black,
-                      fg=red,
+                      fg=yellow,
                       justify="center",
                       padx=5,
                       pady=5,
-                      relief="solid").pack(side="top", fill="both")
+                      relief="solid").pack(fill="x")
+    
+    tk.Button(newWinCanvas,
+                      text="SAVE",
+                      command=SaveGame,
+                      font=smallFont,
+                      activebackground=yellow,
+                      activeforeground=black,
+                      bg=black,
+                      fg=yellow,
+                      justify="center",
+                      padx=5,
+                      pady=5,
+                      relief="solid").pack(fill="x")
+
     tk.Button(newWinCanvas,text="EXIT",command=ExitClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=red,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
 
     paused = True
