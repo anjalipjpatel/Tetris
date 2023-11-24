@@ -218,8 +218,6 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
                 Falling = False
                 root.unbind("x")
                 return
-
-
     def CanMoveDown(self):
         '''
         Function that checks if the block can be moved downwards - Returns True if it can and False otherwise.
@@ -233,7 +231,6 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
             if currentRow > 20 or self.CollisionDetection(currentRow, currentColumn):
                 return False
         return True
-
     def CollisionDetection(self,r,c):
         '''
         Function that checks if there is a block at a specified grid position.
@@ -245,7 +242,6 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
             if info['row'] == r and info['column'] == c:
                 return True
         return False
-
     def RotationValid(self, newb):
         '''
         Function that checks if a rotation is valid - does not collide and within bounds.
@@ -255,7 +251,7 @@ class aBlock: # generate the shpae bassed on random num passed in between 1 and 
         for i in range(len(newb)):
             newR = newb[i][0]
             newC = newb[i][1]
-            if newR <= 0 or newR >=20 or newC <= 0 or newC >= 10:
+            if newR < 0 or newR >=20 or newC < 6 or newC >= 15:
                 return False
             if self.CollisionDetection(newR,newC):
                 return False
