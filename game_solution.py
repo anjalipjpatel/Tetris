@@ -383,12 +383,12 @@ def HomeWindow(): # create the homepage - CORECOMP
     # red, orange, yellow, green, aqua, pink
     # create title canvas
     titleCanvas = tk.Canvas(root, width=width, height=height, bg=black)
-    ttk.Label(titleCanvas, text="T", font=titleFont,foreground="#ff6961", background="#000000").grid(row=0, column=0)
-    ttk.Label(titleCanvas, text="E", font=titleFont,foreground="#fac898", background="#000000").grid(row=0, column=1)
-    ttk.Label(titleCanvas, text="T", font=titleFont,foreground="#fdfd96", background="#000000").grid(row=0, column=2)
-    ttk.Label(titleCanvas, text="R", font=titleFont,foreground="#fdf06a", background="#000000").grid(row=0, column=3)
-    ttk.Label(titleCanvas, text="I", font=titleFont,foreground="#f6fdfa", background="#000000").grid(row=0, column=4)
-    ttk.Label(titleCanvas, text="S", font=titleFont,foreground="#f8c8dc", background="#000000").grid(row=0, column=5)
+    ttk.Label(titleCanvas, text="T", font=titleFont,foreground="#ff6961", background=black).grid(row=0, column=0)
+    ttk.Label(titleCanvas, text="E", font=titleFont,foreground="#fac898", background=black).grid(row=0, column=1)
+    ttk.Label(titleCanvas, text="T", font=titleFont,foreground="#fdfd96", background=black).grid(row=0, column=2)
+    ttk.Label(titleCanvas, text="R", font=titleFont,foreground="#fdf06a", background=black).grid(row=0, column=3)
+    ttk.Label(titleCanvas, text="I", font=titleFont,foreground="#f6fdfa", background=black).grid(row=0, column=4)
+    ttk.Label(titleCanvas, text="S", font=titleFont,foreground="#f8c8dc", background=black).grid(row=0, column=5)
 
     titleCanvas.pack()
     # create canvas for homebuttons and username entry
@@ -411,7 +411,7 @@ def HomeWindow(): # create the homepage - CORECOMP
     tk.Button(homeCanvas,text="EXIT",command=ExitClicked,font=smallFont,activebackground=yellow,activeforeground=black,bg=black,fg=red,justify="center",padx=5,pady=5,relief="solid").pack(fill="x")
 
     # make tetris blocks on bottom of page - widthspan = 4, 
-    blockCanvas = tk.Canvas(homeCanvas, background="#000000", highlightthickness=0)
+    blockCanvas = tk.Canvas(homeCanvas, background=black, highlightthickness=0)
     blockCanvas.pack(fill="x", anchor="s")
     makeYellow(0)
     makeRed(2)
@@ -1000,6 +1000,11 @@ def ControlsClicked(): # COMP
     controlCanvas = tk.Canvas(root, width=width, height=height, bg=black)
     controlCanvas.pack(fill="both",expand=True)
 
+    ttk.Label(controlCanvas, text="C O N T R O L S", font=headingFont,background=black, foreground=yellow).pack()
+
+    selectCanvas = tk.Canvas(controlCanvas, width=width, height=height, bg=black, highlightthickness=0)
+    selectCanvas.pack(fill="x")
+
     # make drop-down options
     l = ["<Left>", "a"]
     r = ["<Right>", "d"]
@@ -1014,60 +1019,49 @@ def ControlsClicked(): # COMP
     acwVal = tk.StringVar()
 
 
-
-    ttk.Label(controlCanvas, text="C O N T R O L S", font=headingFont,background="#000000", foreground=yellow).grid(row=0, column=3)
-
-    ttk.Label(controlCanvas, text="Move Left", font=mediumFont,background="#000000", foreground=yellow).grid(row=1,column=0, columnspan=3)
-    leftDropDown = tk.OptionMenu(controlCanvas, lVal, *l, command=OnLeftChange)
+    leftDropDown = tk.OptionMenu(selectCanvas, lVal, *l, command=OnLeftChange)
+    ttk.Label(selectCanvas, text="Move Left", font=mediumFont,background="#000000", foreground=yellow).grid(row=1,column=0, columnspan=3)
     leftDropDown.grid(row = 1, column= 5)
 
-    ttk.Label(controlCanvas, text="Move Right", font=mediumFont,background="#000000", foreground=yellow).grid(row=2,column=0, columnspan=3)
-    rightDropDown = tk.OptionMenu(controlCanvas, rVal, *r, command=OnRightChange)
+    rightDropDown = tk.OptionMenu(selectCanvas, rVal, *r, command=OnRightChange)
+    ttk.Label(selectCanvas, text="Move Right", font=mediumFont,background="#000000", foreground=yellow).grid(row=2,column=0, columnspan=3)
     rightDropDown.grid(row=2,column=5)
 
-    ttk.Label(controlCanvas, text="Move Down", font=mediumFont,background="#000000", foreground=yellow).grid(row=3,column=0, columnspan=3)
-    downDropDown = tk.OptionMenu(controlCanvas, dVal, *d, command=OnDownChange)
+    downDropDown = tk.OptionMenu(selectCanvas, dVal, *d, command=OnDownChange)
+    ttk.Label(selectCanvas, text="Move Down", font=mediumFont,background="#000000", foreground=yellow).grid(row=3,column=0, columnspan=3)
     downDropDown.grid(row=3, column=5)
 
-    ttk.Label(controlCanvas, text="Clockwise", font=mediumFont,background="#000000", foreground=yellow).grid(row=4,column=0, columnspan=3)
-    cwDropDown = tk.OptionMenu(controlCanvas, cwVal, *clock, command=OnClockChange)
+    cwDropDown = tk.OptionMenu(selectCanvas, cwVal, *clock, command=OnClockChange)
+    ttk.Label(selectCanvas, text="Clockwise", font=mediumFont,background="#000000", foreground=yellow).grid(row=4,column=0, columnspan=3)
     cwDropDown.grid(row=4, column=5)
 
-    ttk.Label(controlCanvas, text="Anticlockwise", font=mediumFont,background="#000000", foreground=yellow).grid(row=5,column=0, columnspan=3)
-    acwDropDown = tk.OptionMenu(controlCanvas, acwVal, *anticlock, command= OnAntiClockChange)
+    acwDropDown = tk.OptionMenu(selectCanvas, acwVal, *anticlock, command= OnAntiClockChange)
+    ttk.Label(selectCanvas, text="Anticlockwise", font=mediumFont,background="#000000", foreground=yellow).grid(row=5,column=0, columnspan=3)
     acwDropDown.grid(row=5, column=5)
 
     h = MakeHomeButton(controlCanvas)
-    h.grid(row=10, column=3, columnspan=3)
+    h.pack()
     
-
 def OnLeftChange(value):
     global keyBinds
     if value not in keyBinds.values():
         keyBinds["left"] = value
-
 def OnRightChange(value):
     global keyBinds
     if value not in keyBinds.values():
         keyBinds["right"] = value
-
-
 def OnDownChange(value):
     global keyBinds
     if value not in keyBinds.values():
         keyBinds["down"] = value
-
-
 def OnClockChange(value):
     global keyBinds
     if value not in keyBinds.values():
         keyBinds["clockwise"] = value
-
 def OnAntiClockChange(value):
     global keyBinds
     if value not in keyBinds.values():
         keyBinds["anticlockwise"] = value
-
 
 
 ########
